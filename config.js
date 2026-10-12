@@ -1,1 +1,1 @@
-window.AIRSOFT_SITE = { dataUrl: "./data.json", apiBase: "" };
+window.AIRSOFT_SITE = { dataUrl: "./data.json", apiBase: "/stuff" };
