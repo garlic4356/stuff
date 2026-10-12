@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#14160f">
+  <title>Terrains &amp; équipes d'airsoft — Rennes / Nanterre</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+</head>
+<body data-page="home">
+
+<header>
+  <button type="button" id="nav-toggle" class="nav-toggle" aria-controls="nav-panel"
+          aria-expanded="false" aria-label="Ouvrir la navigation">
+    <span></span><span></span><span></span>
+  </button>
+  <h1><a href="/"><span class="stencil">Airsoft&nbsp;OPS</span></a> — Terrains &amp; équipes</h1>
+  <p class="subtitle">Autour de Rennes et de Nanterre · <span id="verified-date">Données vérifiées le —</span>
+    <span id="agent-pill" class="agent-pill" hidden></span></p>
+</header>
+
+<!-- Off-canvas navigation (opens from the left; closed by default — pure JS
+     enhancement, the page works without it). /associations 301-redirects here. -->
+<div id="nav-backdrop" class="nav-backdrop" aria-hidden="true"></div>
+<nav id="nav-panel" class="nav-panel" role="dialog" aria-modal="true" aria-label="Navigation">
+  <button type="button" id="nav-close" class="nav-close" aria-label="Fermer">✕</button>
+  <ul class="nav-links">
+    <li><a href="/">Accueil</a></li>
+    <li><a href="/agent">Agent</a></li>
+  </ul>
+  <button type="button" id="nav-top" class="nav-top-btn">Haut de page</button>
+</nav>
+
+<main>
+  <div id="error-zone"></div>
+
+  <!-- Ordered: Carte → Calendrier → Tableaux -->
+  <section id="carte">
+    <h2>Carte des terrains</h2>
+    <div id="map-wrap">
+      <div id="map" role="application" aria-label="Carte des terrains d'airsoft"></div>
+      <div class="map-legend">
+        <span><span class="dot" style="background:#4e9a4e"></span>Actif</span>
+        <span><span class="dot" style="background:#d29422"></span>À vérifier</span>
+        <span><span class="dot" style="background:#c14a3a"></span>Fermé</span>
+      </div>
+    </div>
+    <div id="no-geo"></div>
+  </section>
+
+  <section id="hero">
+    <h2>Prochaines parties</h2>
+    <!-- Distance filter (timeline only): chips select the active anchors, the
+         number is the max distance. data-zone keys match ANCHORS in app.js.
+         Cards deep-link to the matching table row on this page. -->
+    <div class="filter-controls">
+      <span>Zones&nbsp;:</span>
+      <button type="button" class="chip" data-zone="rennes" aria-pressed="false">Rennes</button>
+      <button type="button" class="chip" data-zone="caen" aria-pressed="false">Caen</button>
+      <button type="button" class="chip" data-zone="nanterre" aria-pressed="false">Nanterre</button>
+      <span>— à moins de</span>
+      <input type="number" id="max-km" value="150" min="10" max="500" step="10" aria-label="Distance maximale en kilomètres">
+      <span>km · à vol d'oiseau</span>
+    </div>
+    <div id="timeline"></div>
+    <div id="past-events"></div>
+  </section>
+
+  <section id="tableaux">
+    <h2>Tableaux détaillés</h2>
+    <div class="table-block" id="block-rennes">
+      <h3>Autour de Rennes</h3>
+      <div class="table-controls">
+        <select id="dep-rennes" aria-label="Filtrer par département">
+          <option value="">Tous départements</option>
+        </select>
+        <input type="search" id="search-rennes" placeholder="Rechercher une équipe…" aria-label="Rechercher par nom">
+      </div>
+      <div class="table-scroll">
+        <table id="table-rennes">
+          <thead>
+            <tr>
+              <th data-key="nom" tabindex="0" role="button" aria-sort="none">Équipe</th>
+              <th data-key="commune" tabindex="0" role="button" aria-sort="none">Commune</th>
+              <th data-key="dep" tabindex="0" role="button" aria-sort="none">Dépt</th>
+              <th data-key="distance" tabindex="0" role="button" aria-sort="none">~Rennes</th>
+              <th data-key="type" tabindex="0" role="button" aria-sort="none">Création / type</th>
+              <th data-key="statut" tabindex="0" role="button" aria-sort="none">Statut</th>
+              <th data-key="frequence" tabindex="0" role="button" aria-sort="none">Fréquence</th>
+              <th data-key="events" tabindex="0" role="button" aria-sort="none">Prochaines parties</th>
+              <th data-key="terrain" tabindex="0" role="button" aria-sort="none">Terrain</th>
+              <th data-key="cout" tabindex="0" role="button" aria-sort="none">Coût partie</th>
+              <th>Liens</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="table-block" id="block-nanterre">
+      <h3>Autour de Nanterre</h3>
+      <div class="table-controls">
+        <select id="dep-nanterre" aria-label="Filtrer par département">
+          <option value="">Tous départements</option>
+        </select>
+        <input type="search" id="search-nanterre" placeholder="Rechercher une équipe…" aria-label="Rechercher par nom">
+      </div>
+      <div class="table-scroll">
+        <table id="table-nanterre">
+          <thead>
+            <tr>
+              <th data-key="nom" tabindex="0" role="button" aria-sort="none">Équipe</th>
+              <th data-key="commune" tabindex="0" role="button" aria-sort="none">Lieu</th>
+              <th data-key="dep" tabindex="0" role="button" aria-sort="none">Dépt</th>
+              <th data-key="distance" tabindex="0" role="button" aria-sort="none">≈ Nanterre</th>
+              <th data-key="type" tabindex="0" role="button" aria-sort="none">Type</th>
+              <th data-key="statut" tabindex="0" role="button" aria-sort="none">Statut</th>
+              <th data-key="frequence" tabindex="0" role="button" aria-sort="none">Fréquence</th>
+              <th data-key="events" tabindex="0" role="button" aria-sort="none">Prochaines parties</th>
+              <th data-key="terrain" tabindex="0" role="button" aria-sort="none">Terrain</th>
+              <th data-key="cout" tabindex="0" role="button" aria-sort="none">Coût partie</th>
+              <th>Liens</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner" id="notes-sources">
+    <h2>Notes communes</h2>
+    <ul>
+      <li><code>n.c.</code> = non communiqué / non trouvé en ligne. Lignes « à vérifier » : présence dans les fichiers RNA / annuaires prouvée, mais aucune activité en ligne datée (le web de l'airsoft breton passe surtout par Facebook / Discord privés).</li>
+      <li>L'inventaire ne prétend pas à l'exhaustivité&nbsp;: il reflète ce qui était trouvable en ligne (sources ci-dessous).</li>
+    </ul>
+    <h2 style="margin-top:1.2rem">Sources</h2>
+    <ul id="sources-list"></ul>
+    <p class="warning">⚠️ Site de consultation&nbsp;: vérifiez auprès des organisateurs avant de vous déplacer (inscriptions, tarifs, accès, horaires).</p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="/config.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

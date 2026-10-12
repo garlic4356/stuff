@@ -1,0 +1,1625 @@
+{
+  "meta": {
+    "lastVerified": "2026-10-12",
+    "manualFields": [
+      "cout"
+    ]
+  },
+  "rennes": [
+    {
+      "id": "concept-airsoft",
+      "nom": "Concept Airsoft",
+      "commune": "Iffendic — forêt face au Lac de Trémelin",
+      "dep": "35",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/profile.php?id=100076933087146"
+        },
+        {
+          "texte": "Topic France-Airsoft",
+          "url": "https://www.france-airsoft.fr/forum/index.php?showtopic=219210"
+        }
+      ],
+      "sources": [
+        "https://www.france-airsoft.fr/forum/index.php?showtopic=219210",
+        "https://www.net1901.org/association/CONCEPT-AIRSOFT,1000070547.html"
+      ],
+      "type": "Asso 1901 · 01/03/2021 (W353021572)",
+      "distance": "~30 min",
+      "statutDetail": "dominicale du 19/07/2026 constatée sur la page Facebook (« Conceptairsoft Iffendic », page re-vérifiée le 09/10/2026, publications visibles uniquement connecté) ; topic France-Airsoft en ligne (re-vérifié le 09/10/2026)",
+      "frequence": "~2 week-ends/mois",
+      "prochaines": "Suivantes via Facebook",
+      "terrain": "Forêt + bâtiments (vestiaires, eau, BBQ) · stand 55 m · chrony · recharge HPA/LiPo",
+      "cout": "n.c. (location pack journée dispo)",
+      "events": [
+        {
+          "date": "2026-07-19",
+          "lieu": "Iffendic (Lac de Trémelin)",
+          "note": "Dominicale décontractée (partie passée — preuve d'activité)"
+        }
+      ],
+      "coords": {
+        "lat": 48.1017,
+        "lon": -2.039
+      }
+    },
+    {
+      "id": "triskel-airsoft",
+      "nom": "Triskel Airsoft",
+      "commune": "Marcillé-Robert (parties à Combourg & Mordelles)",
+      "dep": "35",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/triskelair/"
+        },
+        {
+          "texte": "Forum des parties",
+          "url": "https://triskel-airsoft.org/viewforum.php?f=10"
+        }
+      ],
+      "sources": [
+        "https://triskel-airsoft.org/viewforum.php?f=10"
+      ],
+      "type": "Asso 1901 · 05/12/2008 · ex-Foug'R'Soft (~30 actifs)",
+      "distance": "~35–45 min",
+      "statutDetail": "calendrier actif constaté sur le forum des parties (re-vérifié le 09/10/2026) : partie du 31/10/2026 à Combourg (annonce du 04/09, dernier message le 05/10), entretien du terrain à Mordelles le 14/11, « L'Usine de Percy » le 21/11 (réservé aux membres), partie 12/12 à Combourg ; partie du 10/10/2026 annulée",
+      "frequence": "2 samedis/mois",
+      "terrain": "2 sites forêt semi-CQB + Fun Parc (membres)",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-08-29",
+          "lieu": "Mordelles",
+          "note": "Partie tenue — compte-rendu au forum (preuve d'activité)"
+        },
+        {
+          "date": "2026-10-31",
+          "lieu": "Combourg",
+          "note": "Partie ouverte (forêt semi-CQB)"
+        },
+        {
+          "date": "2026-11-14",
+          "lieu": "Mordelles",
+          "note": "Entretien du terrain"
+        },
+        {
+          "date": "2026-11-21",
+          "lieu": "L'Usine de Percy",
+          "note": "Réservé aux membres et sur invitations"
+        },
+        {
+          "date": "2026-12-12",
+          "lieu": "Combourg",
+          "note": ""
+        }
+      ],
+      "coords": {
+        "lat": 47.9439,
+        "lon": -1.4603
+      }
+    },
+    {
+      "id": "cbi-airsoft",
+      "nom": "CBI Airsoft",
+      "commune": "Lassy",
+      "dep": "35",
+      "statut": "ferme",
+      "liens": [
+        {
+          "texte": "Forum CBI",
+          "url": "https://cbi35airsoft.forumactif.org/"
+        }
+      ],
+      "sources": [
+        "https://cbi35airsoft.forumactif.org/"
+      ],
+      "type": "Asso · terrain privé 17 ha",
+      "distance": "~40 min",
+      "statutDetail": "Asso active — terrain fermé (exploitation forestière, chantier participatif)",
+      "frequence": "~1 partie/mois (habituel)",
+      "prochaines": "Réouverture après travaux — partie offerte aux bénévoles, date non fixée",
+      "terrain": "Village + CQB + forêt",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 47.978,
+        "lon": -1.955
+      }
+    },
+    {
+      "id": "panthera-forest",
+      "nom": "Panthera Forest",
+      "commune": "Meillac (Le Bourgneuf)",
+      "dep": "35",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "06 67 37 21 71",
+          "url": "tel:+33667372171"
+        },
+        {
+          "texte": "Site",
+          "url": "https://panthera-forest.wixsite.com/panthera-forest"
+        },
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/panthera.forest/"
+        }
+      ],
+      "sources": [
+        "https://panthera-forest.wixsite.com/panthera-forest/contactez-nous",
+        "https://panthera-forest.wixsite.com/panthera-forest",
+        "https://www.facebook.com/panthera.forest/posts/-dominical-du-dimanche-27-septembre-2026-op-du-samedi-17-au-dimanche-18-octobre-/1758877699399322/"
+      ],
+      "type": "Asso + team",
+      "distance": "~40 min",
+      "frequence": "~1 OP/mois (souvent vacances scol., 1–2 j)",
+      "prochaines": "Dates via Facebook / bandeau du site",
+      "terrain": "2 forêts + zone CQB · terrain ouvert (découverte)",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-17",
+          "lieu": "Le Bourgneuf (Meillac)",
+          "note": "OP 2 jours 17-18 oct."
+        }
+      ],
+      "coords": {
+        "lat": 48.3017,
+        "lon": -1.8636
+      }
+    },
+    {
+      "id": "cyr-airsoft",
+      "nom": "Cyr Airsoft",
+      "commune": "Beignon / Guer",
+      "dep": "56",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "cyrairsoft@gmail.com",
+          "url": "mailto:cyrairsoft@gmail.com"
+        },
+        {
+          "texte": "Site",
+          "url": "https://cyrairsoft.wixsite.com/airsoft-bretagne"
+        },
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/Cyrairsoft/"
+        }
+      ],
+      "sources": [
+        "https://cyrairsoft.wixsite.com/airsoft-bretagne",
+        "https://www.facebook.com/Cyrairsoft/"
+      ],
+      "type": "Asso (©2016)",
+      "distance": "~45–55 min",
+      "statutDetail": "site officiel Wix en ligne (consulté le 12/10/2026 : terrain à Guer, village de combat entre Rennes et Vannes, répliques en location) ; page Facebook « Cyr Airsoft » en ligne (consultée le 12/10/2026, publications visibles uniquement connecté) ; aucune date de partie publique affichée",
+      "frequence": "Jeu régulier adhérents + parties ouvertes",
+      "prochaines": "Via inscriptions site",
+      "terrain": "Village de combat CQB + forêts + plaines · répliques en location",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 47.895,
+        "lon": -2.2064
+      }
+    },
+    {
+      "id": "breizh-special-force",
+      "nom": "Breizh Special Force",
+      "commune": "Pleugueneuc (La Lande Besnard)",
+      "dep": "35",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Fiche RNA",
+          "url": "https://ia-asso.fr/associations/W354007855"
+        },
+        {
+          "texte": "Annuaire entreprises",
+          "url": "https://annuaire-entreprises.data.gouv.fr/entreprise/924995855"
+        }
+      ],
+      "sources": [
+        "https://ia-asso.fr/associations/W354007855",
+        "https://www.societe.com/societe/breizh-special-force-airsoft-924995855.html"
+      ],
+      "type": "Asso 1901 · 29/01/2024 (JO 05/03/2024, SIRET 924 995 855 00013)",
+      "distance": "~1h",
+      "statutDetail": "fiche RNA re-vérifiée le 09/10/2026 (ia-asso.fr — « Breizh Special Force Airsoft », Pleugueneuc) ; page annuaire-entreprises protégée par anti-bot (répond sans afficher la fiche) ; aucune date de partie publique trouvée en ligne",
+      "frequence": "n.c.",
+      "prochaines": "Via leurs réseaux",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 48.3922,
+        "lon": -1.8486
+      }
+    },
+    {
+      "id": "ath-airsoft",
+      "nom": "ATH (Team Heulinoise)",
+      "commune": "La Chapelle-Heulin",
+      "dep": "44",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Site — agenda",
+          "url": "https://ath-airsoft.fr/agenda/"
+        },
+        {
+          "texte": "HelloAsso",
+          "url": "https://www.helloasso.com/associations/ath-airsoft-team-heulinoise"
+        }
+      ],
+      "sources": [
+        "https://ath-airsoft.fr/agenda/",
+        "https://www.helloasso.com/associations/ath-airsoft-team-heulinoise"
+      ],
+      "type": "Asso · bureau de 5 bénévoles · groupes GIL & GOR",
+      "distance": "~1h20–1h30 (limite sud)",
+      "statutDetail": "agenda public re-vérifié le 09/10/2026 (ath-airsoft.fr/agenda) : FLEX 24/10 et 01/11, 100 % ATH (membres) le 07/11, entretien du terrain le 14/11, FLEX 29/11 et 05/12/2026",
+      "frequence": "2 événements/mois (sam./dim. alternés), 30 joueurs max",
+      "terrain": "1 ha · village CQB bois · safe zone",
+      "cout": "10 €/journée (ext.) · 30 €/an illimité",
+      "events": [
+        {
+          "date": "2026-10-24",
+          "lieu": "La Chapelle-Heulin",
+          "note": "Flex — 30 places, billetterie dès le ~09/10"
+        },
+        {
+          "date": "2026-11-01",
+          "lieu": "La Chapelle-Heulin",
+          "note": "Flex"
+        },
+        {
+          "date": "2026-11-07",
+          "lieu": "La Chapelle-Heulin",
+          "note": "Réservé aux membres"
+        },
+        {
+          "date": "2026-11-14",
+          "lieu": "La Chapelle-Heulin",
+          "note": "Entretien du terrain"
+        },
+        {
+          "date": "2026-11-29",
+          "lieu": "La Chapelle-Heulin",
+          "note": ""
+        },
+        {
+          "date": "2026-12-05",
+          "lieu": "La Chapelle-Heulin",
+          "note": ""
+        }
+      ],
+      "coords": {
+        "lat": 47.1325,
+        "lon": -1.2736
+      }
+    },
+    {
+      "id": "real-airsoft",
+      "nom": "REAL Airsoft",
+      "commune": "Pleslin-Trigavou",
+      "dep": "22",
+      "statut": "a_verifier",
+      "liens": [
+        {
+          "texte": "Fiche RNA (6ᵉ R.A.I.D.)",
+          "url": "https://ia-asso.fr/associations/W221002253"
+        }
+      ],
+      "sources": [],
+      "type": "n.c.",
+      "distance": "~50–60 min",
+      "statutDetail": "fiche RNA re-vérifiée le 09/10/2026 (ia-asso.fr — « Real Airsoft Individual Defender (6e R.A.I.D.) », Pleslin-Trigavou) ; aucune preuve d'activité publique récente trouvée",
+      "frequence": "n.c.",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 48.5436,
+        "lon": -1.9553
+      }
+    },
+    {
+      "id": "13eme-section",
+      "nom": "13ᵉ Section (13EME SPA)",
+      "commune": "Plémet",
+      "dep": "22",
+      "statut": "a_verifier",
+      "liens": [
+        {
+          "texte": "Fiche RNA",
+          "url": "https://ia-asso.fr/associations/W224005797"
+        }
+      ],
+      "sources": [],
+      "type": "Asso · 2017",
+      "distance": "~1h15",
+      "statutDetail": "fiche RNA re-vérifiée le 09/10/2026 (ia-asso.fr — « 13Eme Section Plemet Airsoft (13Eme Spa) », Plémet) ; aucune preuve d'activité publique récente trouvée",
+      "frequence": "n.c.",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 48.1814,
+        "lon": -2.5758
+      }
+    },
+    {
+      "id": "confrerie-airsoft-armoricaine",
+      "nom": "Confrérie d'Airsoft Armoricaine",
+      "commune": "Loudéac",
+      "dep": "22",
+      "statut": "a_verifier",
+      "liens": [
+        {
+          "texte": "Fiche RNA",
+          "url": "https://www.net1901.org/association/ASSOCIATION-CONFRERIE-DAIRSOFT-ARMORICAINE,1000111455.html"
+        },
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/100065482536280/"
+        }
+      ],
+      "sources": [
+        "https://www.facebook.com/100065482536280/"
+      ],
+      "type": "Asso (fiche RNA)",
+      "distance": "~1h–1h15",
+      "statutDetail": "fiche RNA (net1901) re-vérifiée le 12/10/2026 ; page Facebook « Confrérie d'airsoft armoricaine - CDA » en ligne (consultée le 12/10/2026, publications visibles uniquement connecté) ; aucune preuve d'activité publique récente trouvée",
+      "frequence": "n.c.",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "coords": null
+    },
+    {
+      "id": "airsoft-paillote",
+      "nom": "Airsoft Paillote",
+      "commune": "La Motte",
+      "dep": "22",
+      "statut": "a_verifier",
+      "liens": [
+        {
+          "texte": "Fiche RNA",
+          "url": "https://assoce.fr/waldec/W224009932/AIRSOFT-PAILLOTE"
+        }
+      ],
+      "sources": [],
+      "type": "Asso · 2020",
+      "distance": "~1h10",
+      "statutDetail": "fiche RNA re-vérifiée le 09/10/2026 (assoce.fr — déclarée le 24/05/2020 à La Motte) ; aucune preuve d'activité publique récente trouvée",
+      "frequence": "n.c.",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 48.2219,
+        "lon": -2.7294
+      }
+    },
+    {
+      "id": "utab",
+      "nom": "UTAB",
+      "commune": "Ploufragan",
+      "dep": "22",
+      "statut": "a_verifier",
+      "liens": [
+        {
+          "texte": "Facebook (groupe)",
+          "url": "https://www.facebook.com/groups/2758025057788158/"
+        },
+        {
+          "texte": "Fiche RNA",
+          "url": "https://www.net1901.org/association/UNITE-TACTIQUE-AIRSOFT-BRIOCHINE,1000078969.html"
+        }
+      ],
+      "sources": [],
+      "type": "Asso · 2021",
+      "distance": "~1h20",
+      "statutDetail": "fiche RNA (net1901) re-vérifiée le 09/10/2026 ; groupe Facebook « U.T.A.B Unité Tactique Airsoft Briochine » en ligne (consulté le 09/10/2026 : association d'airsoft aux alentours de Saint-Brieuc) ; publications non visibles sans connexion",
+      "frequence": "n.c.",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 48.4897,
+        "lon": -2.7619
+      }
+    },
+    {
+      "id": "mayenne-airsoft",
+      "nom": "Mayenne Airsoft",
+      "commune": "Mayenne",
+      "dep": "53",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook (groupe officiel)",
+          "url": "https://www.facebook.com/groups/259751626779/"
+        },
+        {
+          "texte": "HelloAsso",
+          "url": "https://www.helloasso.com/associations/mayenne-airsoft"
+        },
+        {
+          "texte": "Fiche RNA",
+          "url": "https://www.net1901.org/association/MAYENNE-AIRSOFT,136288.html"
+        }
+      ],
+      "sources": [
+        "https://www.helloasso.com/associations/mayenne-airsoft",
+        "https://www.facebook.com/groups/259751626779/",
+        "https://www.net1901.org/association/MAYENNE-AIRSOFT,136288.html"
+      ],
+      "type": "Asso · 2006",
+      "distance": "~1h30 (bord de zone)",
+      "statutDetail": "Billetteries ouvertes sur HelloAsso (re-vérifié le 09/10/2026) : partie dominicale le 11/10/2026 (0 à 15 €) et partie « 20 ans de la Mayenne Airsoft » le 25/10/2026 (5 à 15 €) ; adhésion 2026 en cours (35 €)",
+      "frequence": "n.c.",
+      "prochaines": "Via HelloAsso",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-11",
+          "lieu": "n.c.",
+          "note": "Partie dominicale — billetterie HelloAsso (0 à 15 €)"
+        },
+        {
+          "date": "2026-10-25",
+          "lieu": "n.c.",
+          "note": "Partie « 20 ans de la Mayenne Airsoft » — 5 à 15 € (HelloAsso)"
+        }
+      ],
+      "coords": {
+        "lat": 48.2969,
+        "lon": -0.6125
+      }
+    },
+    {
+      "id": "laval-airsoft-team",
+      "nom": "Laval Airsoft Team",
+      "commune": "Bonchamp-lès-Laval",
+      "dep": "53",
+      "statut": "a_verifier",
+      "liens": [
+        {
+          "texte": "Instagram",
+          "url": "https://www.instagram.com/lavalairsoftteam/"
+        },
+        {
+          "texte": "HelloAsso",
+          "url": "https://www.helloasso.com/associations/laval-airsoft-team"
+        },
+        {
+          "texte": "Fiche RNA",
+          "url": "https://assoce.fr/waldec/W532007909/LAVAL-AIRSOFT-TEAM"
+        }
+      ],
+      "sources": [
+        "http://www.assoce.fr/waldec/W532007909/LAVAL-AIRSOFT-TEAM"
+      ],
+      "type": "Asso · 01/2026 (W532007909)",
+      "distance": "~1h45–2h (hors zone)",
+      "statutDetail": "page HelloAsso active, consultée le 09/10/2026 : aucune billetterie en cours, message « nous sommes en train de mettre en place nos prochaines initiatives » ; aucune partie publique trouvée",
+      "frequence": "n.c.",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 48.0875,
+        "lon": -0.6981
+      }
+    },
+    {
+      "id": "atom-ouest-mayenne",
+      "nom": "ATOM Ouest Mayenne",
+      "commune": "Loiron-Ruillé",
+      "dep": "53",
+      "statut": "a_verifier",
+      "liens": [
+        {
+          "texte": "Facebook (groupe)",
+          "url": "https://www.facebook.com/groups/452077255486919/"
+        },
+        {
+          "texte": "Instagram",
+          "url": "https://www.instagram.com/airsoft_team_ouest_mayenne/"
+        },
+        {
+          "texte": "Fiche RNA",
+          "url": "https://www.net1901.org/association/AIRSOFT-TEAM-OUEST-MAYENNE-A.T.O.M.,1408360.html"
+        }
+      ],
+      "sources": [
+        "https://www.facebook.com/airsoftteamouestmayenne/",
+        "https://www.facebook.com/groups/452077255486919/",
+        "https://www.instagram.com/airsoft_team_ouest_mayenne/",
+        "https://www.net1901.org/association/AIRSOFT-TEAM-OUEST-MAYENNE-A.T.O.M.,1408360.html"
+      ],
+      "type": "Asso (fiche RNA)",
+      "distance": "~1h45 (hors zone)",
+      "statutDetail": "page Facebook AirsoftTeamOuestMayenne indisponible au public (consultée le 12/10/2026 : contenu restreint) ; groupe Facebook « Airsoft Team Ouest Mayenne » et profil Instagram @airsoft_team_ouest_mayenne en ligne (consultés le 12/10/2026, publications visibles uniquement connecté) ; fiche RNA (net1901) re-vérifiée le 12/10/2026 ; aucune preuve d'activité publique récente datée",
+      "frequence": "n.c.",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 48.2969,
+        "lon": -0.6125
+      }
+    },
+    {
+      "id": "caen-airsoft-team",
+      "nom": "Caen Airsoft Team",
+      "commune": "Ouézy (terrain CQB « The Store », 1 rue Auguste Lemonnier)",
+      "dep": "14",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "HelloAsso",
+          "url": "https://www.helloasso.com/associations/caen-airsoft-team"
+        },
+        {
+          "texte": "Site",
+          "url": "https://caenairsoftteam.e-monsite.com/"
+        },
+        {
+          "texte": "Fiche RNA",
+          "url": "https://assoce.fr/waldec/W142002276/ASSOCIATION-CAEN-AIRSOFT-TEAM"
+        }
+      ],
+      "sources": [
+        "https://www.helloasso.com/associations/caen-airsoft-team",
+        "https://caenairsoftteam.e-monsite.com/",
+        "https://assoce.fr/waldec/W142002276/ASSOCIATION-CAEN-AIRSOFT-TEAM",
+        "https://spawnforge.fr/terrains/departement/14-calvados",
+        "https://places-airsoft.github.io/"
+      ],
+      "type": "Asso 1901 · créée 11/10/2006 (W142002276, SIRET 847 646 429 00021)",
+      "distance": "~1h30–1h45",
+      "statutDetail": "Billetteries publiques ouvertes sur HelloAsso (re-vérifié le 09/10/2026) : « Partie publique du 18 Octobre » (10 €) et « Partie publique du 1er Novembre » (10 €) ; terrain CQB « The Store » (Ouézy) toujours annoncé par l'asso — la perte du terrain rapportée début octobre (info propriétaire, non re-confirmable) est contredite par ces annonces publiques",
+      "frequence": "n.c.",
+      "prochaines": "Via HelloAsso (billetteries)",
+      "terrain": "CQB en bâtiment fortifié (« The Store ») · 72 places",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-18",
+          "lieu": "Ouézy (The Store)",
+          "note": "Partie publique — 10 € (billetterie HelloAsso)"
+        },
+        {
+          "date": "2026-11-01",
+          "lieu": "Ouézy (The Store)",
+          "note": "Partie publique — 10 € (billetterie HelloAsso)"
+        }
+      ],
+      "coords": {
+        "lat": 49.0795,
+        "lon": -0.1007
+      }
+    },
+    {
+      "id": "tactical-air-squadron",
+      "nom": "Tactical Air Squadron (TAS)",
+      "commune": "Argentan — terrains récurrents : Le Breuil/Caligny, Woodcamp (Flers), Putanges-le-Lac, Lonlay-l'Abbaye",
+      "dep": "61",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/TacticalAirSquadron"
+        },
+        {
+          "texte": "Site (planning annuel)",
+          "url": "https://tacticalairsquadron.e-monsite.com/"
+        },
+        {
+          "texte": "Fiche RNA",
+          "url": "https://assoce.fr/waldec/W612002807/TACTICAL-AIR-SQUADRON"
+        }
+      ],
+      "sources": [
+        "https://assoce.fr/waldec/W612002807/TACTICAL-AIR-SQUADRON",
+        "https://airsoft-xp-proxy.vercel.app/api/parties",
+        "https://tacticalairsquadron.e-monsite.com/"
+      ],
+      "type": "Asso 1901 · créée 23/11/2015 (W612002807) · ~15 actifs",
+      "distance": "~2h–2h15 de Rennes · ~25 min d'Alençon",
+      "statutDetail": "Calendrier actif constaté sur Airsoft XP (09/10/2026) : dominicale « C'est reparti ! » 18/10/2026 à Caligny (10 €), OP Halloween 14/11 à Woodcamp Flers, OP Conquête 29/11 à Putanges",
+      "frequence": "tous les 15 jours le dimanche + OP",
+      "prochaines": "Via leur page Facebook",
+      "terrain": "Bois aménagé (tranchées, miradors, caravane) à Caligny · sites partenaires Orne",
+      "cout": "10–15 €/partie",
+      "events": [
+        {
+          "date": "2026-10-18",
+          "lieu": "Le Breuil, Caligny (61)",
+          "note": "Dominicale « C'est reparti ! » — 35 joueurs max, 10 € (Airsoft XP)"
+        },
+        {
+          "date": "2026-11-14",
+          "lieu": "Woodcamp, Flers (61)",
+          "note": "OP Halloween — jour + pénombre + nocturne, 30 joueurs, 15 €"
+        },
+        {
+          "date": "2026-11-29",
+          "lieu": "Putanges-le-Lac (61)",
+          "note": "OP Conquête avec Énergie Paintball — 40 joueurs, 15 €"
+        }
+      ],
+      "coords": null
+    },
+    {
+      "id": "72eme-tac",
+      "nom": "72ème TAC (Troupe Airsoft Céranaise)",
+      "commune": "Cérans-Foulletourte (terrain privé 7 ha, 35 Chem. des Landes)",
+      "dep": "72",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook (groupe ouvert)",
+          "url": "https://www.facebook.com/groups/867132416778498"
+        },
+        {
+          "texte": "HelloAsso",
+          "url": "https://www.helloasso.com/associations/72eme-tac"
+        },
+        {
+          "texte": "Fiche RNA",
+          "url": "https://assoce.fr/waldec/W721001003/72-EME-TAC--TROUPE-AIRSOFT-CERANAISE-"
+        }
+      ],
+      "sources": [
+        "https://assoce.fr/waldec/W721001003/72-EME-TAC--TROUPE-AIRSOFT-CERANAISE-",
+        "https://www.helloasso.com/associations/72eme-tac",
+        "https://www.airsoft-xp.com/parties/partie-72eme-tac",
+        "https://repertoiredesassociations.fr/france/pays-de-la-loire/sarthe/cerans-foulletourte/72-eme-tac--troupe-airsoft-ceranaise/w721001003.html"
+      ],
+      "type": "Asso 1901 · créée 03/08/2012 (W721001003, SIRET 85215809600019) · 28 actifs · affiliée FédéraGN/MDF",
+      "distance": "~1h15 du Mans · ~2h15 de Rennes",
+      "statutDetail": "Dominicale du 15/02/2026 listée sur Airsoft XP (40 joueurs, 10 €, 35 Chem. des Landes) ; page HelloAsso et groupe Facebook « 72ème TAC OFFICIEL » actifs ; partie affichée le 08/03/2026",
+      "frequence": "~1 dimanche + ~1 samedi/mois",
+      "prochaines": "Via leur groupe Facebook / formulaire d'inscription",
+      "terrain": "Terrain privé 7 ha : forêt + constructions bois à étages (mixte)",
+      "cout": "5 € joueur équipé (partie découverte, assurance incluse)",
+      "events": [
+        {
+          "date": "2026-02-15",
+          "lieu": "Cérans-Foulletourte",
+          "note": "Dominicale — 40 joueurs, 10 € (Airsoft XP)"
+        }
+      ],
+      "coords": {
+        "lat": 47.825,
+        "lon": 0.0938
+      }
+    },
+    {
+      "id": "fma-vaas",
+      "nom": "Full Metal Airsoft (FMA)",
+      "commune": "Vaas (La Butte aux Loups)",
+      "dep": "72",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook (groupe)",
+          "url": "https://www.facebook.com/groups/fullmetalairsoft"
+        },
+        {
+          "texte": "Fiche SpawnForge",
+          "url": "https://spawnforge.fr/terrains/fma-full-metal-airsoft-vaas/"
+        }
+      ],
+      "sources": [
+        "https://spawnforge.fr/terrains/fma-full-metal-airsoft-vaas/",
+        "https://airsoft-xp-proxy.vercel.app/api/parties"
+      ],
+      "type": "Association",
+      "distance": "~1h30 du Mans · ~2h45 de Rennes",
+      "statutDetail": "Dominicales régulières constatées : 12/04/2026 (Pâques), 30/08/2026 sur Airsoft XP (5 €, 20 joueurs) ; fiche SpawnForge (06/07/2026)",
+      "frequence": "Dominicale hebdomadaire annoncée (SpawnForge)",
+      "prochaines": "Via leur groupe Facebook",
+      "terrain": "Forêt « La Butte aux Loups » · 2 J, freeze sous 5 m < 1 J · location 15 €",
+      "cout": "5 €/dominicale (ext.) · location pack 15 €",
+      "events": [
+        {
+          "date": "2026-08-30",
+          "lieu": "La Butte aux Loups, Vaas",
+          "note": "Dominicale FMA — 20 joueurs, 5 € (Airsoft XP)"
+        }
+      ],
+      "coords": {
+        "lat": 47.6945,
+        "lon": 0.3176
+      }
+    },
+    {
+      "id": "tag14-vire",
+      "nom": "Tactical Airsoft Group 14 (TAG14)",
+      "commune": "Vire-Normandie (6 rue Charles Drouet) — secteurs Tinchebray-Bocage",
+      "dep": "14",
+      "statut": "a_verifier",
+      "liens": [
+        {
+          "texte": "Fiche RNA",
+          "url": "https://assoce.fr/waldec/W144004478/ASSOCIATION-TACTICAL-AIRSOFT-GROUP-14"
+        },
+        {
+          "texte": "HelloAsso",
+          "url": "https://www.helloasso.com/associations/association-tactical-airsoft-group-14"
+        },
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/p/Association-Tactical-airsoft-group-14-100083713411623/"
+        }
+      ],
+      "sources": [
+        "https://assoce.fr/waldec/W144004478/ASSOCIATION-TACTICAL-AIRSOFT-GROUP-14",
+        "https://annuaire-entreprises.data.gouv.fr/entreprise/909757288",
+        "https://gesad.ffairsoft.org/team/listing/directory",
+        "https://www.helloasso.com/associations/association-tactical-airsoft-group-14",
+        "https://www.facebook.com/p/Association-Tactical-airsoft-group-14-100083713411623/"
+      ],
+      "type": "Asso 1901 · créée 26/09/2019 (W144004478, SIRET 909757288) · 10 membres · assurance FFA",
+      "distance": "~2h45 de Rennes · ~30 min d'Alençon",
+      "statutDetail": "annuaire FFA re-vérifié le 12/10/2026 (pages clubs visibles après connexion) ; page HelloAsso sans action en cours (consultée le 12/10/2026) ; page Facebook « Association Tactical airsoft group 14 | Tinchebray-Bocage » en ligne, 35 abonnés (consultée le 12/10/2026) ; aucune date de partie publique récente trouvée",
+      "frequence": "n.c.",
+      "prochaines": "n.c.",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "coords": null
+    },
+    {
+      "id": "airsoft-zone-clecy",
+      "nom": "Airsoft Zone",
+      "commune": "Clécy (La Basse Bigne) — Suisse Normande",
+      "dep": "14",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/Airsoft.Zone.14"
+        },
+        {
+          "texte": "Fiche annuaire airsoft.fr",
+          "url": "https://www.airsoft.fr/map"
+        }
+      ],
+      "sources": [
+        "https://www.facebook.com/Airsoft.Zone.14",
+        "https://www.airsoft.fr/map",
+        "https://tacticalairsquadron.e-monsite.com/pages/terrains-chez-les-copains/airsoft-zone-.html"
+      ],
+      "type": "Entreprise (EIRL) · terrain commercial",
+      "distance": "~2h30 de Rennes · ~35 min de Caen",
+      "statutDetail": "page Facebook « Airsoft Zone | Clécy » active (consultée le 09/10/2026 : « terrain familial d'airsoft au cœur de la Suisse Normande », 1 972 abonnés) ; page « terrains chez les copains » du site TAS re-vérifiée le 09/10/2026 ; référencé sur airsoft.fr",
+      "frequence": "week-ends + sur réservation",
+      "prochaines": "Via Facebook (07 81 33 68 58)",
+      "terrain": "CQB extérieur familial (Suisse Normande)",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 48.9079,
+        "lon": -0.4931
+      }
+    }
+  ],
+  "nanterre": [
+    {
+      "id": "ama-france",
+      "nom": "AMA France",
+      "commune": "Meulan-en-Yvelines (« Mercurow ») & Lainville-en-Vexin (« La Tanière »)",
+      "dep": "78 / 95",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Site",
+          "url": "https://www.amafrance.fr/"
+        },
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/AMAFranceAirsoft"
+        },
+        {
+          "texte": "Tracker des places",
+          "url": "https://places-airsoft.github.io/"
+        }
+      ],
+      "sources": [
+        "https://places-airsoft.github.io/"
+      ],
+      "type": "Société organisatrice (2 sites)",
+      "distance": "~40–50 min",
+      "statutDetail": "très active — calendrier re-vérifié le 09/10/2026 via le tracker places-airsoft (maj 21h11) : brocante Mercurow le 10/10, GBBR/AEP le 11/10, dominicale La Tanière le 18/10, partie classique le 25/10, OP « Souffle du Dragon » à La Tanière le 20/03/2027",
+      "frequence": "~3–4 évts/mois",
+      "terrain": "2 sites : Mercurow (vallée de la Seine) / La Tanière (forêt du Vexin)",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-10",
+          "lieu": "Mercurow (Meulan-en-Yvelines)",
+          "note": "Brocante"
+        },
+        {
+          "date": "2026-10-11",
+          "lieu": "Mercurow",
+          "note": "GBBR/AEP"
+        },
+        {
+          "date": "2026-10-18",
+          "lieu": "La Tanière (Lainville-en-Vexin)",
+          "note": "Partie dominicale"
+        },
+        {
+          "date": "2026-10-25",
+          "lieu": "Mercurow",
+          "note": ""
+        },
+        {
+          "date": "2027-03-20",
+          "lieu": "La Tanière (Lainville-en-Vexin)",
+          "note": "OP « Souffle du Dragon » (inscriptions bientôt en ligne)"
+        }
+      ],
+      "coords": {
+        "lat": 49.0256,
+        "lon": 1.9067
+      }
+    },
+    {
+      "id": "delta-airsoft-95",
+      "nom": "Delta Airsoft 95",
+      "commune": "Bruyères-sur-Oise",
+      "dep": "95",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/DeltaAirsoft95/"
+        },
+        {
+          "texte": "HelloAsso",
+          "url": "https://www.helloasso.com/associations/delta-airsoft-95"
+        },
+        {
+          "texte": "Fiche SpawnForge 95",
+          "url": "https://spawnforge.fr/terrains/"
+        }
+      ],
+      "sources": [
+        "https://places-airsoft.github.io/",
+        "https://spawnforge.fr/terrains/"
+      ],
+      "type": "Orga + terrain",
+      "distance": "~50–60 min",
+      "statutDetail": "nocturnes inclus — tracker places-airsoft (re-vérifié le 09/10/2026, maj 21h11) : « AIRSOFT SILO 3.0 » le 11/10 et nocturne Halloween « SILO 2.0 » le 31/10/2026 (orga Delta Unit)",
+      "frequence": "~2/mois",
+      "terrain": "Catacombes de Laigneville (60) — CQB souterrain",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-11",
+          "lieu": "Catacombes de Laigneville",
+          "note": "« Silo 3.0 » — organisée par Delta Airsoft 95 (tracker places-airsoft)"
+        },
+        {
+          "date": "2026-10-31",
+          "lieu": "Catacombes de Laigneville",
+          "note": "Nocturne Halloween « Silo 2.0 » — orga Delta (tracker places-airsoft)"
+        }
+      ],
+      "coords": {
+        "lat": 49.1444,
+        "lon": 2.3831
+      }
+    },
+    {
+      "id": "alpha-unit-aincourt",
+      "nom": "Alpha Unit — Sanatorium d'Aincourt",
+      "commune": "Aincourt",
+      "dep": "95",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "SpawnForge 95",
+          "url": "https://spawnforge.fr/terrains/"
+        }
+      ],
+      "sources": [
+        "https://spawnforge.fr/terrains/"
+      ],
+      "type": "Orga sur site privé",
+      "distance": "~45–50 min",
+      "statutDetail": "tracker places-airsoft (re-vérifié le 09/10/2026, maj 21h11) : « AIRSOFT SANATORIUM 18/10/2026 (orga Alpha Unit) » ; référencée sur SpawnForge 95",
+      "frequence": "~1+/mois",
+      "terrain": "Sanatorium d'Aincourt — 13 ha, bâti désaffecté, très immersif",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-18",
+          "lieu": "Sanatorium d'Aincourt",
+          "note": "OP Sanatorium (dimanche)"
+        }
+      ],
+      "coords": {
+        "lat": 49.0736,
+        "lon": 1.7639
+      }
+    },
+    {
+      "id": "max2joules",
+      "nom": "Max2Joules (M2J)",
+      "commune": "IDF (lieux variables)",
+      "dep": "IDF",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Tracker des places",
+          "url": "https://places-airsoft.github.io/"
+        }
+      ],
+      "sources": [
+        "https://places-airsoft.github.io/"
+      ],
+      "type": "Équipe / organisateur",
+      "distance": "n.c.",
+      "statutDetail": "tracker places-airsoft (re-vérifié le 09/10/2026, maj 21h11) : sessions confirmées le dimanche 18/10 et le samedi 24/10/2026",
+      "frequence": "~2–3/mois",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-10",
+          "lieu": "n.c. (IDF)",
+          "note": "Samedi"
+        },
+        {
+          "date": "2026-10-18",
+          "lieu": "n.c. (IDF)",
+          "note": "Dimanche"
+        },
+        {
+          "date": "2026-10-24",
+          "lieu": "n.c. (IDF)",
+          "note": "Samedi"
+        }
+      ],
+      "coords": null
+    },
+    {
+      "id": "tat",
+      "nom": "TAT",
+      "commune": "IDF",
+      "dep": "IDF",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Tracker des places",
+          "url": "https://places-airsoft.github.io/"
+        }
+      ],
+      "sources": [
+        "https://places-airsoft.github.io/"
+      ],
+      "type": "Équipe / organisateur",
+      "distance": "n.c.",
+      "statutDetail": "tracker places-airsoft (re-vérifié le 09/10/2026, maj 21h11) : dominicales confirmées les 18/10, 01/11, 15/11, 29/11 et 13/12/2026",
+      "frequence": "bimensuel (dimanches en alternance)",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-18",
+          "lieu": "n.c. (IDF)",
+          "note": "Dimanche"
+        },
+        {
+          "date": "2026-11-01",
+          "lieu": "n.c. (IDF)",
+          "note": "Dimanche"
+        },
+        {
+          "date": "2026-11-15",
+          "lieu": "n.c. (IDF)",
+          "note": "Dimanche"
+        },
+        {
+          "date": "2026-11-29",
+          "lieu": "n.c. (IDF)",
+          "note": "Dimanche"
+        },
+        {
+          "date": "2026-12-13",
+          "lieu": "n.c. (IDF)",
+          "note": "Dimanche"
+        }
+      ],
+      "coords": null
+    },
+    {
+      "id": "bratva",
+      "nom": "Bratva",
+      "commune": "IDF",
+      "dep": "IDF",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Tracker des places",
+          "url": "https://places-airsoft.github.io/"
+        }
+      ],
+      "sources": [
+        "https://places-airsoft.github.io/"
+      ],
+      "type": "Équipe",
+      "distance": "n.c.",
+      "statutDetail": "tracker places-airsoft (re-vérifié le 09/10/2026, maj 21h11) : partie confirmée le 11/10/2026",
+      "frequence": "~1/mois",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-11",
+          "lieu": "n.c. (IDF)",
+          "note": ""
+        }
+      ],
+      "coords": null
+    },
+    {
+      "id": "tankthieves",
+      "nom": "TankThieves (NewCastle)",
+      "commune": "IDF (site « NewCastle »)",
+      "dep": "IDF",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Tracker des places",
+          "url": "https://places-airsoft.github.io/"
+        }
+      ],
+      "sources": [
+        "https://places-airsoft.github.io/"
+      ],
+      "type": "Équipe",
+      "distance": "n.c.",
+      "statutDetail": "tracker places-airsoft (re-vérifié le 09/10/2026, maj 21h11) : partie sur NewCastle confirmée le 25/10/2026",
+      "frequence": "~1/mois",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-25",
+          "lieu": "NewCastle",
+          "note": "Dimanche"
+        }
+      ],
+      "coords": null
+    },
+    {
+      "id": "afba",
+      "nom": "AFBA",
+      "commune": "IDF",
+      "dep": "IDF",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Tracker des places",
+          "url": "https://places-airsoft.github.io/"
+        }
+      ],
+      "sources": [
+        "https://places-airsoft.github.io/"
+      ],
+      "type": "Asso",
+      "distance": "n.c.",
+      "statutDetail": "tracker places-airsoft (re-vérifié le 09/10/2026, maj 21h11) : dominicale confirmée le 18/10/2026",
+      "frequence": "~1/mois",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-18",
+          "lieu": "n.c. (IDF)",
+          "note": ""
+        }
+      ],
+      "coords": null
+    },
+    {
+      "id": "r-soft78",
+      "nom": "R-Soft78",
+      "commune": "Guernes",
+      "dep": "78",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/Rsoft78/"
+        },
+        {
+          "texte": "HelloAsso",
+          "url": "https://www.helloasso.com/associations/r-soft78"
+        },
+        {
+          "texte": "Fiche terrain SpawnForge",
+          "url": "https://spawnforge.fr/terrains/r-soft78-guernes/"
+        }
+      ],
+      "sources": [
+        "https://spawnforge.fr/terrains/",
+        "https://spawnforge.fr/terrains/r-soft78-guernes/",
+        "https://www.helloasso.com/associations/r-soft78",
+        "https://www.facebook.com/Rsoft78/"
+      ],
+      "type": "Club / asso",
+      "distance": "~40–45 min",
+      "statutDetail": "Adhésion annuelle ouverte sur HelloAsso (65 €, du 02/03/2026 au 28/02/2027, consultée le 12/10/2026) ; fiche terrain dédiée SpawnForge consultée le 12/10/2026 ; accès aux parties « selon dates éditées », contact via page Facebook @R-soft78",
+      "frequence": "n.c.",
+      "prochaines": "Dates des parties via page Facebook",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 49.0283,
+        "lon": 1.7644
+      }
+    },
+    {
+      "id": "rush-airsoft-75",
+      "nom": "Rush Airsoft 75",
+      "commune": "Flins-sur-Seine",
+      "dep": "78",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Site officiel",
+          "url": "https://www.airsoft75.com/index.html"
+        },
+        {
+          "texte": "Fiche terrain SpawnForge",
+          "url": "https://spawnforge.fr/terrains/rush-airsoft-75-flins/"
+        }
+      ],
+      "sources": [
+        "https://www.airsoft75.com/index.html",
+        "https://spawnforge.fr/terrains/",
+        "https://spawnforge.fr/terrains/rush-airsoft-75-flins/"
+      ],
+      "type": "Terrain commercial d'airsoft",
+      "distance": "~35–40 min",
+      "statutDetail": "Site officiel airsoft75.com en ligne (consulté le 12/10/2026 : réservations par téléphone, sessions adultes/enfants et journées sociétés) ; fiche SpawnForge dédiée « terrain 30 ha à Flins » (mise à jour 07/09/2026, consultée le 12/10/2026)",
+      "frequence": "n.c.",
+      "prochaines": "Sessions sur réservation via le site officiel",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 48.9836,
+        "lon": 1.8794
+      }
+    },
+    {
+      "id": "wild-trigger-new-agency",
+      "nom": "Wild Trigger / Trigger Games - New Agency",
+      "commune": "Nanterre",
+      "dep": "92",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Trigger Games (réservations)",
+          "url": "https://trigger-games.fr/reservations"
+        },
+        {
+          "texte": "DTG - New Agency (Trigger Games)",
+          "url": "https://www.dtg-airsoft.com/terrain-airsoft-new-agency-wild-trigger-games-nanterre"
+        }
+      ],
+      "sources": [
+        "https://trigger-games.fr/reservations",
+        "https://www.dtg-airsoft.com/terrain-airsoft-new-agency-wild-trigger-games-nanterre"
+      ],
+      "type": "Terrain / organisateur",
+      "distance": "~30–40 min",
+      "statutDetail": "Calendrier Trigger Games consulté le 09/10/2026 : sessions N.A (New Agency) chaque samedi de novembre–décembre 2026",
+      "frequence": "n.c.",
+      "prochaines": "Voir calendrier / réservations sur Trigger Games",
+      "terrain": "New Agency - CQB (immeuble de bureaux, parking souterrain, 240 places)",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-11-07",
+          "lieu": "New Agency (Nanterre)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-11-14",
+          "lieu": "New Agency (Nanterre)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-11-21",
+          "lieu": "New Agency (Nanterre)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-11-28",
+          "lieu": "New Agency (Nanterre)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-12-05",
+          "lieu": "New Agency (Nanterre)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        }
+      ],
+      "coords": {
+        "lat": 48.8887,
+        "lon": 2.2092
+      }
+    },
+    {
+      "id": "trigger-games-office-guyancourt",
+      "nom": "Wild Trigger / Trigger Games - Office",
+      "commune": "Guyancourt",
+      "dep": "78",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Trigger Games (réservations)",
+          "url": "https://trigger-games.fr/reservations"
+        },
+        {
+          "texte": "DTG - Office (Trigger Games)",
+          "url": "https://www.dtg-airsoft.com/terrain-airsoft-new-office-wild-trigger-games-guyancourt"
+        }
+      ],
+      "sources": [
+        "https://trigger-games.fr/reservations",
+        "https://www.dtg-airsoft.com/terrain-airsoft-new-office-wild-trigger-games-guyancourt"
+      ],
+      "type": "Terrain / organisateur",
+      "distance": "~40–50 min",
+      "statutDetail": "Géré par Trigger Games (ex Wild Trigger). Calendrier Trigger Games consulté le 09/10/2026 : pas de session « Office » listée oct.–déc. 2026 (terrain Palm voisin actif).",
+      "frequence": "n.c.",
+      "prochaines": "Voir calendrier / réservations sur Trigger Games",
+      "terrain": "Office - CQB (4 étages, parkings)",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 48.7758,
+        "lon": 2.0928
+      }
+    },
+    {
+      "id": "trigger-games-home-rueil-malmaison",
+      "nom": "Wild Trigger / Trigger Games - Home",
+      "commune": "Rueil-Malmaison",
+      "dep": "92",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Trigger Games (réservations)",
+          "url": "https://trigger-games.fr/reservations"
+        },
+        {
+          "texte": "DTG - Home (Trigger Games)",
+          "url": "https://www.dtg-airsoft.com/terrain-airsoft-sweet-home-wild-trigger-games-rueil-malmaison"
+        }
+      ],
+      "sources": [
+        "https://trigger-games.fr/reservations",
+        "https://www.dtg-airsoft.com/terrain-airsoft-sweet-home-wild-trigger-games-rueil-malmaison"
+      ],
+      "type": "Terrain / organisateur",
+      "distance": "~30–40 min",
+      "statutDetail": "Calendrier Trigger Games consulté le 09/10/2026 : sessions Home quasi chaque week-end oct.–déc. 2026",
+      "frequence": "n.c.",
+      "prochaines": "Voir calendrier / réservations sur Trigger Games",
+      "terrain": "Home - Ultra CQB",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-04",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-10-10",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-10-18",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-10-25",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-10-31",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games + Survival Zombie (calendrier réservations)"
+        },
+        {
+          "date": "2026-11-01",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-11-08",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-11-15",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-11-22",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-11-29",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-12-06",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-12-13",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-12-20",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-12-27",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        }
+      ],
+      "coords": {
+        "lat": 48.876,
+        "lon": 2.196
+      }
+    },
+    {
+      "id": "trigger-games-center-buc",
+      "nom": "Wild Trigger / Trigger Games - Center",
+      "commune": "Buc",
+      "dep": "78",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Trigger Games (réservations)",
+          "url": "https://trigger-games.fr/reservations"
+        },
+        {
+          "texte": "DTG - Wild Trigger / Trigger Games (Trigger Games)",
+          "url": "https://www.dtg-airsoft.com/terrain-airsoft-enduring-center-wild-trigger-games-buc/"
+        }
+      ],
+      "sources": [
+        "https://trigger-games.fr/reservations",
+        "https://www.dtg-airsoft.com/terrain-airsoft-enduring-center-wild-trigger-games-buc/"
+      ],
+      "type": "Terrain / organisateur",
+      "distance": "~45–55 min",
+      "statutDetail": "Calendrier Trigger Games consulté le 09/10/2026 : sessions Center les 11/10, 15/11, 13/12/2026 (fort de Buc, 25 €)",
+      "frequence": "~1 dim./mois",
+      "prochaines": "Voir calendrier / réservations sur Trigger Games",
+      "terrain": "Center (ex Enduring) - ancien fort militaire 14 ha, CQB & forêt, 60 places",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-11",
+          "lieu": "Center (Buc)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-11-15",
+          "lieu": "Center (Buc)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-12-13",
+          "lieu": "Center (Buc)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        }
+      ],
+      "coords": {
+        "lat": 48.7693,
+        "lon": 2.1127
+      }
+    },
+    {
+      "id": "trigger-games-editor-corbeil",
+      "nom": "Wild Trigger / Trigger Games - The Editor",
+      "commune": "Corbeil-Essonnes",
+      "dep": "91",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Trigger Games (réservations)",
+          "url": "https://trigger-games.fr/reservations"
+        },
+        {
+          "texte": "DTG - Wild Trigger / Trigger Games (Trigger Games)",
+          "url": "https://www.dtg-airsoft.com/terrain-airsoft-editor-publisher-wild-trigger-games-corbeil-essonnes/"
+        }
+      ],
+      "sources": [
+        "https://trigger-games.fr/reservations",
+        "https://www.dtg-airsoft.com/terrain-airsoft-editor-publisher-wild-trigger-games-corbeil-essonnes/"
+      ],
+      "type": "Terrain / organisateur",
+      "distance": "~50–60 min",
+      "statutDetail": "Calendrier Trigger Games consulté le 09/10/2026 : session The Editor le 25/10/2026 (4 avenue Creté, Corbeil-Essonnes, 25 €)",
+      "frequence": "~1 dim./mois",
+      "prochaines": "Voir calendrier / réservations sur Trigger Games",
+      "terrain": "The Editor (ex Publisher) - ancienne usine industrielle 5 ha, CQB urbex, 150 places",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-25",
+          "lieu": "The Editor (Corbeil-Essonnes)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        }
+      ],
+      "coords": {
+        "lat": 48.6138,
+        "lon": 2.4818
+      }
+    },
+    {
+      "id": "trigger-games-palm-guyancourt",
+      "nom": "Wild Trigger / Trigger Games - Palm",
+      "commune": "Guyancourt",
+      "dep": "78",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Trigger Games (réservations)",
+          "url": "https://trigger-games.fr/reservations"
+        },
+        {
+          "texte": "Trigger Games - fiche Palm",
+          "url": "https://trigger-games.fr/produit/palm-4/"
+        }
+      ],
+      "sources": [
+        "https://trigger-games.fr/reservations",
+        "https://trigger-games.fr/produit/palm-4/"
+      ],
+      "type": "Terrain / organisateur",
+      "distance": "~40–50 min",
+      "statutDetail": "Calendrier Trigger Games consulté le 09/10/2026 : sessions Palm les 28/11 et 26/12/2026 (25 €)",
+      "frequence": "~1–2 sam./mois",
+      "prochaines": "Voir calendrier / réservations sur Trigger Games",
+      "terrain": "Palm - Ultra CQB (bâtiment 1 ha, 4 étages + 2 niveaux de sous-sol, ex-hôtel), rue James Joule",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-11-28",
+          "lieu": "Palm (Guyancourt)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-12-26",
+          "lieu": "Palm (Guyancourt)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        }
+      ],
+      "coords": {
+        "lat": 48.7859,
+        "lon": 2.0545
+      }
+    },
+    {
+      "id": "trigger-games-firm-clamart",
+      "nom": "Wild Trigger / Trigger Games - Firm",
+      "commune": "Clamart",
+      "dep": "92",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Trigger Games (réservations)",
+          "url": "https://trigger-games.fr/reservations"
+        },
+        {
+          "texte": "Trigger Games - fiche Firm",
+          "url": "https://trigger-games.fr/produit/firm-23/"
+        }
+      ],
+      "sources": [
+        "https://trigger-games.fr/reservations",
+        "https://trigger-games.fr/produit/firm-23/"
+      ],
+      "type": "Terrain / organisateur",
+      "distance": "~35–45 min",
+      "statutDetail": "Calendrier Trigger Games consulté le 09/10/2026 : sessions Firm + nocturne 10/10, puis 11/10, 17/10/2026 (22 €)",
+      "frequence": "~2–3 sam./mois (+ nocturnes)",
+      "prochaines": "Voir calendrier / réservations sur Trigger Games",
+      "terrain": "Firm - CQB (immeuble de bureaux + parking souterrain multi-niveaux)",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-10",
+          "lieu": "Firm (Clamart)",
+          "note": "Nocturne (calendrier réservations)"
+        },
+        {
+          "date": "2026-10-10",
+          "lieu": "Firm (Clamart)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-10-11",
+          "lieu": "Firm (Clamart)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        },
+        {
+          "date": "2026-10-17",
+          "lieu": "Firm (Clamart)",
+          "note": "Session Trigger Games (calendrier réservations)"
+        }
+      ],
+      "coords": {
+        "lat": 48.8015,
+        "lon": 2.2598
+      }
+    },
+    {
+      "id": "gis27-airsoft",
+      "nom": "GIS 27 (Groupe d'Intervention Spécialisée)",
+      "commune": "Gisors (terrain forêt, route de Paris)",
+      "dep": "27",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Site",
+          "url": "https://associationgis27.wixsite.com/association-gis-27"
+        },
+        {
+          "texte": "Fiche RNA",
+          "url": "https://annuaire-entreprises.data.gouv.fr/entreprise/799000369"
+        }
+      ],
+      "sources": [
+        "https://associationgis27.wixsite.com/association-gis-27",
+        "https://annuaire-entreprises.data.gouv.fr/entreprise/799000369",
+        "https://www.airsoft-xp.com/parties/nocturne-gis27",
+        "https://spawnforge.fr/terrains/departement/27-eure"
+      ],
+      "type": "Asso 1901 · créée 28/01/2013 (W271001485, SIRET 799 000 369 00014)",
+      "distance": "~1h–1h15",
+      "statutDetail": "site Wix re-vérifié le 09/10/2026 (« nous vous accueillons tous les 15 jours le dimanche sur notre terrain », route de Paris à Gisors) ; dominicale du 04/10/2026 listée sur Airsoft XP (10 €, 30 joueurs) ; nocturne « Trésor des Templiers » en juin 2026",
+      "frequence": "tous les 15 jours le dimanche",
+      "prochaines": "Dominicales tous les 15 jours — dates via site / réseaux",
+      "terrain": "Forêt avec zone CQB (mixte)",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-04",
+          "lieu": "Gisors (Rte de Paris)",
+          "note": "Dominicale GIS27 (Airsoft XP, 10 €, 30 joueurs)"
+        }
+      ],
+      "coords": {
+        "lat": 49.2643,
+        "lon": 1.7848
+      }
+    }
+  ]
+}

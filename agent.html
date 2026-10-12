@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#14160f">
+  <title>Agent — Terrains &amp; équipes d'airsoft</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-page="agent">
+
+<header>
+  <button type="button" id="nav-toggle" class="nav-toggle" aria-controls="nav-panel"
+          aria-expanded="false" aria-label="Ouvrir la navigation">
+    <span></span><span></span><span></span>
+  </button>
+  <h1><a href="/"><span class="stencil">Airsoft&nbsp;OPS</span></a> — Terrains &amp; équipes</h1>
+  <p class="subtitle">Autour de Rennes et de Nanterre · <span id="verified-date">Données vérifiées le —</span>
+    <span id="agent-pill" class="agent-pill" hidden></span></p>
+</header>
+
+<!-- Off-canvas navigation (opens from the left; closed by default — pure JS
+     enhancement, the page works without it) -->
+<div id="nav-backdrop" class="nav-backdrop" aria-hidden="true"></div>
+<nav id="nav-panel" class="nav-panel" role="dialog" aria-modal="true" aria-label="Navigation">
+  <button type="button" id="nav-close" class="nav-close" aria-label="Fermer">✕</button>
+  <ul class="nav-links">
+    <li><a href="/">Accueil</a></li>
+    <li><a href="/agent">Agent</a></li>
+  </ul>
+  <button type="button" id="nav-top" class="nav-top-btn">Haut de page</button>
+</nav>
+
+<main>
+  <div id="error-zone"></div>
+
+  <!-- Historique (agent page): live agent activity on top, run trigger in the
+       section header, audit-trail list below -->
+  <section id="historique" hidden>
+    <div class="sec-head">
+      <h2>Historique des mises à jour</h2>
+      <div class="hist-actions">
+        <button type="button" id="agent-update-btn" class="agent-run-btn" hidden
+                title="Lance une exécution immédiate de l'agent de mise à jour">Lancer la mise à jour</button>
+        <span id="agent-msg" class="inline-msg" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+    <!-- Live agent activity: GET /api/agent/workflow + SSE stream (hidden by default,
+         surfaced only for a configured agent; falls back with the pill's silent rule) -->
+    <div id="agent-activity" class="agent-activity" hidden></div>
+    <!-- Static-deploy degradation slot: app.js fills it (plain text node — the
+         exact notice lives in one place, API_UNAVAILABLE_MSG) and unhides it
+         only when the API is unreachable at load (status/history failed) -->
+    <p id="api-degraded" class="degraded-msg" hidden></p>
+    <div id="history-list"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner" id="notes-sources">
+    <h2>Notes communes</h2>
+    <ul>
+      <li><code>n.c.</code> = non communiqué / non trouvé en ligne. Lignes « à vérifier » : présence dans les fichiers RNA / annuaires prouvée, mais aucune activité en ligne datée (le web de l'airsoft breton passe surtout par Facebook / Discord privés).</li>
+      <li>L'inventaire ne prétend pas à l'exhaustivité&nbsp;: il reflète ce qui était trouvable en ligne (sources ci-dessous).</li>
+    </ul>
+    <h2 style="margin-top:1.2rem">Sources</h2>
+    <ul id="sources-list"></ul>
+    <p class="warning">⚠️ Site de consultation&nbsp;: vérifiez auprès des organisateurs avant de vous déplacer (inscriptions, tarifs, accès, horaires).</p>
+  </div>
+</footer>
+
+<script src="/config.js"></script>
+<!-- Markdown rendering stack (pinned, SRI): agent final replies + history summaries.
+     marked v18 ships lib/marked.umd.js (the unminified UMD browser build — marked.min.js
+     was removed from the package in v18). DOMPurify sanitizes before anything touches the DOM. -->
+<script src="https://unpkg.com/marked@18.1.0/lib/marked.umd.js"
+        integrity="sha384-IvVdUXkhyoD0shbjhiiOnuiTbervTaB0VJcnEcg3shUAMVOOF6lKj4ozJrCwvz6s" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/dompurify@3.4.16/dist/purify.min.js"
+        integrity="sha384-a7SzOxErzJ3ZpQz0zJ32d67dSitNzPcbfybc/ykU9KJhMgZkwqfSxlhhdJRS+XGL" crossorigin="anonymous"></script>
+<script src="/app.js"></script>
+</body>
+</html>
