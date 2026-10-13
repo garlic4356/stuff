@@ -82,11 +82,6 @@
           "note": "Partie ouverte (forêt semi-CQB)"
         },
         {
-          "date": "2026-11-14",
-          "lieu": "Mordelles",
-          "note": "Entretien du terrain"
-        },
-        {
           "date": "2026-11-21",
           "lieu": "L'Usine de Percy",
           "note": "Réservé aux membres et sur invitations"
@@ -281,11 +276,6 @@
           "date": "2026-11-07",
           "lieu": "La Chapelle-Heulin",
           "note": "Réservé aux membres"
-        },
-        {
-          "date": "2026-11-14",
-          "lieu": "La Chapelle-Heulin",
-          "note": "Entretien du terrain"
         },
         {
           "date": "2026-11-29",
@@ -837,11 +827,6 @@
       "terrain": "2 sites : Mercurow (vallée de la Seine) / La Tanière (forêt du Vexin)",
       "cout": "n.c.",
       "events": [
-        {
-          "date": "2026-10-10",
-          "lieu": "Mercurow (Meulan-en-Yvelines)",
-          "note": "Brocante"
-        },
         {
           "date": "2026-10-11",
           "lieu": "Mercurow",
