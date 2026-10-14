@@ -1,10 +1,14 @@
 "use strict";
 
 /* --------------------------------------------------------------------------
- * Two-page frontend served by airsoft-ops (default) or any static host:
+ * Three-page frontend served by airsoft-ops (default) or any static host:
  *   /      (index.html, data-page="home")  — MAIN page: Carte → Calendrier →
  *                                            Tableaux (Leaflet loads here)
  *   /agent (agent.html, data-page="agent") — historique + activité de l'agent
+ *   /chat  (chat.html, data-page="chat")   — discussion avec l'agent (chat
+ *                                            runs only through the
+ *                                            same-origin API: POSTs never
+ *                                            carry CORS)
  * The old /associations page is gone: the server 301-redirects it to /.
  * Routing knobs come from web/config.js (window.AIRSOFT_SITE, loaded before
  * this script): dataUrl points at the data JSON ("/api/data" on the server,
@@ -64,9 +68,21 @@ const WORKFLOW_ERR_LIMIT = 2;                  // consecutive SSE errors → pol
 const WORKFLOW_COLLAPSE_MS = 4000;             // finished live view → collapsed details
 const WORKFLOW_PREVIEW_MAX = 160;              // toolResult preview inline vs expandable
 
-/** Current page, from the server-served <body data-page> (home|agent) — drives
- *  the init dispatcher: home carries map + calendar + tables, agent carries
- *  history, workflow and the update trigger. */
+/* Interactive chat with the agent (chat page): the conversation transcript is
+ * GET /api/agent/chat, POST starts a chat run through the shared single-run
+ * guard (409 while a run is active) and POST /clear wipes it idempotently.
+ * POSTs never work on a static deploy (no auth token, no CORS) → the whole
+ * section stays hidden there (REMOTE_MODE). The waiting watch reuses the
+ * workflow SSE + poll-fallback constants above. */
+const CHAT_PATH = "/api/agent/chat";
+const CHAT_CLEAR_PATH = "/api/agent/chat/clear";
+const CHAT_ACTIVITY_MAX = 120;                 // argsPreview chars kept in an activity line
+const CHAT_REWATCH_LIMIT = 3;                  // finish→rewatch cycles before stopping (hot-loop guard)
+
+/** Current page, from the server-served <body data-page> (home|agent|chat) —
+ *  drives the init dispatcher: home carries map + calendar + tables, agent
+ *  carries history, workflow and the update trigger, chat carries the
+ *  discussion with the agent. */
 const PAGE = document.body.dataset.page;
 
 const state = {
@@ -234,9 +250,9 @@ function isLinkable(url) {
 
 /* ------------------------------ Markdown (agent page) ------------------------------ */
 
-/** True when the CDN markdown stack finished loading (agent page only). */
+/** True when the CDN markdown stack finished loading (agent + chat pages). */
 function markdownEnabled() {
-  return PAGE === "agent" && typeof marked !== "undefined" && typeof DOMPurify !== "undefined";
+  return (PAGE === "agent" || PAGE === "chat") && typeof marked !== "undefined" && typeof DOMPurify !== "undefined";
 }
 
 /** Link hardening on ALREADY-SANITIZED markdown: http(s) anchors open in a new
@@ -1550,6 +1566,586 @@ function pollAgentStatus() {
   setTimeout(tick, AGENT_POLL_MS);
 }
 
+/* ------------------------------ Discussion avec l'agent (chat page) ------------------------------ */
+
+/** Mutable chat-waiting state; single owner of the EventSource, the fallback
+ *  poller and the pending assistant bubble (same single-owner pattern as wf). */
+const chat = {
+  running: false,       // waiting for the agent's reply (a run is active)
+  expectedRunId: null,  // runId from our own accepted POST (null = boot-waiting)
+  adoptedRunId: null,   // runId of the run currently watched on the stream
+  es: null,             // live SSE EventSource (null when closed)
+  errCount: 0,          // consecutive SSE errors → poll fallback
+  pollToken: null,      // generation token of the fallback poller (null = stopped)
+  pollTimer: null,
+  pollStarted: 0,       // fallback start instant (bounded by WORKFLOW_POLL_MAX_MS)
+  rewatchCount: 0,      // consecutive finish→rewatch cycles (hot-loop safety)
+  finishing: false,     // finishChat guard (runFinished frame and a no-run snapshot can race)
+  pendingBubble: null,  // pending assistant bubble currently on screen
+};
+
+/** True when stream events may be attributed to the watched run: either we
+ *  started it ourselves (expectedRunId matches) or we boot-wait without any
+ *  expectation and adopt whatever run is live (single-run guard — no second
+ *  run can take the slot while we wait). */
+function chatRunAdopted() {
+  return chat.expectedRunId == null || chat.adoptedRunId == null || chat.adoptedRunId === chat.expectedRunId;
+}
+
+function scrollChatToBottom() {
+  const zone = document.getElementById("chat-transcript");
+  if (zone) zone.scrollTop = zone.scrollHeight;
+}
+
+function showChatMsg(msg) {
+  const el = document.getElementById("chat-msg");
+  if (el) el.textContent = msg;
+}
+
+function clearChatMsg() {
+  showChatMsg("");
+}
+
+/** Send + clear stay disabled while a run is active. */
+function setChatControls(running) {
+  const send = document.getElementById("chat-send");
+  const clear = document.getElementById("chat-clear");
+  if (send) send.disabled = running;
+  if (clear) clear.disabled = running;
+}
+
+/** Local time "14:05:32" under a bubble; empty when the record carries no
+ *  usable timestamp. */
+function chatTimestampHtml(ts) {
+  const time = formatTimeSeconds(ts);
+  return time ? `<span class="chat-ts">${escapeHtml(time)}</span>` : "";
+}
+
+/** One transcript row per message — shared by wholesale renders and live
+ *  appends. User content stays plain text (textContent: user input must never
+ *  become HTML); assistant content goes through renderMarkdown (sanitized,
+ *  escapeHtml fallback without the CDN stack). */
+function makeUserRow(text, ts) {
+  const row = document.createElement("div");
+  row.className = "chat-row chat-row-user";
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble chat-bubble-user";
+  bubble.textContent = String(text ?? "");
+  row.appendChild(bubble);
+  row.insertAdjacentHTML("beforeend", chatTimestampHtml(ts));
+  return row;
+}
+
+function makeAssistantRow(text, ts) {
+  const row = document.createElement("div");
+  row.className = "chat-row chat-row-assistant";
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble chat-bubble-assistant";
+  bubble.innerHTML = renderMarkdown(String(text ?? ""));
+  row.appendChild(bubble);
+  row.insertAdjacentHTML("beforeend", chatTimestampHtml(ts));
+  return row;
+}
+
+/** Assistant error record: optional reply text above the error line itself. */
+function makeErrorRow(rec) {
+  const row = document.createElement("div");
+  row.className = "chat-row chat-row-assistant";
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble chat-bubble-assistant chat-bubble-error";
+  const text = String(rec.text ?? "");
+  bubble.innerHTML =
+    (text ? renderMarkdown(text) : "") +
+    `<div class="chat-err-line">⚠ ${escapeHtml(String(rec.error ?? "Erreur inconnue."))}</div>`;
+  row.appendChild(bubble);
+  row.insertAdjacentHTML("beforeend", chatTimestampHtml(rec.ts));
+  return row;
+}
+
+/** Wholesale transcript render from the authoritative server state — the
+ *  dedupe path for boot, runFinished and poll fallback. Never merge with a
+ *  locally-built view: the GET answer is the single truth. */
+function renderChatTranscript(messages) {
+  const zone = document.getElementById("chat-transcript");
+  if (!zone) return;
+  zone.innerHTML = "";
+  chat.pendingBubble = null;
+  for (const rec of Array.isArray(messages) ? messages : []) {
+    if (!rec || typeof rec !== "object") continue;
+    if (rec.role === "user") {
+      zone.appendChild(makeUserRow(rec.text, rec.ts));
+    } else if (rec.role === "assistant") {
+      zone.appendChild(rec.error ? makeErrorRow(rec) : makeAssistantRow(rec.text, rec.ts));
+    }
+  }
+  scrollChatToBottom();
+}
+
+/** Live append right after an accepted POST: the server persists the user
+ *  message too, so the next authoritative render shows the same bubble. */
+function appendUserBubble(text) {
+  const zone = document.getElementById("chat-transcript");
+  if (!zone) return;
+  zone.appendChild(makeUserRow(text, null));
+  scrollChatToBottom();
+}
+
+/** Pending assistant bubble ("L'agent travaille…" + tool-activity lines).
+ *  Never duplicated: a still-connected bubble is reused. */
+function addPendingBubble() {
+  const zone = document.getElementById("chat-transcript");
+  if (!zone) return;
+  if (chat.pendingBubble && chat.pendingBubble.isConnected) return;
+  const row = document.createElement("div");
+  row.className = "chat-row chat-row-assistant";
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble chat-bubble-assistant chat-bubble-pending";
+  bubble.innerHTML =
+    `<div class="chat-activity" hidden></div>` +
+    `<span class="chat-pending-status">L'agent travaille…</span>`;
+  row.appendChild(bubble);
+  zone.appendChild(row);
+  chat.pendingBubble = bubble;
+  scrollChatToBottom();
+}
+
+/** Activity container of the pending bubble; un-hidden by the first line. */
+function chatActivityZone() {
+  const zone = chat.pendingBubble ? chat.pendingBubble.querySelector(".chat-activity") : null;
+  if (zone) zone.hidden = false;
+  return zone;
+}
+
+function clearChatActivity() {
+  const zone = chat.pendingBubble ? chat.pendingBubble.querySelector(".chat-activity") : null;
+  if (zone) {
+    zone.innerHTML = "";
+    zone.hidden = true;
+  }
+}
+
+/** Bounded single-line preview for the activity lines. */
+function chatPreviewLine(s, max) {
+  const t = String(s ?? "").replace(/\s+/g, " ").trim();
+  return t.length > max ? `${t.slice(0, max)}…` : t;
+}
+
+function appendChatActivityCall(ev, zone = chatActivityZone()) {
+  if (!zone) return;
+  const line = document.createElement("div");
+  line.className = "chat-act-line";
+  line.innerHTML =
+    `<span class="chat-act-mark">▸</span> ` +
+    `<code class="chat-act-tool">${escapeHtml(String(ev.tool ?? ""))}(${escapeHtml(chatPreviewLine(ev.argsPreview, CHAT_ACTIVITY_MAX))})</code>`;
+  zone.appendChild(line);
+  scrollChatToBottom();
+}
+
+function appendChatActivityResult(ev, zone = chatActivityZone()) {
+  if (!zone) return;
+  const ok = ev.ok === true;
+  const dur = fmtDuration(ev.durationMs);
+  const line = document.createElement("div");
+  line.className = "chat-act-line";
+  line.innerHTML =
+    `<span class="${ok ? "chat-act-ok" : "chat-act-err"}">${ok ? "✔" : "✖"}</span> ` +
+    `<span class="chat-act-toolname">${escapeHtml(String(ev.tool ?? ""))}</span>` +
+    (dur ? ` <span class="chat-act-dur">(${escapeHtml(dur)})</span>` : "");
+  zone.appendChild(line);
+  scrollChatToBottom();
+}
+
+function appendChatActivityLagged(ev) {
+  const zone = chatActivityZone();
+  if (!zone) return;
+  const dropped = Number(ev.dropped);
+  const line = document.createElement("div");
+  line.className = "chat-act-line chat-act-lag";
+  line.textContent = `⚠ ${Number.isFinite(dropped) ? dropped : 0} événements manqués (flux ralenti)`;
+  zone.appendChild(line);
+  scrollChatToBottom();
+}
+
+/** Wholesale rebuild of the activity lines (workflow snapshot or a fallback
+ *  poll tick — dedupe-safe). */
+function renderChatActivity(events) {
+  const zone = chat.pendingBubble ? chat.pendingBubble.querySelector(".chat-activity") : null;
+  if (!zone) return;
+  zone.innerHTML = "";
+  for (const ev of Array.isArray(events) ? events : []) {
+    if (!ev || typeof ev !== "object") continue;
+    if (ev.type === "toolCall") appendChatActivityCall(ev, zone);
+    else if (ev.type === "toolResult") appendChatActivityResult(ev, zone);
+  }
+  zone.hidden = zone.children.length === 0;
+  scrollChatToBottom();
+}
+
+/** finalReply frame → show the markdown reply immediately in the pending
+ *  bubble; the bubble stays "pending" until the authoritative re-render. */
+function showChatFinalReply(ev) {
+  const bubble = chat.pendingBubble;
+  if (!bubble || !bubble.isConnected) return;
+  const status = bubble.querySelector(".chat-pending-status");
+  if (status) status.hidden = true;
+  const old = bubble.querySelector(".chat-reply");
+  if (old) old.remove();
+  const reply = document.createElement("div");
+  reply.className = "chat-reply";
+  reply.innerHTML = renderMarkdown(String(ev.text ?? ""));
+  bubble.appendChild(reply);
+  scrollChatToBottom();
+}
+
+/** Enters the waiting state: pending bubble + watch on the live workflow
+ *  stream. runId comes from the accepted POST (null while boot-waiting: the
+ *  single-run guard makes the next run on the stream the watched one). */
+function enterWaiting(runId) {
+  chat.running = true;
+  chat.expectedRunId = runId ?? null;
+  chat.adoptedRunId = null;
+  stopChatStream();
+  stopChatPoll();
+  clearChatMsg();
+  addPendingBubble();
+  setChatControls(true);
+  startChatStream();
+}
+
+/** Opens the chat watch stream exactly once per waiting session. */
+function startChatStream() {
+  if (chat.es || !chat.running) return;
+  if (typeof EventSource === "undefined") {
+    startChatPoll(); // very old browser: poll instead
+    return;
+  }
+  chat.errCount = 0;
+  const es = new EventSource(apiUrl(WORKFLOW_STREAM_PATH)); // GET: open by design
+  chat.es = es;
+  es.onopen = () => {
+    chat.errCount = 0; // successful (re)connection resets the failure streak
+  };
+  es.addEventListener("snapshot", (e) => {
+    try {
+      onChatSnapshot(JSON.parse(e.data));
+    } catch {
+      /* ignored frame */
+    }
+  });
+  es.onmessage = (e) => {
+    try {
+      handleChatEvent(JSON.parse(e.data));
+    } catch {
+      /* ignored frame */
+    }
+  };
+  es.onerror = () => {
+    if (!chat.es) return; // waiting session already ended
+    chat.errCount += 1;
+    // Persistent failure: close the stream and fall back to polling while
+    // the run is going (bounded, see startChatPoll).
+    if (chat.errCount >= WORKFLOW_ERR_LIMIT) {
+      stopChatStream();
+      startChatPoll();
+    }
+  };
+}
+
+function stopChatStream() {
+  if (chat.es) {
+    chat.es.close();
+    chat.es = null;
+  }
+}
+
+/** SSE snapshot frame: adopt the live run (activity lines rebuilt wholesale)
+ *  or, when no run is active at connect time, hand the question back to the
+ *  authoritative endpoint (run ended before the stream opened, or the waiting
+ *  flag was stale). */
+function onChatSnapshot(snap) {
+  if (!chat.es) return; // waiting session already ended
+  if (snap && snap.run && snap.run.running) {
+    if (chat.expectedRunId && snap.run.runId !== chat.expectedRunId) return; // foreign run
+    chat.adoptedRunId = snap.run.runId ?? null;
+    chat.rewatchCount = 0;
+    renderChatActivity(Array.isArray(snap.events) ? snap.events : []);
+    return;
+  }
+  void finishChat();
+}
+
+/** Live workflow frames: runStart adopts the fresh run (activity resets),
+ *  tool lines append, finalReply shows the reply early, runFinished ends the
+ *  watch with an authoritative re-render. */
+function handleChatEvent(ev) {
+  if (!chat.es) return; // waiting session already ended
+  if (!ev || typeof ev.type !== "string") return;
+  switch (ev.type) {
+    case "runStart": {
+      if (chat.expectedRunId && ev.runId !== chat.expectedRunId) return;
+      chat.adoptedRunId = ev.runId ?? null;
+      chat.rewatchCount = 0;
+      clearChatActivity(); // fresh run → fresh activity lines
+      return;
+    }
+    case "toolCall":
+      if (!chatRunAdopted()) return;
+      appendChatActivityCall(ev);
+      return;
+    case "toolResult":
+      if (!chatRunAdopted()) return;
+      appendChatActivityResult(ev);
+      return;
+    case "eventsLagged":
+      if (!chatRunAdopted()) return;
+      appendChatActivityLagged(ev);
+      return;
+    case "finalReply":
+      if (!chatRunAdopted()) return;
+      showChatFinalReply(ev);
+      return;
+    case "runFinished":
+      // runFinished frames carry no runId: attribution comes from the adopted
+      // run (frames for an un-adopted run's lifetime cannot appear under the
+      // single-run guard — a finish we see belongs to the run we watch).
+      if (!chatRunAdopted()) return;
+      void finishChat();
+      return;
+    default:
+      return; // unknown event type: ignore defensively
+  }
+}
+
+function stopChatPoll() {
+  chat.pollToken = null; // in-flight tick results are discarded via the token
+  if (chat.pollTimer) {
+    clearTimeout(chat.pollTimer);
+    chat.pollTimer = null;
+  }
+}
+
+/** SSE fallback: poll the authoritative transcript every ~2 s while the run
+ *  is going (same cadence and bound as the workflow fallback). Wholesale
+ *  renders dedupe; tool-activity lines rebuild from /api/agent/workflow. */
+function startChatPoll() {
+  stopChatPoll(); // single fallback at a time
+  chat.pollStarted = Date.now();
+  const token = chat.pollStarted;
+  chat.pollToken = token;
+  const tick = async () => {
+    if (chat.pollToken !== token) return;
+    const r = await refreshChatState();
+    if (chat.pollToken !== token) return; // ended elsewhere meanwhile
+    if (r.json) {
+      if (r.json.running) {
+        addPendingBubble(); // recreated fresh after the wholesale render
+      } else {
+        stopChatPoll();
+        chat.running = false;
+        chat.pendingBubble = null;
+        setChatControls(false);
+        return;
+      }
+      // Still running: rebuild the activity lines from the live workflow
+      // session (best effort — the display is decorative).
+      try {
+        const wfres = await fetch(apiUrl(WORKFLOW_PATH));
+        if (wfres.ok) {
+          const snap = await wfres.json();
+          if (snap && snap.run && snap.run.running) {
+            renderChatActivity(snap.events || []);
+          }
+        }
+      } catch {
+        /* activity display is best-effort */
+      }
+    } else if (r.unavailable) {
+      // Agent unconfigured mid-wait: stop waiting and say why (transient
+      // failures keep polling until the bound instead).
+      stopChatPoll();
+      chat.running = false;
+      chat.pendingBubble?.remove();
+      chat.pendingBubble = null;
+      setChatControls(false);
+      showChatMsg("Agent indisponible pour le moment — rechargez la page pour réessayer.");
+      return;
+    }
+    if (Date.now() - chat.pollStarted > WORKFLOW_POLL_MAX_MS) {
+      stopChatPoll();
+      chat.running = false;
+      chat.pendingBubble?.remove();
+      chat.pendingBubble = null;
+      setChatControls(false);
+      showChatMsg("L'attente a été trop longue — rechargez la page pour voir le résultat.");
+      return;
+    }
+    chat.pollTimer = setTimeout(tick, WORKFLOW_POLL_MS);
+  };
+  tick();
+}
+
+/** Re-fetches the authoritative transcript and re-renders it wholesale.
+ *  Returns { json } on a well-formed answer, { json: null, unavailable: true }
+ *  on 503 (agent unconfigured), { json: null } on any other failure. */
+async function refreshChatState() {
+  try {
+    const res = await fetch(apiUrl(CHAT_PATH));
+    if (res.status === 503) return { json: null, unavailable: true };
+    if (!res.ok) return { json: null };
+    const body = await res.json();
+    if (!body || !Array.isArray(body.messages)) return { json: null };
+    renderChatTranscript(body.messages);
+    return { json: body };
+  } catch {
+    return { json: null };
+  }
+}
+
+/** Ends the waiting state: the watched run finished (or the stream lost it)
+ *  → re-fetch the authoritative transcript, then either re-enter the wait
+ *  (a new run took the slot right away) or restore the controls. */
+async function finishChat() {
+  if (chat.finishing) return;
+  chat.finishing = true;
+  try {
+    stopChatStream();
+    stopChatPoll();
+    chat.adoptedRunId = null;
+    const r = await refreshChatState();
+    if (r.json && r.json.running) {
+      if (chat.rewatchCount < CHAT_REWATCH_LIMIT) {
+        chat.rewatchCount += 1;
+        enterWaiting(null); // watch the run that took the slot
+        return;
+      }
+      showChatMsg("Une autre exécution occupe l'agent — réessayez une fois terminée.");
+    } else if (!r.json) {
+      showChatMsg("Résultat indisponible — rechargez la page pour voir la réponse de l'agent.");
+    }
+    chat.running = false;
+    chat.pendingBubble?.remove();
+    chat.pendingBubble = null;
+    setChatControls(false);
+  } finally {
+    chat.finishing = false;
+  }
+}
+
+/** Send: POST /api/agent/chat → 202 {runId} (watch the stream), 400 / 409 /
+ *  503 / others → inline French error near the input, controls re-enabled. */
+async function sendChatMessage() {
+  if (chat.running) return;
+  const input = document.getElementById("chat-input");
+  const text = (input?.value ?? "").trim();
+  if (!text) {
+    showChatMsg("Écrivez un message avant d'envoyer.");
+    return;
+  }
+  const sendBtn = document.getElementById("chat-send");
+  if (sendBtn) sendBtn.disabled = true;
+  clearChatMsg();
+  try {
+    const res = await fetch(apiUrl(CHAT_PATH), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text }),
+    });
+    if (res.status === 202) {
+      // The runId may be absent from a malformed body: boot-like watch then
+      // (the single-run guard makes the next run the watched one)
+      let runId = null;
+      try {
+        runId = (await res.json()).runId ?? null;
+      } catch {
+        /* body ignored */
+      }
+      if (input) input.value = "";
+      appendUserBubble(text);
+      enterWaiting(runId);
+      return; // controls stay disabled until the run ends
+    }
+    if (res.status === 409) {
+      showChatMsg("Une exécution de l'agent est déjà en cours — réessayez dans un instant.");
+    } else if (res.status === 503) {
+      showChatMsg("Agent indisponible pour le moment.");
+    } else if (res.status === 400) {
+      showChatMsg("Message vide — rien à envoyer.");
+    } else if (res.status === 401) {
+      showChatMsg("Accès refusé — l'envoi exige le jeton d'authentification du serveur.");
+    } else {
+      showChatMsg(`Échec de l'envoi (code HTTP ${res.status}).`);
+    }
+  } catch {
+    showChatMsg("Serveur injoignable — message non envoyé.");
+  }
+  if (sendBtn) sendBtn.disabled = false; // failure path only: 202 keeps it disabled while watching
+}
+
+/** « Effacer la conversation »: idempotent server-side clear, then the local
+ *  transcript is wiped too (no confirmation asked). Blocked while running.
+ *  A 200 answer can still report ok:false/busy:true (a run — chat or
+ *  maintenance — started between the controls being re-enabled and the
+ *  click): the server then keeps the conversation, so the local view
+ *  re-syncs instead of wiping — no silent divergence with the server. */
+async function clearConversation() {
+  if (chat.running) return;
+  clearChatMsg();
+  try {
+    const res = await fetch(apiUrl(CHAT_CLEAR_PATH), { method: "POST" });
+    if (res.ok) {
+      let body = null;
+      try {
+        body = await res.json();
+      } catch {
+        /* malformed body: fall back to the plain-clear behavior */
+      }
+      if (body && body.ok === false) {
+        // Busy: nothing was cleared server-side — say so and re-sync the
+        // local view with the authoritative transcript
+        showChatMsg("Une exécution de l'agent est en cours — conversation non effacée.");
+        await refreshChatState();
+        return;
+      }
+      renderChatTranscript([]);
+      return;
+    }
+    if (res.status === 401) {
+      showChatMsg("Accès refusé — l'effacement exige le jeton d'authentification du serveur.");
+    } else if (res.status === 503) {
+      showChatMsg("Agent indisponible pour le moment.");
+    } else {
+      showChatMsg(`Échec de l'effacement (code HTTP ${res.status}).`);
+    }
+  } catch {
+    showChatMsg("Serveur injoignable — conversation non effacée.");
+  }
+}
+
+/** Chat page boot (silent-hide rules): a static deploy never POSTs → the
+ *  section never shows; an unreachable server or an unconfigured agent (503)
+ *  keeps it hidden too. Only a well-formed transcript answer unhides it. */
+async function initChat() {
+  const section = document.getElementById("chat");
+  if (!section) return;
+  if (REMOTE_MODE) return;
+  let body = null;
+  try {
+    const res = await fetch(apiUrl(CHAT_PATH));
+    if (!res.ok) return;
+    body = await res.json();
+  } catch {
+    return;
+  }
+  if (!body || !Array.isArray(body.messages)) return;
+  section.hidden = false;
+  renderChatTranscript(body.messages);
+  if (body.running) {
+    enterWaiting(null);
+  } else {
+    setChatControls(false);
+  }
+}
+
 /* ------------------------------ Navigation (hamburger / off-canvas panel) ------------------------------ */
 
 /** Reduced-motion preference (drives scroll behavior of the nav). */
@@ -1633,14 +2229,16 @@ function setupNavigation() {
 }
 
 /** Active-page highlight: the nav link whose href matches the current page
- *  pathname gets .active (accent + dash marker). Page-based replacement for
- *  the old in-page scrollspy — the nav links are real page links now. */
+ *  pathname gets .active + aria-current="page" (accent + dash marker).
+ *  Page-based replacement for the old in-page scrollspy — the nav links are
+ *  real page links now. */
 function setupNavActivePage() {
   const links = [...document.querySelectorAll(".nav-links a")];
   for (const link of links) {
     try {
       if (new URL(link.getAttribute("href"), location.href).pathname === location.pathname) {
         link.classList.add("active");
+        link.setAttribute("aria-current", "page");
       }
     } catch {
       /* unparseable href: skip */
@@ -1787,7 +2385,8 @@ async function loadData() {
 
 /** One-time setup per page (shared pieces everywhere, page pieces behind the
  *  dispatcher): map + tables + timeline filter (home), navigation + active-
- *  page highlight (all), run button (agent, same-origin deploys only). */
+ *  page highlight (all), run button (agent, same-origin deploys only), chat
+ *  input bindings (chat). */
 function setupStatic(page) {
   if (page === "home") {
     const mapOk = initMap();
@@ -1810,6 +2409,23 @@ function setupStatic(page) {
       if (updateBtn) updateBtn.addEventListener("click", triggerAgentUpdate);
     }
   }
+  if (page === "chat") {
+    const sendBtn = document.getElementById("chat-send");
+    const clearBtn = document.getElementById("chat-clear");
+    const input = document.getElementById("chat-input");
+    if (sendBtn) sendBtn.addEventListener("click", sendChatMessage);
+    if (clearBtn) clearBtn.addEventListener("click", clearConversation);
+    if (input) {
+      // Enter sends, Shift+Enter inserts a newline (standard chat-input
+      // behavior; isComposing keeps IME composition from sending)
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+          e.preventDefault();
+          sendChatMessage();
+        }
+      });
+    }
+  }
 }
 
 function init() {
@@ -1824,6 +2440,7 @@ function init() {
     if (PAGE === "agent" && agentConfigured) void initAgentActivity();
   });
   if (PAGE === "agent") loadHistory();
+  if (PAGE === "chat") void initChat(); // silent-hide on remote deploys / unconfigured agent
 }
 
 init();

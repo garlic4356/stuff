@@ -1,7 +1,8 @@
-/* styles.css — shared stylesheet for the two pages of « Terrains & équipes
- * d'airsoft » (/, /agent). Dark kaki/olive theme, no build step.
+/* styles.css — shared stylesheet for the three pages of « Terrains & équipes
+ * d'airsoft » (/, /agent, /chat). Dark kaki/olive theme, no build step.
  *   home         — Carte (Leaflet) + « Prochaines parties » + Tableaux
  *   agent        — historique + activité de l'agent (live)
+ *   chat         — discussion avec l'agent (transcript + input area)
  * Page-specific rules are grouped under labeled section comments below; rules
  * for elements that exist on a single page are simply unused elsewhere. */
 
@@ -23,8 +24,8 @@
 }
 
 * { box-sizing: border-box; }
-/* Dynamic pieces (agent pill, history section, workflow block, nav) toggle
-   visibility via the hidden attribute */
+/* Dynamic pieces (agent pill, history section, workflow block, chat section,
+   nav) toggle visibility via the hidden attribute */
 [hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 
@@ -660,6 +661,202 @@ details.wf-result > summary:hover .wf-preview { color: var(--text); }
   font-size: .74rem;
 }
 
+/* ---------- Discussion avec l'agent (chat page) ---------- */
+/* Transcript: scrollable log, bubbles appended at the bottom. Same panel
+   vocabulary as .agent-activity; user bubble = accent-tinted, right-aligned;
+   assistant bubbles carry the event-card accent edge; error records get the
+   rouge mark. */
+.chat-intro { margin: 0 0 .8rem; font-size: .88rem; color: var(--text-dim); }
+.chat-transcript {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  max-height: min(64vh, 640px);
+  overflow-y: auto;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .9rem;
+}
+.chat-transcript:empty::after {
+  content: "Aucun message pour le moment — écrivez à l'agent ci-dessous.";
+  color: var(--text-dim);
+  font-size: .85rem;
+  font-style: italic;
+}
+.chat-row {
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+  min-width: 0;
+}
+.chat-row-user { align-items: flex-end; }
+.chat-row-assistant { align-items: flex-start; }
+.chat-bubble {
+  max-width: min(78ch, 92%);
+  padding: .5rem .7rem;
+  border-radius: var(--radius);
+  font-size: .88rem;
+  word-break: break-word;
+  min-width: 0;
+}
+.chat-bubble-user {
+  background: rgba(122, 139, 63, .18);
+  border: 1px solid var(--accent);
+  white-space: pre-wrap;
+}
+.chat-bubble-assistant {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+}
+.chat-bubble-error { border-left-color: var(--rouge); }
+.chat-err-line {
+  margin-top: .3rem;
+  padding-top: .3rem;
+  border-top: 1px dashed var(--border);
+  color: #e58a7c;
+  font-size: .78rem;
+}
+/* Markdown-rendered assistant content: fold markdown block spacing in (same
+   treatment as .hist-summary / .wf-reply-md). User bubbles never carry
+   elements, so these rules only affect assistant content. */
+.chat-bubble p { margin: .3rem 0; }
+.chat-bubble ul, .chat-bubble ol { margin: .3rem 0; padding-left: 1.2rem; }
+.chat-bubble h1, .chat-bubble h2, .chat-bubble h3, .chat-bubble h4 { font-size: .86rem; margin: .5rem 0 .2rem; }
+.chat-bubble blockquote {
+  margin: .3rem 0;
+  padding-left: .6rem;
+  border-left: 2px solid var(--border);
+  color: var(--text-dim);
+}
+.chat-bubble code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .78rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 .3rem;
+}
+.chat-bubble pre {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: .4rem .5rem;
+  overflow-x: auto;
+}
+.chat-bubble pre code { background: none; border: none; padding: 0; }
+.chat-bubble table { border-collapse: collapse; margin: .3rem 0; }
+.chat-bubble th, .chat-bubble td { border: 1px solid var(--border); padding: .15rem .4rem; font-size: .8rem; }
+.chat-bubble a { color: var(--accent-bright); }
+.chat-bubble > :first-child { margin-top: 0; }
+.chat-bubble > :last-child { margin-bottom: 0; }
+.chat-ts { font-size: .68rem; color: var(--text-dim); }
+/* Pending assistant bubble: pulsing status line + compact tool-activity lines */
+.chat-bubble-pending { border-left-color: var(--accent); }
+.chat-pending-status {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  color: var(--text-dim);
+  font-size: .8rem;
+}
+.chat-pending-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--accent-bright);
+  animation: pill-pulse 1.2s ease-in-out infinite;
+}
+.chat-activity {
+  display: flex;
+  flex-direction: column;
+  gap: .12rem;
+  margin-bottom: .35rem;
+  padding-bottom: .35rem;
+  border-bottom: 1px dashed var(--border);
+}
+.chat-act-line { font-size: .76rem; line-height: 1.5; word-break: break-word; }
+.chat-act-mark { color: var(--text-dim); }
+.chat-act-tool {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .72rem;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: .05rem .35rem;
+  color: var(--text);
+}
+.chat-act-ok { color: #9dd29d; font-weight: 700; }
+.chat-act-err { color: #e58a7c; font-weight: 700; }
+.chat-act-toolname {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .74rem;
+}
+.chat-act-dur { color: var(--text-dim); font-size: .72rem; }
+.chat-act-lag { color: var(--text-dim); font-size: .74rem; }
+@media (prefers-reduced-motion: reduce) {
+  .chat-pending-status::before { animation: none; }
+}
+/* Input area: textarea + send/clear column; .inline-msg reports errors near
+   the input (non-blocking). */
+.chat-input-row {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  margin-top: .7rem;
+  flex-wrap: wrap;
+}
+.chat-input-row textarea {
+  flex: 1;
+  min-width: 240px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: .5rem .6rem;
+  font: inherit;
+  font-size: .9rem;
+  resize: vertical;
+  min-height: 2.6rem;
+  max-height: 12rem;
+}
+.chat-input-row textarea:focus { outline: 1px solid var(--accent); }
+.chat-actions { display: flex; flex-direction: column; gap: .45rem; }
+.chat-send-btn {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: #10120b;
+  border-radius: 999px;
+  padding: .38rem .95rem;
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s;
+}
+.chat-send-btn:hover:not(:disabled) { background: var(--accent-bright); }
+.chat-send-btn:focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 2px; }
+.chat-clear-btn {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+  padding: .3rem .85rem;
+  font: inherit;
+  font-size: .78rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color .15s, color .15s;
+}
+.chat-clear-btn:hover:not(:disabled) { border-color: var(--rouge); color: #e58a7c; }
+.chat-clear-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chat-send-btn:disabled, .chat-clear-btn:disabled { opacity: .45; cursor: default; }
+#chat-msg { margin: .5rem 0 0; }
+
 /* ---------- Footer (shared, identical on the three pages) ---------- */
 footer {
   margin-top: 2.5rem;
@@ -715,4 +912,6 @@ footer li { margin-bottom: .3rem; word-break: break-all; }
   #map { height: 360px; }
   header h1 { font-size: 1.3rem; }
   .hist-chips { margin-left: 0; }
+  .chat-bubble { max-width: 100%; }
+  .chat-actions { flex-direction: row; align-items: center; }
 }
