@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#14160f">
-  <title>Terrains &amp; équipes d'airsoft — Rennes / Nanterre</title>
+  <title>Terrains &amp; équipes d'airsoft — Rennes / Caen / Nanterre</title>
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
@@ -18,8 +18,10 @@
     <span></span><span></span><span></span>
   </button>
   <h1><a href="./"><span class="stencil">Airsoft&nbsp;OPS</span></a> — Terrains &amp; équipes</h1>
-  <p class="subtitle">Autour de Rennes et de Nanterre · <span id="verified-date">Données vérifiées le —</span>
-    <span id="agent-pill" class="agent-pill" hidden></span></p>
+  <p class="subtitle">À ~2&nbsp;h de route de Rennes ou de Caen · ~1&nbsp;h de Nanterre · <span id="verified-date">Données vérifiées le —</span>
+    <span id="agent-pill" class="agent-pill" hidden></span>
+    <a id="public-site-link" class="public-site-link" hidden
+       href="https://garlic4356.github.io/stuff/" target="_blank" rel="noopener">Site public ↗</a></p>
 </header>
 
 <!-- Off-canvas navigation (opens from the left; closed by default — pure JS
@@ -72,52 +74,27 @@
 
   <section id="tableaux">
     <h2>Tableaux détaillés</h2>
-    <div class="table-block" id="block-rennes">
-      <h3>Autour de Rennes</h3>
+    <!-- ONE table for both regions: the calendar's zone/distance filters above
+         also drive it; dep + search stay table-local. Rows keep per-region ids
+         (#entry-<region>-<id>), the timeline deep-links' contract. -->
+    <div class="table-block" id="block-all">
+      <h3>Toutes les équipes</h3>
+      <p class="subtitle">Les zones et la distance choisies dans le calendrier filtrent aussi ce tableau.</p>
       <div class="table-controls">
-        <select id="dep-rennes" aria-label="Filtrer par département">
+        <select id="dep-all" aria-label="Filtrer par département">
           <option value="">Tous départements</option>
         </select>
-        <input type="search" id="search-rennes" placeholder="Rechercher une équipe…" aria-label="Rechercher par nom">
+        <input type="search" id="search-all" placeholder="Rechercher une équipe…" aria-label="Rechercher par nom">
       </div>
       <div class="table-scroll">
-        <table id="table-rennes">
+        <table id="table-all">
           <thead>
             <tr>
               <th data-key="nom" tabindex="0" role="button" aria-sort="none">Équipe</th>
               <th data-key="commune" tabindex="0" role="button" aria-sort="none">Commune</th>
               <th data-key="dep" tabindex="0" role="button" aria-sort="none">Dépt</th>
-              <th data-key="distance" tabindex="0" role="button" aria-sort="none">~Rennes</th>
+              <th data-key="distance" tabindex="0" role="button" aria-sort="none">Distance</th>
               <th data-key="type" tabindex="0" role="button" aria-sort="none">Création / type</th>
-              <th data-key="statut" tabindex="0" role="button" aria-sort="none">Statut</th>
-              <th data-key="frequence" tabindex="0" role="button" aria-sort="none">Fréquence</th>
-              <th data-key="events" tabindex="0" role="button" aria-sort="none">Prochaines parties</th>
-              <th data-key="terrain" tabindex="0" role="button" aria-sort="none">Terrain</th>
-              <th data-key="cout" tabindex="0" role="button" aria-sort="none">Coût partie</th>
-              <th>Liens</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="table-block" id="block-nanterre">
-      <h3>Autour de Nanterre</h3>
-      <div class="table-controls">
-        <select id="dep-nanterre" aria-label="Filtrer par département">
-          <option value="">Tous départements</option>
-        </select>
-        <input type="search" id="search-nanterre" placeholder="Rechercher une équipe…" aria-label="Rechercher par nom">
-      </div>
-      <div class="table-scroll">
-        <table id="table-nanterre">
-          <thead>
-            <tr>
-              <th data-key="nom" tabindex="0" role="button" aria-sort="none">Équipe</th>
-              <th data-key="commune" tabindex="0" role="button" aria-sort="none">Lieu</th>
-              <th data-key="dep" tabindex="0" role="button" aria-sort="none">Dépt</th>
-              <th data-key="distance" tabindex="0" role="button" aria-sort="none">≈ Nanterre</th>
-              <th data-key="type" tabindex="0" role="button" aria-sort="none">Type</th>
               <th data-key="statut" tabindex="0" role="button" aria-sort="none">Statut</th>
               <th data-key="frequence" tabindex="0" role="button" aria-sort="none">Fréquence</th>
               <th data-key="events" tabindex="0" role="button" aria-sort="none">Prochaines parties</th>

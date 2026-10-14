@@ -8,7 +8,10 @@
  *   /chat  (chat.html, data-page="chat")   — discussion avec l'agent (chat
  *                                            runs only through the
  *                                            same-origin API: POSTs never
- *                                            carry CORS)
+ *                                            carry CORS; assistant transcript
+ *                                            records may carry an `activity`
+ *                                            array → a collapsed tool-activity
+ *                                            block inside their bubble)
  * The old /associations page is gone: the server 301-redirects it to /.
  * Routing knobs come from web/config.js (window.AIRSOFT_SITE, loaded before
  * this script): dataUrl points at the data JSON ("/api/data" on the server,
@@ -49,6 +52,13 @@ const ANCHORS = {
   nanterre: { lat: 48.8919, lon: 2.2060, label: "Nanterre" },
 };
 
+/** Canonical region list — order matches the data root keys
+ *  (data.json root order rennes → caen → nanterre). Every loop over the
+ *  entry buckets uses this array instead of a duplicated literal. */
+const REGIONS = ["rennes", "caen", "nanterre"];
+/** French display labels per region id. */
+const REGION_LABELS = { rennes: "Rennes", caen: "Caen", nanterre: "Nanterre" };
+
 /** Default max distance (km) for the timeline zone filter. */
 const DEFAULT_MAX_KM = 150;
 
@@ -86,13 +96,14 @@ const CHAT_REWATCH_LIMIT = 3;                  // finish→rewatch cycles before
 const PAGE = document.body.dataset.page;
 
 const state = {
-  // Zone filter (timeline only): active anchor keys; empty = no filter, all shown
+  // Zone filter (calendar chips + max km): drives the timeline AND the unified
+  // table; empty = no filter, all shown
   zones: new Set(),
   maxKm: DEFAULT_MAX_KM,
-  data: { meta: {}, rennes: [], nanterre: [] },
-  sorts: { rennes: { key: null, dir: 1 }, nanterre: { key: null, dir: 1 } },
-  depFilters: { rennes: "", nanterre: "" },
-  searches: { rennes: "", nanterre: "" },
+  data: { meta: {}, rennes: [], caen: [], nanterre: [] },
+  sort: { key: null, dir: 1 }, // single table → one sort state
+  depFilter: "",               // table-local department filter
+  search: "",                  // table-local search input
 };
 
 /** Known from the latest /api/status answer: drives the history-section
@@ -223,6 +234,21 @@ function entryWithinZones(entry) {
   return false;
 }
 
+/** "à X km de <label>" — distance to the nearest ACTIVE anchor; null when no
+ *  zone is active (or no reachable anchor). Annotation shared by the timeline
+ *  cards and the table's Distance cells; data values are untouched. */
+function nearestZoneTag(coords) {
+  if (state.zones.size === 0 || !coords) return null;
+  let best = null;
+  for (const key of state.zones) {
+    const a = ANCHORS[key];
+    if (!a) continue;
+    const km = distKm(coords.lat, coords.lon, a.lat, a.lon);
+    if (!best || km < best.km) best = { km, label: a.label };
+  }
+  return best ? `à ${Math.round(best.km)} km de ${best.label}` : null;
+}
+
 /** First non-past event of an entry (events are date-ascending; today counts as upcoming), or null. */
 function nextUpcomingEvent(entry) {
   const events = entry.events || [];
@@ -232,10 +258,16 @@ function nextUpcomingEvent(entry) {
   return null;
 }
 
+/** The n.c./empty convention of ncSpan as a predicate (trimmed value, same rule). */
+function isNcValue(text) {
+  const t = String(text ?? "").trim();
+  return t === "" || t === "—" || /^n\.c\./i.test(t);
+}
+
 /** Renders text greyed out when it equals / starts with "n.c." (FRENCH data convention — the string itself is data, keep as-is). */
 function ncSpan(text) {
   const t = String(text ?? "").trim();
-  if (t === "" || t === "—" || /^n\.c\./i.test(t)) {
+  if (isNcValue(text)) {
     return `<span class="nc">${escapeHtml(t === "" ? "—" : t)}</span>`;
   }
   return escapeHtml(t);
@@ -269,6 +301,24 @@ function hardenLinks(sanitizedHtml) {
   return tpl.innerHTML;
 }
 
+/** Wrap markdown <table> elements in a horizontal-scroll container: the
+ *  home-page table sizing (.table-scroll/table min-width: 1100px) must not
+ *  leak into chat bubbles / workflow replies / history summaries, and
+ *  genuinely wide tables must scroll instead of spilling across their
+ *  container border. Parsing sanitized content in a <template> is inert
+ *  (no script runs). */
+function wrapTables(sanitizedHtml) {
+  const tpl = document.createElement("template");
+  tpl.innerHTML = sanitizedHtml;
+  for (const table of [...tpl.content.querySelectorAll("table")]) {
+    const scroller = document.createElement("div");
+    scroller.className = "md-table-scroll";
+    table.replaceWith(scroller);
+    scroller.appendChild(table);
+  }
+  return tpl.innerHTML;
+}
+
 /** Markdown → sanitized HTML (marked + DOMPurify); the no-CDN/other-page
  *  fallback is the escapeHtml discipline — raw HTML is never produced. */
 function renderMarkdown(text) {
@@ -276,14 +326,14 @@ function renderMarkdown(text) {
     return escapeHtml(text);
   }
   // marked.parse is synchronous by default; sanitize before any DOM touch
-  return hardenLinks(DOMPurify.sanitize(marked.parse(String(text ?? ""))));
+  return hardenLinks(wrapTables(DOMPurify.sanitize(marked.parse(String(text ?? "")))));
 }
 
 /* ------------------------------ Hero / timeline ------------------------------ */
 
 function allEvents() {
   const out = [];
-  for (const region of ["rennes", "nanterre"]) {
+  for (const region of REGIONS) {
     for (const entry of state.data[region] || []) {
       for (const ev of entry.events || []) {
         out.push({ ...ev, region, entry });
@@ -315,17 +365,7 @@ function eventCard(ev) {
   const soon = daysFromToday(ev.date) >= 0 && daysFromToday(ev.date) <= SOON_DAYS;
   // With a zone filter active, show the distance to the nearest active anchor
   // instead of the static region tag
-  let zoneTag;
-  if (state.zones.size > 0 && ev.entry.coords) {
-    let best = null;
-    for (const key of state.zones) {
-      const a = ANCHORS[key];
-      if (!a) continue;
-      const km = distKm(ev.entry.coords.lat, ev.entry.coords.lon, a.lat, a.lon);
-      if (!best || km < best.km) best = { km, label: a.label };
-    }
-    zoneTag = best ? `à ${Math.round(best.km)} km de ${best.label}` : null;
-  }
+  const zoneTag = nearestZoneTag(ev.entry.coords);
   const card = document.createElement("a");
   card.className = "event-card";
   card.href = `#entry-${ev.region}-${ev.entry.id}`;
@@ -333,7 +373,7 @@ function eventCard(ev) {
     <span class="ev-date">${escapeHtml(formatDate(ev.date))}</span>
     <span class="ev-rel${soon ? " soon" : ""}">${escapeHtml(rel)}</span>
     <div class="ev-orga">${escapeHtml(ev.entry.nom)}</div>
-    <div class="ev-lieu">${escapeHtml(ev.lieu)} · <span class="${zoneTag ? "ev-zone" : "ev-region"}">${zoneTag ? escapeHtml(zoneTag) : ev.region === "rennes" ? "Rennes" : "Nanterre"}</span></div>
+    <div class="ev-lieu">${escapeHtml(ev.lieu)} · <span class="${zoneTag ? "ev-zone" : "ev-region"}">${zoneTag ? escapeHtml(zoneTag) : escapeHtml(REGION_LABELS[ev.region] || ev.region)}</span></div>
     ${ev.note ? `<div class="ev-note">${escapeHtml(ev.note)}</div>` : ""}`;
   // Tables are on the same page now: reset the filters, then scroll+flash the row
   card.addEventListener("click", (e) => {
@@ -407,14 +447,30 @@ function renderHero() {
   }
 }
 
-/** Click from the hero/past games: make sure the filters don't hide the row,
- *  then scroll+flash it. */
+/** Click from the hero/past games/no-geo list: make sure the filters don't
+ *  hide the row — search + dep are cleared, and an active zone filter that
+ *  would still hide the target is cleared too (a deep link must always
+ *  surface its row) — then scroll+flash it. */
 function scrollToEntry(region, id) {
-  state.searches[region] = "";
-  state.depFilters[region] = "";
-  document.getElementById(`search-${region}`).value = "";
-  document.getElementById(`dep-${region}`).value = "";
-  renderTable(region);
+  state.search = "";
+  state.depFilter = "";
+  const search = document.getElementById("search-all");
+  const dep = document.getElementById("dep-all");
+  if (search) search.value = "";
+  if (dep) dep.value = "";
+  // The zone filter (calendar chips) is not a table-local control: a
+  // coords-less entry, or one beyond the max-km range, stays hidden after the
+  // dep/search reset — clear the zones the same way (chips reset) and let the
+  // same rendering path the chip bindings use re-render the table.
+  const entry = (state.data[region] || []).find((e) => e.id === id);
+  if (state.zones.size > 0 && entry && !entryWithinZones(entry)) {
+    state.zones.clear();
+    document.querySelectorAll(".filter-controls .chip").forEach((chip) => {
+      chip.setAttribute("aria-pressed", "false");
+    });
+    renderFilteredViews();
+  }
+  renderTable();
   const row = document.getElementById(`entry-${region}-${id}`);
   if (!row) return;
   row.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -423,7 +479,7 @@ function scrollToEntry(region, id) {
 }
 
 /** Deep-link on load: /…#entry-<region>-<id> (bookmark or external link)
- *  scrolls to the matching row and flashes it once the tables render. */
+ *  scrolls to the matching row and flashes it once the table renders. */
 function handleEntryHash() {
   if (!location.hash.startsWith("#entry-")) return;
   const row = document.getElementById(location.hash.slice(1));
@@ -437,6 +493,12 @@ function handleEntryHash() {
 
 let map = null;
 let markerLayer = null;
+/** Decorative highlight ring (one at a time) on its own layer — never mixed
+ *  with the data markers, so a highlight can't be confused with the data. */
+let highlightLayer = null;
+let highlightTimer = null; // pending removal of the highlight ring
+/** Entry id → data marker: terrain-cell clicks look up the popup target. */
+const markerById = new Map();
 
 function initMap() {
   // Guard: renderData() must be able to call this repeatedly (refresh after an agent run)
@@ -452,6 +514,7 @@ function initMap() {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
   markerLayer = L.layerGroup().addTo(map);
+  highlightLayer = L.layerGroup().addTo(map);
   return true;
 }
 
@@ -481,8 +544,9 @@ function liensInlineHtml(entry) {
 function renderMap() {
   if (!map) return;
   markerLayer.clearLayers();
+  markerById.clear();
   const bounds = [];
-  for (const region of ["rennes", "nanterre"]) {
+  for (const region of REGIONS) {
     for (const entry of state.data[region] || []) {
       if (!entry.coords) continue;
       const color = STATUS_COLOR[entry.statut];
@@ -508,6 +572,7 @@ function renderMap() {
       marker.bindPopup(popupHtml(entry));
       marker.bindTooltip(entry.nom, { direction: "top", offset: [0, -6] });
       markerLayer.addLayer(marker);
+      markerById.set(entry.id, marker);
       bounds.push([entry.coords.lat, entry.coords.lon]);
     }
   }
@@ -519,11 +584,51 @@ function renderMap() {
   setTimeout(() => map.invalidateSize(), 50);
 }
 
+/** Terrain-cell click → map: scroll to the map section, fly to the entry's
+ *  spot (no animation under prefers-reduced-motion), open its popup and pulse
+ *  a temporary accent ring. One ring at a time: a re-click before expiry
+ *  clears the previous ring + timer instead of stacking. */
+function highlightOnMap(entry) {
+  if (!map || !entry.coords) return;
+  const section = document.getElementById("carte");
+  if (section) {
+    section.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+  }
+  const zoom = Math.max(map.getZoom(), 11);
+  if (prefersReducedMotion()) {
+    map.setView([entry.coords.lat, entry.coords.lon], zoom);
+  } else {
+    map.flyTo([entry.coords.lat, entry.coords.lon], zoom);
+  }
+  // Popup on the DATA marker; no-op after a re-render dropped the marker
+  const marker = markerById.get(entry.id);
+  if (marker) marker.openPopup();
+  // Temporary ring, #a3b955 = the accent-bright literal (map SVG colors are
+  // code literals, like STATUS_COLOR)
+  if (highlightTimer) {
+    clearTimeout(highlightTimer);
+    highlightTimer = null;
+    highlightLayer.clearLayers();
+  }
+  highlightLayer.addLayer(L.circleMarker([entry.coords.lat, entry.coords.lon], {
+    radius: 12,
+    weight: 3,
+    color: "#a3b955",
+    fill: false,
+    interactive: false,
+    className: "map-pulse",
+  }));
+  highlightTimer = setTimeout(() => {
+    highlightTimer = null;
+    highlightLayer?.clearLayers();
+  }, 4000);
+}
+
 /** Entries without coordinates, listed below the map. */
 function renderNoGeo() {
   const zone = document.getElementById("no-geo");
   zone.innerHTML = "";
-  const missing = ["rennes", "nanterre"]
+  const missing = REGIONS
     .flatMap((r) => (state.data[r] || []).filter((e) => !e.coords));
   if (missing.length === 0) return;
   const details = document.createElement("details");
@@ -544,19 +649,27 @@ function renderNoGeo() {
   zone.appendChild(details);
 }
 
+/** Bucket key whose array contains the entry id (canonical REGIONS order);
+ *  defaults to "rennes" when absent, preserving the no-coords anchor-link
+ *  behavior. */
 function entryRegion(entry) {
-  return (state.data.rennes || []).some((e) => e.id === entry.id) ? "rennes" : "nanterre";
+  for (const region of REGIONS) {
+    if ((state.data[region] || []).some((e) => e.id === entry.id)) return region;
+  }
+  return "rennes";
 }
 
 /* ------------------------------ Tables ------------------------------ */
 
-function populateDepSelect(region) {
-  const select = document.getElementById(`dep-${region}`);
+function populateDepSelect() {
+  const select = document.getElementById("dep-all");
+  if (!select) return;
   // Re-population on refresh must not duplicate the "Tous départements" option
   const keep = select.querySelector("option[value='']");
   select.innerHTML = "";
   if (keep) select.appendChild(keep);
-  const deps = [...new Set((state.data[region] || []).map((e) => e.dep))].sort((a, b) => a.localeCompare(b, "fr"));
+  const deps = [...new Set(REGIONS.flatMap((r) => (state.data[r] || []).map((e) => e.dep)))]
+    .sort((a, b) => a.localeCompare(b, "fr"));
   for (const dep of deps) {
     const opt = document.createElement("option");
     opt.value = dep;
@@ -566,13 +679,13 @@ function populateDepSelect(region) {
   // Keep the visible selection in sync with the active filter: after a refresh
   // the previous filter may no longer exist as an option — then clear both the
   // select and the filter state (and re-render so the table agrees).
-  const filter = state.depFilters[region];
+  const filter = state.depFilter;
   if (filter && deps.includes(filter)) {
     select.value = filter;
   } else if (filter) {
-    state.depFilters[region] = "";
+    state.depFilter = "";
     select.value = "";
-    renderTable(region);
+    renderTable();
   }
 }
 
@@ -593,16 +706,20 @@ function sortValue(entry, key) {
   }
 }
 
-function filteredEntries(region) {
-  const search = state.searches[region].trim().toLowerCase();
-  const dep = state.depFilters[region];
-  const { key, dir } = state.sorts[region];
+function filteredEntries() {
+  const search = state.search.trim().toLowerCase();
+  const dep = state.depFilter;
+  const { key, dir } = state.sort;
+  // Regions in canonical order (REGIONS): visual order preserved while unsorted.
   // includes(): handles composite deps like "78 / 95" (AMA France matches filter 78 as well as 95)
-  let entries = (state.data[region] || []).filter(
-    (e) =>
-      (!dep || String(e.dep).includes(dep)) &&
-      (!search || `${e.nom} ${e.commune}`.toLowerCase().includes(search))
-  );
+  let entries = REGIONS
+    .flatMap((r) => state.data[r] || [])
+    .filter(
+      (e) =>
+        entryWithinZones(e) && // calendar filter drives the table too
+        (!dep || String(e.dep).includes(dep)) &&
+        (!search || `${e.nom} ${e.commune}`.toLowerCase().includes(search))
+    );
   if (key) {
     entries = [...entries].sort((a, b) => {
       const va = sortValue(a, key);
@@ -658,13 +775,23 @@ function liensCellHtml(entry) {
   return `<ul class="liens-list">${items.join("")}</ul>`;
 }
 
-function renderTable(region) {
-  const tbody = document.querySelector(`#table-${region} tbody`);
-  const head = document.querySelector(`#table-${region} thead`);
+/** Terrain cell: a geolocated entry with a REAL place value deep-links to the
+ *  map (button → highlightOnMap); a non-place — missing coords, empty or n.c.
+ *  value — has nothing to highlight and keeps the plain ncSpan rendering.
+ *  The button text is the raw data value (escaped), like ncSpan would render. */
+function terrainCellHtml(entry) {
+  if (!entry.coords || isNcValue(entry.terrain)) return ncSpan(entry.terrain);
+  const text = String(entry.terrain ?? "").trim();
+  return `<button type="button" class="terrain-link" title="Voir sur la carte">${escapeHtml(text)}</button>`;
+}
+
+function renderTable() {
+  const tbody = document.querySelector("#table-all tbody");
+  const head = document.querySelector("#table-all thead");
   if (!tbody || !head) return;
   // Sort markers
   head.querySelectorAll("th .arrow").forEach((a) => a.remove());
-  const { key, dir } = state.sorts[region];
+  const { key, dir } = state.sort;
   // aria-sort: "none" everywhere except the active column (th without data-key, like Liens, are inert)
   head.querySelectorAll("th").forEach((th) => {
     if (!th.dataset.key) return;
@@ -680,24 +807,34 @@ function renderTable(region) {
     }
   }
   tbody.innerHTML = "";
-  for (const entry of filteredEntries(region)) {
+  for (const entry of filteredEntries()) {
+    const region = entryRegion(entry);
     const tr = document.createElement("tr");
     tr.className = "entry-row";
+    // EXTERNAL COMPAT: the timeline cards, past-games links, no-geo links and
+    // handleEntryHash() deep-link to #entry-<region>-<id>
     tr.id = `entry-${region}-${entry.id}`;
     const detail = entry.statutDetail
       ? `<span class="status-detail">${escapeHtml(entry.statutDetail)}</span>` : "";
+    // Distance annotation: with a calendar zone filter active, a geolocated row
+    // also shows the computed km to the nearest active anchor (presentation
+    // only — the distance DATA VALUE is untouched)
+    const zoneTag = nearestZoneTag(entry.coords);
     tr.innerHTML = `
       <td class="cell-nom">${escapeHtml(entry.nom)}</td>
       <td>${ncSpan(entry.commune)}</td>
       <td>${escapeHtml(entry.dep)}</td>
-      <td>${ncSpan(entry.distance)}</td>
+      <td>${ncSpan(entry.distance)}${zoneTag ? `<span class="ev-zone">${escapeHtml(zoneTag)}</span>` : ""}</td>
       <td>${ncSpan(entry.type)}</td>
       <td><span class="badge ${escapeHtml(entry.statut)}">${escapeHtml(STATUS_LABEL[entry.statut] || entry.statut)}</span>${detail}</td>
       <td>${ncSpan(entry.frequence)}</td>
       <td>${eventsCellHtml(entry)}</td>
-      <td>${ncSpan(entry.terrain)}</td>
+      <td>${terrainCellHtml(entry)}</td>
       <td>${ncSpan(entry.cout)}</td>
       <td>${liensCellHtml(entry)}</td>`;
+    // Terrain → map fly-to: rows are rebuilt on every render, bind per row
+    const terrainBtn = tr.querySelector(".terrain-link");
+    if (terrainBtn) terrainBtn.addEventListener("click", () => highlightOnMap(entry));
     tbody.appendChild(tr);
   }
   if (tbody.children.length === 0) {
@@ -707,26 +844,26 @@ function renderTable(region) {
   }
 }
 
-function bindTableControls(region) {
-  const search = document.getElementById(`search-${region}`);
-  const dep = document.getElementById(`dep-${region}`);
+function bindTableControls() {
+  const search = document.getElementById("search-all");
+  const dep = document.getElementById("dep-all");
   if (!search || !dep) return;
   search.addEventListener("input", () => {
-    state.searches[region] = search.value;
-    renderTable(region);
+    state.search = search.value;
+    renderTable();
   });
   dep.addEventListener("change", () => {
-    state.depFilters[region] = dep.value;
-    renderTable(region);
+    state.depFilter = dep.value;
+    renderTable();
   });
-  document.querySelectorAll(`#table-${region} thead th`).forEach((th) => {
+  document.querySelectorAll("#table-all thead th").forEach((th) => {
     th.addEventListener("click", () => {
       if (!th.dataset.key) return; // non-sortable columns (e.g. Liens)
       const k = th.dataset.key;
-      const s = state.sorts[region];
+      const s = state.sort;
       s.dir = s.key === k ? -s.dir : 1;
       s.key = k;
-      renderTable(region);
+      renderTable();
     });
     // Keyboard accessibility: Enter / Space trigger sorting like a click
     th.addEventListener("keydown", (e) => {
@@ -746,7 +883,7 @@ function renderSources() {
   // Clear first: renderData() runs again after an agent-run refresh
   zone.innerHTML = "";
   const seen = new Set();
-  for (const region of ["rennes", "nanterre"]) {
+  for (const region of REGIONS) {
     for (const entry of state.data[region] || []) {
       for (const url of entry.sources || []) {
         if (seen.has(url)) continue;
@@ -1624,7 +1761,10 @@ function chatTimestampHtml(ts) {
 /** One transcript row per message — shared by wholesale renders and live
  *  appends. User content stays plain text (textContent: user input must never
  *  become HTML); assistant content goes through renderMarkdown (sanitized,
- *  escapeHtml fallback without the CDN stack). */
+ *  escapeHtml fallback without the CDN stack). An assistant record may also
+ *  carry a non-empty `activity` array (persisted tool calls): it renders as a
+ *  collapsed <details> block inside the bubble, above the reply text
+ *  (makeChatActivityDetails); records without it render exactly as before. */
 function makeUserRow(text, ts) {
   const row = document.createElement("div");
   row.className = "chat-row chat-row-user";
@@ -1636,27 +1776,36 @@ function makeUserRow(text, ts) {
   return row;
 }
 
-function makeAssistantRow(text, ts) {
+function makeAssistantRow(text, ts, activity) {
   const row = document.createElement("div");
   row.className = "chat-row chat-row-assistant";
   const bubble = document.createElement("div");
   bubble.className = "chat-bubble chat-bubble-assistant";
-  bubble.innerHTML = renderMarkdown(String(text ?? ""));
+  const details = makeChatActivityDetails(activity);
+  if (details) bubble.appendChild(details);
+  // The markdown output must keep its nodes as direct bubble children (the
+  // :first-child/:last-child spacing rules rely on it): append after the
+  // activity block instead of assigning bubble.innerHTML wholesale.
+  bubble.insertAdjacentHTML("beforeend", renderMarkdown(String(text ?? "")));
   row.appendChild(bubble);
   row.insertAdjacentHTML("beforeend", chatTimestampHtml(ts));
   return row;
 }
 
-/** Assistant error record: optional reply text above the error line itself. */
+/** Assistant error record: optional reply text above the error line itself;
+ *  a persisted tool-activity block (see makeChatActivityDetails) sits above
+ *  both when the record carries one. */
 function makeErrorRow(rec) {
   const row = document.createElement("div");
   row.className = "chat-row chat-row-assistant";
   const bubble = document.createElement("div");
   bubble.className = "chat-bubble chat-bubble-assistant chat-bubble-error";
+  const details = makeChatActivityDetails(rec.activity);
+  if (details) bubble.appendChild(details);
   const text = String(rec.text ?? "");
-  bubble.innerHTML =
+  bubble.insertAdjacentHTML("beforeend",
     (text ? renderMarkdown(text) : "") +
-    `<div class="chat-err-line">⚠ ${escapeHtml(String(rec.error ?? "Erreur inconnue."))}</div>`;
+    `<div class="chat-err-line">⚠ ${escapeHtml(String(rec.error ?? "Erreur inconnue."))}</div>`);
   row.appendChild(bubble);
   row.insertAdjacentHTML("beforeend", chatTimestampHtml(rec.ts));
   return row;
@@ -1675,7 +1824,9 @@ function renderChatTranscript(messages) {
     if (rec.role === "user") {
       zone.appendChild(makeUserRow(rec.text, rec.ts));
     } else if (rec.role === "assistant") {
-      zone.appendChild(rec.error ? makeErrorRow(rec) : makeAssistantRow(rec.text, rec.ts));
+      // rec.activity (absent on older servers / user records) flows to the
+      // collapsed block builder — rows without it render exactly as before.
+      zone.appendChild(rec.error ? makeErrorRow(rec) : makeAssistantRow(rec.text, rec.ts, rec.activity));
     }
   }
   scrollChatToBottom();
@@ -1730,19 +1881,24 @@ function chatPreviewLine(s, max) {
   return t.length > max ? `${t.slice(0, max)}…` : t;
 }
 
-function appendChatActivityCall(ev, zone = chatActivityZone()) {
-  if (!zone) return;
+/** One tool-activity line per event, as a standalone node (no scrolling):
+ *  the single line builder behind both the live pending-bubble appends (which
+ *  scroll per line) and the wholesale renders (collapsed details block,
+ *  poll-tick rebuild — the caller owns the single scroll at the end).
+ *  The caller has already checked ev.type; unknown fields degrade via ?? "". */
+function chatActivityCallLine(ev) {
   const line = document.createElement("div");
   line.className = "chat-act-line";
   line.innerHTML =
     `<span class="chat-act-mark">▸</span> ` +
     `<code class="chat-act-tool">${escapeHtml(String(ev.tool ?? ""))}(${escapeHtml(chatPreviewLine(ev.argsPreview, CHAT_ACTIVITY_MAX))})</code>`;
-  zone.appendChild(line);
-  scrollChatToBottom();
+  return line;
 }
 
-function appendChatActivityResult(ev, zone = chatActivityZone()) {
-  if (!zone) return;
+/** Result-line twin of chatActivityCallLine — same node-only builder (no
+ *  scrolling, wholesale renders scroll once at the end), same rules: the
+ *  caller has already checked ev.type; unknown fields degrade via ?? "". */
+function chatActivityResultLine(ev) {
   const ok = ev.ok === true;
   const dur = fmtDuration(ev.durationMs);
   const line = document.createElement("div");
@@ -1751,7 +1907,49 @@ function appendChatActivityResult(ev, zone = chatActivityZone()) {
     `<span class="${ok ? "chat-act-ok" : "chat-act-err"}">${ok ? "✔" : "✖"}</span> ` +
     `<span class="chat-act-toolname">${escapeHtml(String(ev.tool ?? ""))}</span>` +
     (dur ? ` <span class="chat-act-dur">(${escapeHtml(dur)})</span>` : "");
-  zone.appendChild(line);
+  return line;
+}
+
+/** Collapsed tool-activity block inside an assistant transcript bubble — the
+ *  persisted equivalent of the pending bubble's live lines (same line markup,
+ *  folded into a native <details> the reader expands by clicking). Returns
+ *  null when the record carries nothing renderable (absent/empty array —
+ *  older servers omit the field entirely — or only unknown event types), so
+ *  the row renders exactly as before. */
+function makeChatActivityDetails(activity) {
+  if (!Array.isArray(activity) || activity.length === 0) return null;
+  const calls = activity.filter((ev) => ev && ev.type === "toolCall").length;
+  const details = document.createElement("details");
+  details.className = "chat-act-details";
+  // Collapsed by default (no open attribute); the label counts the calls.
+  const summary = document.createElement("summary");
+  summary.textContent = calls === 1 ? "⚙ 1 appel d'outil" : `⚙ ${calls} appels d'outils`;
+  details.appendChild(summary);
+  const inner = document.createElement("div");
+  inner.className = "chat-act-inner";
+  for (const ev of activity) {
+    if (!ev || typeof ev !== "object") continue;
+    if (ev.type === "toolCall") inner.appendChild(chatActivityCallLine(ev));
+    else if (ev.type === "toolResult") inner.appendChild(chatActivityResultLine(ev));
+    // unknown event types: skip defensively (same spirit as the workflow renderer)
+  }
+  if (!inner.children.length) return null;
+  details.appendChild(inner);
+  return details;
+}
+
+/** Live pending-bubble appends: same line nodes, one scroll per line so the
+ *  activity streams visibly from the bottom (wholesale renders never scroll
+ *  here — they scroll once at the end). */
+function appendChatActivityCall(ev, zone = chatActivityZone()) {
+  if (!zone) return;
+  zone.appendChild(chatActivityCallLine(ev));
+  scrollChatToBottom();
+}
+
+function appendChatActivityResult(ev, zone = chatActivityZone()) {
+  if (!zone) return;
+  zone.appendChild(chatActivityResultLine(ev));
   scrollChatToBottom();
 }
 
@@ -2246,6 +2444,15 @@ function setupNavActivePage() {
   }
 }
 
+/** Header « Site public » link (stable UI-chrome URL): shown ONLY on the
+ *  dynamic server — the anchor ships hidden in the HTML, and the published
+ *  static site receives these very files, so it stays hidden there (its data
+ *  URL is the published file, not the server API). */
+function setupPublicSiteLink() {
+  const link = document.getElementById("public-site-link");
+  if (link) link.hidden = STATIC_DATA;
+}
+
 /* ------------------------------ Errors ------------------------------ */
 
 function showFetchError(err) {
@@ -2307,12 +2514,19 @@ function renderData() {
     renderMap();
     renderNoGeo();
     renderHero();
-    renderTable("rennes");
-    renderTable("nanterre");
-    for (const r of ["rennes", "nanterre"]) populateDepSelect(r);
+    renderTable();
+    populateDepSelect();
     handleEntryHash();
   }
-  console.info(`Loaded: ${state.data.rennes.length} Rennes entries, ${state.data.nanterre.length} Nanterre entries`);
+  console.info(
+    `Loaded: ${REGIONS.map((r) => `${(state.data[r] || []).length} ${REGION_LABELS[r]} entries`).join(", ")}`
+  );
+}
+
+/** The zone/distance filters drive both the calendar and the unified table. */
+function renderFilteredViews() {
+  renderHero();
+  renderTable();
 }
 
 /** Bind the zone chips + max-distance input (init-time only). */
@@ -2324,7 +2538,7 @@ function bindTimelineFilters() {
       chip.setAttribute("aria-pressed", on ? "false" : "true");
       if (on) state.zones.delete(key);
       else state.zones.add(key);
-      renderHero();
+      renderFilteredViews();
     });
   });
   const maxKmInput = document.getElementById("max-km");
@@ -2333,7 +2547,7 @@ function bindTimelineFilters() {
     if (!Number.isFinite(v)) return;
     if (v < 10 || v > 500 || v === state.maxKm) return;
     state.maxKm = v;
-    renderHero();
+    renderFilteredViews();
   };
   // While typing, react only to valid in-range values (avoids jarring re-renders mid-typing)
   maxKmInput.addEventListener("input", applyMaxKm);
@@ -2348,7 +2562,7 @@ function bindTimelineFilters() {
     maxKmInput.value = String(v);
     if (v !== state.maxKm) {
       state.maxKm = v;
-      renderHero();
+      renderFilteredViews();
     }
   });
 }
@@ -2376,8 +2590,11 @@ async function loadData() {
     throw new Error("Réponse du serveur invalide (rennes / nanterre attendus).");
   }
   state.data = json;
-  // Defensive: only render what actually exists in the payload
-  for (const r of ["rennes", "nanterre"]) {
+  // Defensive: only render what actually exists in the payload. rennes and
+  // nanterre were checked above; caen may be ABSENT (stale data.json without
+  // the new bucket) — every REGIONS key is normalized to an array so the
+  // region loops below stay simple.
+  for (const r of REGIONS) {
     if (!Array.isArray(state.data[r])) state.data[r] = [];
   }
   return json;
@@ -2391,13 +2608,12 @@ function setupStatic(page) {
   if (page === "home") {
     const mapOk = initMap();
     if (!mapOk) document.querySelector(".map-legend")?.style.setProperty("opacity", ".4");
-    for (const r of ["rennes", "nanterre"]) {
-      bindTableControls(r);
-    }
+    bindTableControls();
     bindTimelineFilters();
   }
   setupNavigation();
   setupNavActivePage();
+  setupPublicSiteLink();
   if (page === "agent") {
     if (REMOTE_MODE) {
       // Static deployment: no token client-side — the update trigger is hidden

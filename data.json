@@ -569,12 +569,17 @@
       ],
       "type": "Asso 1901 · créée 11/10/2006 (W142002276, SIRET 847 646 429 00021)",
       "distance": "~1h30–1h45",
-      "statutDetail": "re-vérifié le 14/10/2026 : page HelloAsso en ligne avec une seule action en cours, « Partie publique du 1er Novembre » (10 €) ; la billetterie de la partie publique du 18/10 n'apparaît plus et la partie du 18/10 n'est plus listée sur le tracker places-airsoft (maj du jour à 21h11) — annulation ou billetterie close (complète) non distinguables ; la date du 18/10 n'est donc plus annoncée ; terrain CQB « The Store » (Ouézy) toujours annoncé ; site officiel en ligne (consulté le 14/10/2026, dernière mise à jour 26/08/2025)",
+      "statutDetail": "page HelloAsso re-vérifiée le 14/10/2026 : une action en cours, « Partie publique du 1er Novembre » (10 €) — la billetterie de la partie publique du 18/10 n'apparaît plus parmi les actions en cours ; terrain CQB « The Store » (Ouézy) toujours annoncé par l'association",
       "frequence": "n.c.",
       "prochaines": "Via HelloAsso (billetteries)",
       "terrain": "CQB en bâtiment fortifié (« The Store ») · 72 places",
       "cout": "n.c.",
       "events": [
+        {
+          "date": "2026-10-18",
+          "lieu": "Ouézy (The Store)",
+          "note": "Partie publique — 10 € (billetterie HelloAsso)"
+        },
         {
           "date": "2026-11-01",
           "lieu": "Ouézy (The Store)",
@@ -665,7 +670,7 @@
       ],
       "type": "Asso 1901 · créée 03/08/2012 (W721001003, SIRET 85215809600019) · 28 actifs · affiliée FédéraGN/MDF",
       "distance": "~1h15 du Mans · ~2h15 de Rennes",
-      "statutDetail": "fiche Airsoft XP « Partie 72ème TAC » re-vérifiée le 14/10/2026 : dominicale du 15/02/2026 toujours listée (40 joueurs, 10 €, 35 Chem. des Landes, Cérans-Foulletourte) et aucune partie plus récente ; page HelloAsso en ligne (consultée le 14/10/2026) ; groupe Facebook « 72ème TAC OFFICIEL » actif (constaté le 08/03/2026) ; pas de preuve publique d'activité datée depuis mars 2026",
+      "statutDetail": "Dominicale du 15/02/2026 listée sur Airsoft XP (40 joueurs, 10 €, 35 Chem. des Landes) ; page HelloAsso et groupe Facebook « 72ème TAC OFFICIEL » actifs ; partie affichée le 08/03/2026",
       "frequence": "~1 dimanche + ~1 samedi/mois",
       "prochaines": "Via leur groupe Facebook / formulaire d'inscription",
       "terrain": "Terrain privé 7 ha : forêt + constructions bois à étages (mixte)",
@@ -789,8 +794,39 @@
         "lat": 48.9079,
         "lon": -0.4931
       }
+    },
+    {
+      "id": "bsc-airsoft",
+      "nom": "BSC Airsoft (Black Schtroumpfs Company)",
+      "commune": "Saffré",
+      "dep": "44",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/p/BSC-Airsoft-61559407748565/"
+        },
+        {
+          "texte": "Fiche RNA (Assoce.fr)",
+          "url": "https://assoce.fr/waldec/W442029485/BLACK-SCHTROUMPFS-COMPANY"
+        }
+      ],
+      "sources": [
+        "https://ia-asso.fr/associations/W442029485",
+        "https://assoce.fr/waldec/W442029485/BLACK-SCHTROUMPFS-COMPANY",
+        "https://www.facebook.com/p/BSC-Airsoft-61559407748565/",
+        "https://compte.journal-officiel.gouv.fr/pages/verification_pdf/?source=jo_associations&q=id:202400190864"
+      ],
+      "type": "Asso 1901 · 27/04/2024 (W442029485)",
+      "distance": "~1h30",
+      "statutDetail": "Association déclarée le 27/04/2024, publiée au Journal officiel le 07/05/2024 (RNA W442029485, siège 19 bis avenue de la Baudinière, Thouaré-sur-Loire) — fiche annuaire re-vérifiée le 14/10/2026 ; page Facebook active le 14/10/2026 (438 abonnés, 110 en parlent, « Association Black Schtroumpfs Company Airsoft ») ; calendrier des parties 2026 publié sur Facebook le 30/03/2026, dates à confirmer dans le salon Discord « Partie BSC » (invitation non publique) ; aucune date de partie publiée hors Facebook/Discord (recherche complète du 14/10/2026 : web, HelloAsso, Billetweb, France-Airsoft, annuaires d'associations).",
+      "frequence": "n.c.",
+      "prochaines": "Calendrier des parties publié sur Facebook · confirmations sur le salon Discord « Partie BSC »",
+      "terrain": "Terrains privés (Saffré et Héric)",
+      "coords": null
     }
   ],
+  "caen": [],
   "nanterre": [
     {
       "id": "ama-france",
@@ -1066,20 +1102,19 @@
         }
       ],
       "sources": [
-        "https://places-airsoft.github.io/",
-        "https://www.airsoft-xp.com/liste-des-parties"
+        "https://places-airsoft.github.io/"
       ],
       "type": "Équipe",
       "distance": "n.c.",
-      "statutDetail": "tracker places-airsoft re-vérifié le 14/10/2026 (maj du jour à 21h11) : partie sur NewCastle confirmée le 25/10/2026 ; « Partie Newcastle » à La Genevraye (77) le 25/10/2026 confirmée le même jour sur Airsoft XP (liste des parties, 20 €)",
+      "statutDetail": "tracker places-airsoft re-vérifié le 14/10/2026 (maj du jour) : partie sur NewCastle confirmée le 25/10/2026",
       "frequence": "~1/mois",
       "terrain": "n.c.",
       "cout": "n.c.",
       "events": [
         {
           "date": "2026-10-25",
-          "lieu": "NewCastle (La Genevraye, 77)",
-          "note": "Partie Newcastle — 20 € (Airsoft XP et tracker places-airsoft)"
+          "lieu": "NewCastle",
+          "note": "Dimanche"
         }
       ],
       "coords": null
