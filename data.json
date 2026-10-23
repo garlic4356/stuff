@@ -829,6 +829,39 @@
       "prochaines": "Calendrier des parties publié sur Facebook · confirmations sur le salon Discord « Partie BSC »",
       "terrain": "Terrains privés (Saffré et Héric)",
       "coords": null
+    },
+    {
+      "id": "breizh-commando-airsoft",
+      "nom": "Breizh Commando Airsoft (BCA)",
+      "commune": "Ploufragan",
+      "dep": "22",
+      "statut": "a_verifier",
+      "liens": [
+        {
+          "texte": "Fiche RNA (Assoce.fr)",
+          "url": "https://assoce.fr/waldec/W224002870/ASSOCIATION-BREIZH-COMMANDO-AIRSOFT"
+        },
+        {
+          "texte": "Fiche RNA (net1901)",
+          "url": "https://www.net1901.org/association/ASSOCIATION-BREIZH-COMMANDO-AIRSOFT,984242.html"
+        },
+        {
+          "texte": "Facebook (groupe)",
+          "url": "https://www.facebook.com/groups/240278596007499/"
+        }
+      ],
+      "sources": [
+        "https://assoce.fr/waldec/W224002870/ASSOCIATION-BREIZH-COMMANDO-AIRSOFT",
+        "https://www.net1901.org/association/ASSOCIATION-BREIZH-COMMANDO-AIRSOFT,984242.html",
+        "https://www.facebook.com/groups/240278596007499/"
+      ],
+      "type": "Asso 1901 · 14/06/2011 (W224002870)",
+      "distance": "~1h20",
+      "statutDetail": "fiche assoce.fr consultée le 23/10/2026 : association déclarée le 14/06/2011 (RNA W224002870), siège à Ploufragan, objet « organisation de parties d'airsoft de loisirs associés et de manifestations liées à ce loisir » ; fiche net1901 (n° 984242, Saint-Brieuc) consultée le même jour ; groupe Facebook « Breizh Commando Airsoft » en ligne mais contenu derrière une connexion (mur de connexion constaté le 23/10/2026) ; forum bca22.forumactif.fr fermé (redirection vers une page de recherche forumactif, constaté le 23/10/2026) ; dernière trace datée d'activité : présentation France-Airsoft (24 membres, 2012) ; recherche DDG du 23/10/2026 : uniquement des annuaires (Pages Jaunes, Gralon, Mappy), aucune activité datée 2025-2026 — statut et dates à confirmer via Facebook (publications visibles uniquement connecté)",
+      "frequence": "n.c.",
+      "prochaines": "n.c.",
+      "terrain": "n.c.",
+      "coords": null
     }
   ],
   "caen": [],
@@ -1011,7 +1044,7 @@
       ],
       "type": "Équipe / organisateur",
       "distance": "n.c.",
-      "statutDetail": "tracker places-airsoft re-vérifié le 23/10/2026 (maj du jour) : sessions confirmées le samedi 24/10, le dimanche 01/11 et le samedi 07/11/2026 ; les sessions des 10/10 et 18/10 sont passées",
+      "statutDetail": "tracker places-airsoft re-vérifié le 23/10/2026 (maj 23/10 23h11) : sessions confirmées le samedi 24/10, le dimanche 01/11, le samedi 07/11 et le dimanche 15/11/2026 ; les sessions des 10/10 et 18/10 sont passées",
       "frequence": "~2–3/mois",
       "terrain": "n.c.",
       "cout": "n.c.",
@@ -1040,6 +1073,11 @@
           "date": "2026-11-07",
           "lieu": "n.c. (IDF)",
           "note": "Samedi (tracker places-airsoft maj 23/10)"
+        },
+        {
+          "date": "2026-11-15",
+          "lieu": "n.c. (IDF)",
+          "note": "Dimanche (tracker places-airsoft, maj 23/10 23h11)"
         }
       ],
       "coords": null
