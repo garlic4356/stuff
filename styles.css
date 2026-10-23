@@ -567,6 +567,7 @@ td.cell-nom a { font-weight: 600; }
 }
 .hist-chip.c-add { color: #b8d06a; }
 .hist-chip.c-upd { color: var(--accent-bright); }
+.hist-chip.c-mov { color: #7cb8d6; }
 .hist-chip.c-del { color: #e7c069; }
 .hist-entry details { margin-top: .25rem; }
 .hist-entry summary { cursor: pointer; color: var(--text-dim); font-size: .76rem; user-select: none; }

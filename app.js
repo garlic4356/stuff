@@ -912,19 +912,21 @@ function historyKindLabel(kind) {
   }
 }
 
-/** Only non-zero chips are rendered (additions, modifications, purges, manual
- *  keeps, warnings). */
+/** Only non-zero chips are rendered (additions, modifications, moves, purges,
+ *  manual keeps, warnings). */
 function historyChipsHtml(h) {
   const chips = [];
   if ((h.added || []).length > 0) chips.push(`<span class="hist-chip c-add">+${h.added.length} ajoutées</span>`);
   if ((h.updated || []).length > 0) chips.push(`<span class="hist-chip c-upd">~${h.updated.length} modifiées</span>`);
+  if ((h.moved || []).length > 0) chips.push(`<span class="hist-chip c-mov">⇄ ${h.moved.length} déplacées</span>`);
   if ((h.removedEvents || []).length > 0) chips.push(`<span class="hist-chip c-del">🗑 ${h.removedEvents.length} parties purgées</span>`);
   if ((h.manualKept || []).length > 0) chips.push(`<span class="hist-chip">⏸ ${h.manualKept.length} valeurs conservées</span>`);
   if ((h.warnings || []).length > 0) chips.push(`<span class="hist-chip">⚠ ${h.warnings.length} avertissements</span>`);
   return chips.join(" ");
 }
 
-/** Expandable details: added ids / updated id+field / removed event dates / manual-kept fields. */
+/** Expandable details: added ids / updated id+field / moved regions / removed
+ *  event dates / manual-kept fields. */
 function historyDetailHtml(h) {
   const parts = [];
   if ((h.added || []).length > 0) {
@@ -933,6 +935,10 @@ function historyDetailHtml(h) {
   if ((h.updated || []).length > 0) {
     const items = h.updated.map((u) => `<code>${escapeHtml(u.id)}</code> . ${escapeHtml(u.field)}`).join(", ");
     parts.push(`<li>Champs modifiés&nbsp;: ${items}</li>`);
+  }
+  if ((h.moved || []).length > 0) {
+    const items = h.moved.map((m) => `<code>${escapeHtml(m.id)}</code> ${escapeHtml(m.from)} → ${escapeHtml(m.to)}`).join(", ");
+    parts.push(`<li>Déplacées&nbsp;: ${items}</li>`);
   }
   if ((h.removedEvents || []).length > 0) {
     const items = h.removedEvents

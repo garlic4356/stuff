@@ -546,261 +546,6 @@
       }
     },
     {
-      "id": "caen-airsoft-team",
-      "nom": "Caen Airsoft Team",
-      "commune": "Ouézy (terrain CQB « The Store », 1 rue Auguste Lemonnier)",
-      "dep": "14",
-      "statut": "actif",
-      "liens": [
-        {
-          "texte": "HelloAsso",
-          "url": "https://www.helloasso.com/associations/caen-airsoft-team"
-        },
-        {
-          "texte": "Site",
-          "url": "https://caenairsoftteam.e-monsite.com/"
-        },
-        {
-          "texte": "Fiche RNA",
-          "url": "https://assoce.fr/waldec/W142002276/ASSOCIATION-CAEN-AIRSOFT-TEAM"
-        }
-      ],
-      "sources": [
-        "https://www.helloasso.com/associations/caen-airsoft-team",
-        "https://caenairsoftteam.e-monsite.com/",
-        "https://assoce.fr/waldec/W142002276/ASSOCIATION-CAEN-AIRSOFT-TEAM",
-        "https://spawnforge.fr/terrains/departement/14-calvados",
-        "https://places-airsoft.github.io/"
-      ],
-      "type": "Asso 1901 · créée 11/10/2006 (W142002276, SIRET 847 646 429 00021)",
-      "distance": "~1h30–1h45",
-      "statutDetail": "page HelloAsso re-vérifiée le 23/10/2026 : billetterie « Partie publique du 1 Novembre » (10 €) toujours ouverte pour le 01/11/2026 (remboursement uniquement jusqu'à 72 h avant la partie) ; la billetterie de la partie du 18/10 n'apparaît plus parmi les actions en cours ; la partie du 01/11 est aussi relevée par le tracker places-airsoft (maj du jour) ; terrain CQB « The Store » (Ouézy) toujours annoncé sur la page HelloAsso",
-      "frequence": "n.c.",
-      "prochaines": "Via HelloAsso (billetteries)",
-      "terrain": "CQB en bâtiment fortifié (« The Store ») · 72 places",
-      "cout": "n.c.",
-      "events": [
-        {
-          "date": "2026-10-18",
-          "lieu": "Ouézy (The Store)",
-          "note": "Partie publique — 10 € (billetterie HelloAsso)"
-        },
-        {
-          "date": "2026-11-01",
-          "lieu": "Ouézy (The Store)",
-          "note": "Partie publique — 10 € (billetterie HelloAsso)"
-        }
-      ],
-      "coords": {
-        "lat": 49.0795,
-        "lon": -0.1007
-      }
-    },
-    {
-      "id": "tactical-air-squadron",
-      "nom": "Tactical Air Squadron (TAS)",
-      "commune": "Argentan — terrains récurrents : Le Breuil/Caligny, Woodcamp (Flers), Putanges-le-Lac, Lonlay-l'Abbaye",
-      "dep": "61",
-      "statut": "actif",
-      "liens": [
-        {
-          "texte": "Facebook",
-          "url": "https://www.facebook.com/TacticalAirSquadron"
-        },
-        {
-          "texte": "Site (planning annuel)",
-          "url": "https://tacticalairsquadron.e-monsite.com/"
-        },
-        {
-          "texte": "Fiche RNA",
-          "url": "https://assoce.fr/waldec/W612002807/TACTICAL-AIR-SQUADRON"
-        }
-      ],
-      "sources": [
-        "https://assoce.fr/waldec/W612002807/TACTICAL-AIR-SQUADRON",
-        "https://airsoft-xp-proxy.vercel.app/api/parties",
-        "https://tacticalairsquadron.e-monsite.com/"
-      ],
-      "type": "Asso 1901 · créée 23/11/2015 (W612002807) · ~15 actifs",
-      "distance": "~2h–2h15 de Rennes · ~25 min d'Alençon",
-      "statutDetail": "re-vérifié le 23/10/2026 : la dominicale « C'est reparti ! » du 18/10/2026 à Le Breuil/Caligny (35 joueurs, 10 €) est passée (constatée sur Airsoft XP lors de la consultation du 14/10) ; OP Halloween 14/11 à Woodcamp Flers et OP Conquête 29/11 à Putanges constatées le 09/10/2026 sur Airsoft XP (hors de la fenêtre d'environ une semaine de la liste du 23/10) ; site officiel e-monsite en ligne (consulté le 14/10/2026)",
-      "frequence": "tous les 15 jours le dimanche + OP",
-      "prochaines": "Via leur page Facebook",
-      "terrain": "Bois aménagé (tranchées, miradors, caravane) à Caligny · sites partenaires Orne",
-      "cout": "10–15 €/partie",
-      "events": [
-        {
-          "date": "2026-10-18",
-          "lieu": "Le Breuil, Caligny (61)",
-          "note": "Dominicale « C'est reparti ! » — 35 joueurs max, 10 € (Airsoft XP)"
-        },
-        {
-          "date": "2026-11-14",
-          "lieu": "Woodcamp, Flers (61)",
-          "note": "OP Halloween — jour + pénombre + nocturne, 30 joueurs, 15 €"
-        },
-        {
-          "date": "2026-11-29",
-          "lieu": "Putanges-le-Lac (61)",
-          "note": "OP Conquête avec Énergie Paintball — 40 joueurs, 15 €"
-        }
-      ],
-      "coords": null
-    },
-    {
-      "id": "72eme-tac",
-      "nom": "72ème TAC (Troupe Airsoft Céranaise)",
-      "commune": "Cérans-Foulletourte (terrain privé 7 ha, 35 Chem. des Landes)",
-      "dep": "72",
-      "statut": "actif",
-      "liens": [
-        {
-          "texte": "Facebook (groupe ouvert)",
-          "url": "https://www.facebook.com/groups/867132416778498"
-        },
-        {
-          "texte": "HelloAsso",
-          "url": "https://www.helloasso.com/associations/72eme-tac"
-        },
-        {
-          "texte": "Fiche RNA",
-          "url": "https://assoce.fr/waldec/W721001003/72-EME-TAC--TROUPE-AIRSOFT-CERANAISE-"
-        }
-      ],
-      "sources": [
-        "https://assoce.fr/waldec/W721001003/72-EME-TAC--TROUPE-AIRSOFT-CERANAISE-",
-        "https://www.helloasso.com/associations/72eme-tac",
-        "https://www.airsoft-xp.com/parties/partie-72eme-tac",
-        "https://repertoiredesassociations.fr/france/pays-de-la-loire/sarthe/cerans-foulletourte/72-eme-tac--troupe-airsoft-ceranaise/w721001003.html"
-      ],
-      "type": "Asso 1901 · créée 03/08/2012 (W721001003, SIRET 85215809600019) · 28 actifs · affiliée FédéraGN/MDF",
-      "distance": "~1h15 du Mans · ~2h15 de Rennes",
-      "statutDetail": "page HelloAsso re-vérifiée le 23/10/2026 : aucune billetterie en cours (message « mettre en place nos prochaines initiatives » visible), fiche association à jour (28 membres actifs, terrain privé de Cérans-Foulletourte, parties découvertes 5 €) ; dernières preuves datées de parties : dominicale du 15/02/2026 et partie affichée le 08/03/2026 sur Airsoft XP ; un événement Facebook « Partie du dimanche 17 octobre » existe (non datable sans connexion — non retenu) ; aucune preuve de fermeture",
-      "frequence": "~1 dimanche + ~1 samedi/mois",
-      "prochaines": "Via leur groupe Facebook / formulaire d'inscription",
-      "terrain": "Terrain privé 7 ha : forêt + constructions bois à étages (mixte)",
-      "cout": "5 € joueur équipé (partie découverte, assurance incluse)",
-      "events": [
-        {
-          "date": "2026-02-15",
-          "lieu": "Cérans-Foulletourte",
-          "note": "Dominicale — 40 joueurs, 10 € (Airsoft XP)"
-        }
-      ],
-      "coords": {
-        "lat": 47.825,
-        "lon": 0.0938
-      }
-    },
-    {
-      "id": "fma-vaas",
-      "nom": "Full Metal Airsoft (FMA)",
-      "commune": "Vaas (La Butte aux Loups)",
-      "dep": "72",
-      "statut": "actif",
-      "liens": [
-        {
-          "texte": "Facebook (groupe)",
-          "url": "https://www.facebook.com/groups/fullmetalairsoft"
-        },
-        {
-          "texte": "Fiche SpawnForge",
-          "url": "https://spawnforge.fr/terrains/fma-full-metal-airsoft-vaas/"
-        }
-      ],
-      "sources": [
-        "https://spawnforge.fr/terrains/fma-full-metal-airsoft-vaas/",
-        "https://airsoft-xp-proxy.vercel.app/api/parties"
-      ],
-      "type": "Association",
-      "distance": "~1h30 du Mans · ~2h45 de Rennes",
-      "statutDetail": "re-vérifié le 23/10/2026 : aucune dominicale FMA listée sur la page Airsoft XP des parties à venir (fenêtre d'environ une semaine, du 24/10 au 01/11) ; fiche SpawnForge re-vérifiée le même jour (toujours en ligne, publiée le 06/07/2026 : dominicales à 5 €, terrain La Butte aux Loups, limite stricte 2 J, lien vers la fiche Airsoft XP « dominicale-fma-3 » désormais 404 — partie passée retirée) ; dernière partie datée trouvée : dominicale du 30/08/2026 (Airsoft XP) ; le groupe Facebook reste le canal d'annonce",
-      "frequence": "Dominicale hebdomadaire annoncée (SpawnForge)",
-      "prochaines": "Via leur groupe Facebook",
-      "terrain": "Forêt « La Butte aux Loups » · 2 J, freeze sous 5 m < 1 J · location 15 €",
-      "cout": "5 €/dominicale (ext.) · location pack 15 €",
-      "events": [
-        {
-          "date": "2026-08-30",
-          "lieu": "La Butte aux Loups, Vaas",
-          "note": "Dominicale FMA — 20 joueurs, 5 € (Airsoft XP)"
-        }
-      ],
-      "coords": {
-        "lat": 47.6945,
-        "lon": 0.3176
-      }
-    },
-    {
-      "id": "tag14-vire",
-      "nom": "Tactical Airsoft Group 14 (TAG14)",
-      "commune": "Vire-Normandie (6 rue Charles Drouet) — secteurs Tinchebray-Bocage",
-      "dep": "14",
-      "statut": "a_verifier",
-      "liens": [
-        {
-          "texte": "Fiche RNA",
-          "url": "https://assoce.fr/waldec/W144004478/ASSOCIATION-TACTICAL-AIRSOFT-GROUP-14"
-        },
-        {
-          "texte": "HelloAsso",
-          "url": "https://www.helloasso.com/associations/association-tactical-airsoft-group-14"
-        },
-        {
-          "texte": "Facebook",
-          "url": "https://www.facebook.com/p/Association-Tactical-airsoft-group-14-100083713411623/"
-        }
-      ],
-      "sources": [
-        "https://assoce.fr/waldec/W144004478/ASSOCIATION-TACTICAL-AIRSOFT-GROUP-14",
-        "https://annuaire-entreprises.data.gouv.fr/entreprise/909757288",
-        "https://gesad.ffairsoft.org/team/listing/directory",
-        "https://www.helloasso.com/associations/association-tactical-airsoft-group-14",
-        "https://www.facebook.com/p/Association-Tactical-airsoft-group-14-100083713411623/"
-      ],
-      "type": "Asso 1901 · créée 26/09/2019 (W144004478, SIRET 909757288) · 10 membres · assurance FFA",
-      "distance": "~2h45 de Rennes · ~30 min d'Alençon",
-      "statutDetail": "annuaire FFA re-vérifié le 12/10/2026 (pages clubs visibles après connexion ; le résultat DDG du 23/10 montre l'annuaire fédéral relais reload-airsoft.fr avec « 0 membres » affichés) ; page HelloAsso sans action en cours (consultée le 12/10/2026) ; page Facebook « Association Tactical airsoft group 14 » toujours en ligne (35 abonnés ; dernières publications visibles dans le résultat DDG du 23/10 datent d'octobre–novembre 2023 : bureau et inscriptions 2024) ; aucune date de partie publique récente (recherche du 23/10 sans résultat)",
-      "frequence": "n.c.",
-      "prochaines": "n.c.",
-      "terrain": "n.c.",
-      "cout": "n.c.",
-      "coords": null
-    },
-    {
-      "id": "airsoft-zone-clecy",
-      "nom": "Airsoft Zone",
-      "commune": "Clécy (La Basse Bigne) — Suisse Normande",
-      "dep": "14",
-      "statut": "actif",
-      "liens": [
-        {
-          "texte": "Facebook",
-          "url": "https://www.facebook.com/Airsoft.Zone.14"
-        },
-        {
-          "texte": "Fiche annuaire airsoft.fr",
-          "url": "https://www.airsoft.fr/map"
-        }
-      ],
-      "sources": [
-        "https://www.facebook.com/Airsoft.Zone.14",
-        "https://www.airsoft.fr/map",
-        "https://tacticalairsquadron.e-monsite.com/pages/terrains-chez-les-copains/airsoft-zone-.html"
-      ],
-      "type": "Entreprise (EIRL) · terrain commercial",
-      "distance": "~2h30 de Rennes · ~35 min de Caen",
-      "statutDetail": "page Facebook « Airsoft Zone | Clécy » toujours en ligne (titre vérifié le 14/10/2026 : contenus visibles uniquement connecté) ; carte airsoft.fr en ligne re-vérifiée le 14/10/2026 ; page « terrains chez les copains » du site TAS re-vérifiée le 09/10/2026 ; terrain commercial actif (week-ends + sur réservation)",
-      "frequence": "week-ends + sur réservation",
-      "prochaines": "Via Facebook (07 81 33 68 58)",
-      "terrain": "CQB extérieur familial (Suisse Normande)",
-      "cout": "n.c.",
-      "coords": {
-        "lat": 48.9079,
-        "lon": -0.4931
-      }
-    },
-    {
       "id": "bsc-airsoft",
       "nom": "BSC Airsoft (Black Schtroumpfs Company)",
       "commune": "Saffré",
@@ -864,7 +609,263 @@
       "coords": null
     }
   ],
-  "caen": [],
+  "caen": [
+    {
+      "id": "caen-airsoft-team",
+      "nom": "Caen Airsoft Team",
+      "commune": "Ouézy (terrain CQB « The Store », 1 rue Auguste Lemonnier)",
+      "dep": "14",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "HelloAsso",
+          "url": "https://www.helloasso.com/associations/caen-airsoft-team"
+        },
+        {
+          "texte": "Site",
+          "url": "https://caenairsoftteam.e-monsite.com/"
+        },
+        {
+          "texte": "Fiche RNA",
+          "url": "https://assoce.fr/waldec/W142002276/ASSOCIATION-CAEN-AIRSOFT-TEAM"
+        }
+      ],
+      "sources": [
+        "https://www.helloasso.com/associations/caen-airsoft-team",
+        "https://caenairsoftteam.e-monsite.com/",
+        "https://assoce.fr/waldec/W142002276/ASSOCIATION-CAEN-AIRSOFT-TEAM",
+        "https://spawnforge.fr/terrains/departement/14-calvados",
+        "https://places-airsoft.github.io/"
+      ],
+      "type": "Asso 1901 · créée 11/10/2006 (W142002276, SIRET 847 646 429 00021)",
+      "distance": "~20–25 min de Caen",
+      "statutDetail": "page HelloAsso re-vérifiée le 23/10/2026 : billetterie « Partie publique du 1 Novembre » (10 €) toujours ouverte pour le 01/11/2026 (remboursement uniquement jusqu'à 72 h avant la partie) ; la billetterie de la partie du 18/10 n'apparaît plus parmi les actions en cours ; la partie du 01/11 est aussi relevée par le tracker places-airsoft (maj du jour) ; terrain CQB « The Store » (Ouézy) toujours annoncé sur la page HelloAsso",
+      "frequence": "n.c.",
+      "prochaines": "Via HelloAsso (billetteries)",
+      "terrain": "CQB en bâtiment fortifié (« The Store ») · 72 places",
+      "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-10-18",
+          "lieu": "Ouézy (The Store)",
+          "note": "Partie publique — 10 € (billetterie HelloAsso)"
+        },
+        {
+          "date": "2026-11-01",
+          "lieu": "Ouézy (The Store)",
+          "note": "Partie publique — 10 € (billetterie HelloAsso)"
+        }
+      ],
+      "coords": {
+        "lat": 49.0795,
+        "lon": -0.1007
+      }
+    },
+    {
+      "id": "airsoft-zone-clecy",
+      "nom": "Airsoft Zone",
+      "commune": "Clécy (La Basse Bigne) — Suisse Normande",
+      "dep": "14",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/Airsoft.Zone.14"
+        },
+        {
+          "texte": "Fiche annuaire airsoft.fr",
+          "url": "https://www.airsoft.fr/map"
+        }
+      ],
+      "sources": [
+        "https://www.facebook.com/Airsoft.Zone.14",
+        "https://www.airsoft.fr/map",
+        "https://tacticalairsquadron.e-monsite.com/pages/terrains-chez-les-copains/airsoft-zone-.html"
+      ],
+      "type": "Entreprise (EIRL) · terrain commercial",
+      "distance": "~35 min de Caen",
+      "statutDetail": "page Facebook « Airsoft Zone | Clécy » toujours en ligne (titre vérifié le 14/10/2026 : contenus visibles uniquement connecté) ; carte airsoft.fr en ligne re-vérifiée le 14/10/2026 ; page « terrains chez les copains » du site TAS re-vérifiée le 09/10/2026 ; terrain commercial actif (week-ends + sur réservation)",
+      "frequence": "week-ends + sur réservation",
+      "prochaines": "Via Facebook (07 81 33 68 58)",
+      "terrain": "CQB extérieur familial (Suisse Normande)",
+      "cout": "n.c.",
+      "coords": {
+        "lat": 48.9079,
+        "lon": -0.4931
+      }
+    },
+    {
+      "id": "tag14-vire",
+      "nom": "Tactical Airsoft Group 14 (TAG14)",
+      "commune": "Vire-Normandie (6 rue Charles Drouet) — secteurs Tinchebray-Bocage",
+      "dep": "14",
+      "statut": "a_verifier",
+      "liens": [
+        {
+          "texte": "Fiche RNA",
+          "url": "https://assoce.fr/waldec/W144004478/ASSOCIATION-TACTICAL-AIRSOFT-GROUP-14"
+        },
+        {
+          "texte": "HelloAsso",
+          "url": "https://www.helloasso.com/associations/association-tactical-airsoft-group-14"
+        },
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/p/Association-Tactical-airsoft-group-14-100083713411623/"
+        }
+      ],
+      "sources": [
+        "https://assoce.fr/waldec/W144004478/ASSOCIATION-TACTICAL-AIRSOFT-GROUP-14",
+        "https://annuaire-entreprises.data.gouv.fr/entreprise/909757288",
+        "https://gesad.ffairsoft.org/team/listing/directory",
+        "https://www.helloasso.com/associations/association-tactical-airsoft-group-14",
+        "https://www.facebook.com/p/Association-Tactical-airsoft-group-14-100083713411623/"
+      ],
+      "type": "Asso 1901 · créée 26/09/2019 (W144004478, SIRET 909757288) · 10 membres · assurance FFA",
+      "distance": "~1h–1h05 de Caen",
+      "statutDetail": "annuaire FFA re-vérifié le 12/10/2026 (pages clubs visibles après connexion ; le résultat DDG du 23/10 montre l'annuaire fédéral relais reload-airsoft.fr avec « 0 membres » affichés) ; page HelloAsso sans action en cours (consultée le 12/10/2026) ; page Facebook « Association Tactical airsoft group 14 » toujours en ligne (35 abonnés ; dernières publications visibles dans le résultat DDG du 23/10 datent d'octobre–novembre 2023 : bureau et inscriptions 2024) ; aucune date de partie publique récente (recherche du 23/10 sans résultat)",
+      "frequence": "n.c.",
+      "prochaines": "n.c.",
+      "terrain": "n.c.",
+      "cout": "n.c.",
+      "coords": null
+    },
+    {
+      "id": "tactical-air-squadron",
+      "nom": "Tactical Air Squadron (TAS)",
+      "commune": "Argentan — terrains récurrents : Le Breuil/Caligny, Woodcamp (Flers), Putanges-le-Lac, Lonlay-l'Abbaye",
+      "dep": "61",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook",
+          "url": "https://www.facebook.com/TacticalAirSquadron"
+        },
+        {
+          "texte": "Site (planning annuel)",
+          "url": "https://tacticalairsquadron.e-monsite.com/"
+        },
+        {
+          "texte": "Fiche RNA",
+          "url": "https://assoce.fr/waldec/W612002807/TACTICAL-AIR-SQUADRON"
+        }
+      ],
+      "sources": [
+        "https://assoce.fr/waldec/W612002807/TACTICAL-AIR-SQUADRON",
+        "https://airsoft-xp-proxy.vercel.app/api/parties",
+        "https://tacticalairsquadron.e-monsite.com/"
+      ],
+      "type": "Asso 1901 · créée 23/11/2015 (W612002807) · ~15 actifs",
+      "distance": "~45 min–1h15 de Caen",
+      "statutDetail": "re-vérifié le 23/10/2026 : la dominicale « C'est reparti ! » du 18/10/2026 à Le Breuil/Caligny (35 joueurs, 10 €) est passée (constatée sur Airsoft XP lors de la consultation du 14/10) ; OP Halloween 14/11 à Woodcamp Flers et OP Conquête 29/11 à Putanges constatées le 09/10/2026 sur Airsoft XP (hors de la fenêtre d'environ une semaine de la liste du 23/10) ; site officiel e-monsite en ligne (consulté le 14/10/2026)",
+      "frequence": "tous les 15 jours le dimanche + OP",
+      "prochaines": "Via leur page Facebook",
+      "terrain": "Bois aménagé (tranchées, miradors, caravane) à Caligny · sites partenaires Orne",
+      "cout": "10–15 €/partie",
+      "events": [
+        {
+          "date": "2026-10-18",
+          "lieu": "Le Breuil, Caligny (61)",
+          "note": "Dominicale « C'est reparti ! » — 35 joueurs max, 10 € (Airsoft XP)"
+        },
+        {
+          "date": "2026-11-14",
+          "lieu": "Woodcamp, Flers (61)",
+          "note": "OP Halloween — jour + pénombre + nocturne, 30 joueurs, 15 €"
+        },
+        {
+          "date": "2026-11-29",
+          "lieu": "Putanges-le-Lac (61)",
+          "note": "OP Conquête avec Énergie Paintball — 40 joueurs, 15 €"
+        }
+      ],
+      "coords": null
+    },
+    {
+      "id": "72eme-tac",
+      "nom": "72ème TAC (Troupe Airsoft Céranaise)",
+      "commune": "Cérans-Foulletourte (terrain privé 7 ha, 35 Chem. des Landes)",
+      "dep": "72",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook (groupe ouvert)",
+          "url": "https://www.facebook.com/groups/867132416778498"
+        },
+        {
+          "texte": "HelloAsso",
+          "url": "https://www.helloasso.com/associations/72eme-tac"
+        },
+        {
+          "texte": "Fiche RNA",
+          "url": "https://assoce.fr/waldec/W721001003/72-EME-TAC--TROUPE-AIRSOFT-CERANAISE-"
+        }
+      ],
+      "sources": [
+        "https://assoce.fr/waldec/W721001003/72-EME-TAC--TROUPE-AIRSOFT-CERANAISE-",
+        "https://www.helloasso.com/associations/72eme-tac",
+        "https://www.airsoft-xp.com/parties/partie-72eme-tac",
+        "https://repertoiredesassociations.fr/france/pays-de-la-loire/sarthe/cerans-foulletourte/72-eme-tac--troupe-airsoft-ceranaise/w721001003.html"
+      ],
+      "type": "Asso 1901 · créée 03/08/2012 (W721001003, SIRET 85215809600019) · 28 actifs · affiliée FédéraGN/MDF",
+      "distance": "~2h de Caen",
+      "statutDetail": "page HelloAsso re-vérifiée le 23/10/2026 : aucune billetterie en cours (message « mettre en place nos prochaines initiatives » visible), fiche association à jour (28 membres actifs, terrain privé de Cérans-Foulletourte, parties découvertes 5 €) ; dernières preuves datées de parties : dominicale du 15/02/2026 et partie affichée le 08/03/2026 sur Airsoft XP ; un événement Facebook « Partie du dimanche 17 octobre » existe (non datable sans connexion — non retenu) ; aucune preuve de fermeture",
+      "frequence": "~1 dimanche + ~1 samedi/mois",
+      "prochaines": "Via leur groupe Facebook / formulaire d'inscription",
+      "terrain": "Terrain privé 7 ha : forêt + constructions bois à étages (mixte)",
+      "cout": "5 € joueur équipé (partie découverte, assurance incluse)",
+      "events": [
+        {
+          "date": "2026-02-15",
+          "lieu": "Cérans-Foulletourte",
+          "note": "Dominicale — 40 joueurs, 10 € (Airsoft XP)"
+        }
+      ],
+      "coords": {
+        "lat": 47.825,
+        "lon": 0.0938
+      }
+    },
+    {
+      "id": "fma-vaas",
+      "nom": "Full Metal Airsoft (FMA)",
+      "commune": "Vaas (La Butte aux Loups)",
+      "dep": "72",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Facebook (groupe)",
+          "url": "https://www.facebook.com/groups/fullmetalairsoft"
+        },
+        {
+          "texte": "Fiche SpawnForge",
+          "url": "https://spawnforge.fr/terrains/fma-full-metal-airsoft-vaas/"
+        }
+      ],
+      "sources": [
+        "https://spawnforge.fr/terrains/fma-full-metal-airsoft-vaas/",
+        "https://airsoft-xp-proxy.vercel.app/api/parties"
+      ],
+      "type": "Association",
+      "distance": "~2h15 de Caen",
+      "statutDetail": "re-vérifié le 23/10/2026 : aucune dominicale FMA listée sur la page Airsoft XP des parties à venir (fenêtre d'environ une semaine, du 24/10 au 01/11) ; fiche SpawnForge re-vérifiée le même jour (toujours en ligne, publiée le 06/07/2026 : dominicales à 5 €, terrain La Butte aux Loups, limite stricte 2 J, lien vers la fiche Airsoft XP « dominicale-fma-3 » désormais 404 — partie passée retirée) ; dernière partie datée trouvée : dominicale du 30/08/2026 (Airsoft XP) ; le groupe Facebook reste le canal d'annonce",
+      "frequence": "Dominicale hebdomadaire annoncée (SpawnForge)",
+      "prochaines": "Via leur groupe Facebook",
+      "terrain": "Forêt « La Butte aux Loups » · 2 J, freeze sous 5 m < 1 J · location 15 €",
+      "cout": "5 €/dominicale (ext.) · location pack 15 €",
+      "events": [
+        {
+          "date": "2026-08-30",
+          "lieu": "La Butte aux Loups, Vaas",
+          "note": "Dominicale FMA — 20 joueurs, 5 € (Airsoft XP)"
+        }
+      ],
+      "coords": {
+        "lat": 47.6945,
+        "lon": 0.3176
+      }
+    }
+  ],
   "nanterre": [
     {
       "id": "ama-france",
