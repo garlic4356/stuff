@@ -62,17 +62,53 @@
     <details id="agent-screen-wrap" class="agent-screen-wrap">
       <summary>Écran de l'agent</summary>
       <div id="agent-screen" class="agent-screen" hidden>
+        <!-- Onglets ouverts par l'agent (lecture seule) : rempli par app.js
+             depuis la clé `tabs` du snapshot/flux, l'onglet actif surligné.
+             Jamais cliquable : le basculement d'onglet reste l'apanage de
+             l'agent. -->
+        <div id="agent-screen-tabs" class="agent-screen-tabs" role="list" aria-label="Onglets ouverts par l'agent" hidden></div>
         <img id="agent-screen-img" class="agent-screen-img" alt="Dernière capture d'écran du navigateur de l'agent" hidden>
         <p id="agent-screen-caption" class="agent-screen-caption" hidden></p>
         <p id="agent-screen-status" class="agent-screen-status" role="status" aria-live="polite"></p>
+        <!-- Prise en main (takeover): same ids as agent.html — the bindings
+             live once in web/app.js and drive both panels. Hidden with the
+             panel; REMOTE_MODE deploys never see it (same-origin POSTs). -->
+        <div id="agent-takeover" class="agent-takeover" hidden>
+          <button type="button" id="agent-takeover-toggle" class="agent-run-btn" aria-pressed="false" hidden
+                  title="Relie votre souris à l'écran de l'agent : clic = cliquer à cet endroit · Maj+clic = premier point d'un glisser, puis clic = achever le glisser · champs et touches ci-dessous agissent sur la page vue">Prendre la main</button>
+          <div id="agent-takeover-controls" class="agent-takeover-controls" hidden>
+            <div class="agent-takeover-row">
+              <input type="text" id="agent-takeover-url" placeholder="https://…" inputmode="url"
+                     autocomplete="off" spellcheck="false" aria-label="URL à ouvrir dans le navigateur de l'agent">
+              <button type="button" id="agent-takeover-go" class="agent-run-btn">Aller</button>
+            </div>
+            <div class="agent-takeover-row">
+              <input type="text" id="agent-takeover-text" placeholder="Texte à saisir dans le champ actif"
+                     autocomplete="off" spellcheck="false" aria-label="Texte à saisir dans le champ actif">
+              <button type="button" id="agent-takeover-type" class="agent-run-btn">Saisir</button>
+              <button type="button" class="agent-takeover-key" data-takeover-key="enter">Entrée</button>
+              <button type="button" class="agent-takeover-key" data-takeover-key="tab">Tab</button>
+              <button type="button" class="agent-takeover-key" data-takeover-key="escape">Échap</button>
+              <button type="button" class="agent-takeover-key" data-takeover-key="backspace">Retour arrière</button>
+            </div>
+            <p id="agent-takeover-status" class="agent-screen-status" role="status" aria-live="polite"></p>
+          </div>
+        </div>
       </div>
     </details>
+    <div id="chat-usage" class="chat-usage" hidden></div>
     <div id="chat-transcript" class="chat-transcript" role="log" aria-label="Conversation avec l'agent"></div>
     <div class="chat-input-row">
       <textarea id="chat-input" rows="2" enterkeyhint="send" placeholder="Écrivez votre message…"
                 aria-label="Votre message pour l'agent"></textarea>
       <div class="chat-actions">
         <button type="button" id="chat-send" class="chat-send-btn">Envoyer</button>
+        <!-- « Arrêter » : demande l'arrêt de l'exécution en cours (POST
+             /api/agent/stop). Caché tant qu'aucune exécution n'est suivie ;
+             app.js l'affiche via enterWaiting (chat.html est une page
+             same-origin : le POST est possible ici). -->
+        <button type="button" id="chat-stop" class="chat-stop-btn" hidden
+                title="Demande l'arrêt de l'exécution de l'agent en cours">Arrêter</button>
         <button type="button" id="chat-clear" class="chat-clear-btn">Effacer la conversation</button>
       </div>
     </div>

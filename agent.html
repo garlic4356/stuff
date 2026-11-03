@@ -60,9 +60,40 @@
          #agent-activity (configured agent). -->
     <div id="agent-screen" class="agent-screen" hidden>
       <h3 class="schedule-title">Écran de l'agent</h3>
+      <!-- Onglets ouverts par l'agent (lecture seule) : rempli par app.js
+           depuis la clé `tabs` du snapshot/flux, l'onglet actif surligné.
+           Jamais cliquable : le basculement d'onglet reste l'apanage de
+           l'agent. -->
+      <div id="agent-screen-tabs" class="agent-screen-tabs" role="list" aria-label="Onglets ouverts par l'agent" hidden></div>
       <img id="agent-screen-img" class="agent-screen-img" alt="Dernière capture d'écran du navigateur de l'agent" hidden>
       <p id="agent-screen-caption" class="agent-screen-caption" hidden></p>
       <p id="agent-screen-status" class="agent-screen-status" role="status" aria-live="polite"></p>
+      <!-- Prise en main (takeover): same-origin operator input channel over
+           the live viewer — POST /api/agent/browser/input. The ids are shared
+           ON PURPOSE with chat.html: the bindings live once in web/app.js.
+           Hidden with the panel itself; app.js reveals the toggle only on a
+           same-origin, configured deploy (REMOTE_MODE never POSTs). -->
+      <div id="agent-takeover" class="agent-takeover" hidden>
+        <button type="button" id="agent-takeover-toggle" class="agent-run-btn" aria-pressed="false" hidden
+                title="Relie votre souris à l'écran de l'agent : clic = cliquer à cet endroit · Maj+clic = premier point d'un glisser, puis clic = achever le glisser · champs et touches ci-dessous agissent sur la page vue">Prendre la main</button>
+        <div id="agent-takeover-controls" class="agent-takeover-controls" hidden>
+          <div class="agent-takeover-row">
+            <input type="text" id="agent-takeover-url" placeholder="https://…" inputmode="url"
+                   autocomplete="off" spellcheck="false" aria-label="URL à ouvrir dans le navigateur de l'agent">
+            <button type="button" id="agent-takeover-go" class="agent-run-btn">Aller</button>
+          </div>
+          <div class="agent-takeover-row">
+            <input type="text" id="agent-takeover-text" placeholder="Texte à saisir dans le champ actif"
+                   autocomplete="off" spellcheck="false" aria-label="Texte à saisir dans le champ actif">
+            <button type="button" id="agent-takeover-type" class="agent-run-btn">Saisir</button>
+            <button type="button" class="agent-takeover-key" data-takeover-key="enter">Entrée</button>
+            <button type="button" class="agent-takeover-key" data-takeover-key="tab">Tab</button>
+            <button type="button" class="agent-takeover-key" data-takeover-key="escape">Échap</button>
+            <button type="button" class="agent-takeover-key" data-takeover-key="backspace">Retour arrière</button>
+          </div>
+          <p id="agent-takeover-status" class="agent-screen-status" role="status" aria-live="polite"></p>
+        </div>
+      </div>
     </div>
     <!-- Planification: weekday schedule editor for the maintenance runs (hidden by
          default like the other dynamic blocks). app.js reveals it only for a
@@ -117,6 +148,24 @@
         <button type="button" id="credentials-save" class="agent-run-btn" hidden
                 title="Enregistre la connexion — un champ laissé vide conserve la valeur enregistrée">Enregistrer la connexion</button>
         <span id="credentials-msg" class="inline-msg" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+    <!-- Navigateur de l'agent (browser profile reset): the resolved profile
+         path (from /api/status, agent.browserProfile — null = transient « off »
+         profile) and the « Réinitialiser » button → POST
+         /api/agent/browser/clear (closes the browser, wipes the profile dir;
+         the stored connexions above are deliberately kept; the profile is
+         recreated on the agent's next browser use). Hidden by default like the
+         other dynamic blocks; app.js reveals it on same-origin deploys only
+         (the POST ships no auth token). -->
+    <div id="browser-clear-block" class="credentials-block" hidden>
+      <h3 class="schedule-title">Navigateur de l'agent</h3>
+      <p class="credentials-help">«&nbsp;Réinitialiser&nbsp;» ferme le navigateur de l'agent (s'il tourne) et efface son profil&nbsp;: toutes les sessions enregistrées (connexions aux sites) sont déconnectées. Les identifiants stockés dans les connexions ci-dessus sont conservés. Le profil se recrée à la prochaine navigation de l'agent.</p>
+      <p id="browser-profile-line" class="credentials-empty"></p>
+      <div class="schedule-controls">
+        <button type="button" id="browser-clear-btn" class="agent-run-btn" hidden
+                title="Ferme le navigateur de l'agent et efface son profil (les connexions stockées sont conservées)">Réinitialiser</button>
+        <span id="browser-clear-status" class="inline-msg" role="status" aria-live="polite"></span>
       </div>
     </div>
     <!-- Static-deploy degradation slot: app.js fills it (plain text node — the

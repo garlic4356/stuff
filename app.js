@@ -87,6 +87,14 @@ const WORKFLOW_PREVIEW_MAX = 160;              // toolResult preview inline vs e
 const SCREEN_PATH = "/api/agent/browser/screen";
 const SCREEN_STREAM_PATH = SCREEN_PATH + "/stream";
 
+/* Prise en main (operator takeover): POST /api/agent/browser/input carries
+ * one input to the agent's browser (kind goto|click|drag|type|key). Same
+ * same-origin-only posture as the screen channels above (no CORS, no auth
+ * token client-side) and REMOTE_MODE-hidden like every UI POST. Frame clicks
+ * map onto the frame's NATURAL pixel space, which the server guarantees to
+ * be the page viewport 1:1 (content-area mapping). */
+const SCREEN_INPUT_PATH = "/api/agent/browser/input";
+
 /* Interactive chat with the agent (chat page): the conversation transcript is
  * GET /api/agent/chat, POST starts a chat run through the shared single-run
  * guard (409 while a run is active) and POST /clear wipes it idempotently.
@@ -95,8 +103,24 @@ const SCREEN_STREAM_PATH = SCREEN_PATH + "/stream";
  * workflow SSE + poll-fallback constants above. */
 const CHAT_PATH = "/api/agent/chat";
 const CHAT_CLEAR_PATH = "/api/agent/chat/clear";
+/** Operator stop of the watched run (POST — same-origin page only). */
+const AGENT_STOP_PATH = "/api/agent/stop";
 const CHAT_ACTIVITY_MAX = 120;                 // argsPreview chars kept in an activity line
 const CHAT_REWATCH_LIMIT = 3;                  // finish→rewatch cycles before stopping (hot-loop guard)
+
+/* Chat usage & cost display (chat page): GET /api/agent/chat carries a
+ * constant "usage" totals object (plus an optional "usage" on each assistant
+ * record) — in-memory server-side data, lost on restart, reset by a chat
+ * clear. costSource values are pinned upstream (see AGENTS.md): the tooltip
+ * names where the USD figure comes from (server-reported, rig catalog list
+ * price, operator rates, or none → tokens-only display). */
+const USAGE_SOURCE_TITLES = {
+  provider: "coût signalé par le fournisseur",
+  catalog: "prix catalogue standard (estimation)",
+  operator: "estimation opérateur (--price-in/--price-out)",
+  mixed: "coûts mêlés — plusieurs sources au fil de la session",
+};
+const USAGE_SOURCE_TITLE_NONE = "coût inconnu (compteurs tokens seulement)";
 
 /* Weekday schedule editor (agent page): POST /api/agent/schedule is a partial
  * update ({disabled?, days?, time?} — absent keys keep the server values), 200
@@ -115,6 +139,14 @@ const SCHEDULE_PATH = "/api/agent/schedule";
  * no Authorization header. */
 const CREDENTIALS_PATH = "/api/agent/credentials";
 const CREDENTIALS_DELETE_PATH = CREDENTIALS_PATH + "/delete";
+
+/* Navigateur de l'agent (browser profile reset, agent page): shows the
+ * resolved profile path from /api/status (agent.browserProfile — null =
+ * transient "off" profile) and POST /api/agent/browser/clear wipes it
+ * (closes the browser, deletes the profile dir; stored connexions are
+ * kept). Same-origin only like every UI POST (no auth token ships with
+ * the static site); the server answers 409 while a run is active. */
+const BROWSER_CLEAR_PATH = "/api/agent/browser/clear";
 
 /** Current page, from the server-served <body data-page> (home|agent|chat) —
  *  drives the init dispatcher: home carries map + calendar + tables, agent
@@ -936,6 +968,7 @@ function historyKindLabel(kind) {
     case "commit": return "Mise à jour des données";
     case "run": return "Exécution de l'agent";
     case "credentials": return "Gestion des connexions";
+    case "browser": return "Navigateur de l'agent";
     default: return kind || "—";
   }
 }
@@ -1261,17 +1294,26 @@ function buildEventNode(ev, turnCtx) {
   }
 }
 
-/** Live (or just-finished) view header: ▶/✔ + kind label + started time. */
+/** Live (or just-finished) view header: ▶/✔ + kind label + started time.
+ *  A running header also carries the « Arrêter » stop button — POST
+ *  /api/agent/stop for the run in flight (same-origin deploys only:
+ *  REMOTE_MODE never renders it, the static site never POSTs). The button is
+ *  re-rendered with every wholesale live view; the click is handled by event
+ *  delegation on the activity zone (bound once, see setupStatic). */
 function wfHeaderHtml(finished) {
   const run = wf.run || {};
   const kind = escapeHtml(kindLabel(run.kind));
   const started = formatTimeSeconds(run.startedAt);
+  const stopBtn = !finished && !REMOTE_MODE
+    ? ` <button type="button" id="agent-run-stop" class="agent-run-btn wf-stop-btn" title="Demande l'arrêt de l'exécution de l'agent en cours">Arrêter</button>`
+    : "";
   return (
     `<div class="wf-header ${finished ? "finished" : "running"}">` +
     `<span class="wf-mark">${finished ? "✔" : "▶"}</span> ` +
     `<span class="wf-title">${escapeHtml(finished ? "Exécution terminée" : "Exécution en cours")}</span>` +
     ` <span class="wf-kind">— ${kind}</span>` +
     (started ? `<span class="wf-starttime">· démarrée à ${escapeHtml(started)}</span>` : "") +
+    stopBtn +
     `</div>`
   );
 }
@@ -1563,6 +1605,47 @@ function formatScreenTimestamp(iso) {
   return ms === null ? null : SCREEN_TS_FMT.format(new Date(ms));
 }
 
+/** Read-only strip of the agent's open tabs, fed from the screen
+ *  snapshot/stream `tabs` key: one chip per tab — « #N host » plus the
+ *  truncated title — with the ACTIVE one highlighted. The capture and the
+ *  screencast always come from the active tab, so the highlight moves as
+ *  the agent switches: auto-follow is inherent, no click handlers by
+ *  decision (switching stays the agent's privilege). Absent/empty key →
+ *  the strip hides (older payload tolerance, no tabs open); per-chip
+ *  malformed entries degrade silently (skipped, others still render). */
+function renderScreenTabs(tabs) {
+  const strip = document.getElementById("agent-screen-tabs");
+  if (!strip) return;
+  if (!Array.isArray(tabs) || tabs.length === 0) {
+    strip.hidden = true;
+    strip.innerHTML = "";
+    return;
+  }
+  strip.hidden = false;
+  strip.innerHTML = tabs.map((tab) => {
+    if (!tab || typeof tab !== "object") return "";
+    const id = typeof tab.id === "number" ? tab.id : null;
+    const url = typeof tab.url === "string" ? tab.url : "";
+    const title = typeof tab.title === "string" ? tab.title : "";
+    // Chip label: #N + the URL host when parseable, else the plain url.
+    let host = url;
+    try {
+      const parsed = new URL(url);
+      if (parsed.hostname) host = parsed.hostname;
+    } catch {
+      /* opaque/empty url: keep the raw text */
+    }
+    const label = `#${id === null ? "?" : id} ${chatPreviewLine(host, 24)}`;
+    const titleHtml = title
+      ? ` <em>${escapeHtml(chatPreviewLine(title, 26))}</em>`
+      : "";
+    const tip = [title, url].filter(Boolean).join(" — ");
+    const tipAttr = tip ? ` title="${escapeHtml(tip)}"` : "";
+    const active = tab.active === true;
+    return `<span role="listitem" class="screen-tab${active ? " active" : ""}"${tipAttr}>${escapeHtml(label)}${titleHtml}</span>`;
+  }).filter(Boolean).join("");
+}
+
 /** Shows the status/placeholder line and hides image + caption — the degraded
  *  state (no capture yet, REMOTE_MODE or a persistent 503). */
 function showScreenNote(text) {
@@ -1593,15 +1676,21 @@ function renderScreenFrame(frame, opts) {
   }
   img.src = frame.image;
   img.hidden = false;
+  // Click-to-zoom affordance: the lightbox opens from this thumbnail (mouse
+  // click or Enter/Space once the img is a focusable pseudo-button).
+  img.tabIndex = 0;
+  img.setAttribute("role", "button");
   const title = typeof frame.title === "string" ? frame.title : "";
   const url = typeof frame.url === "string" ? frame.url : "";
   const ts = formatScreenTimestamp(frame.ts);
-  // Caption: label line first, page title after it, url on its own line —
-  // all dynamic values escaped (title/url are external page data)
+  // Caption: label line first, page title after it, url on its own line, the
+  // zoom hint last — all dynamic values escaped (title/url are external page
+  // data)
   let html = "";
   if (ts) html += `Capture : ${escapeHtml(ts)}`;
   if (title) html += `${html ? " — " : ""}${escapeHtml(title)}`;
   if (url) html += `<span class="agent-screen-url">${escapeHtml(url)}</span>`;
+  html += `<span class="agent-screen-hint">Cliquer pour agrandir</span>`;
   const caption = document.getElementById("agent-screen-caption");
   if (caption) {
     caption.innerHTML = html;
@@ -1624,15 +1713,21 @@ function renderScreenFrame(frame, opts) {
     const wrap = document.getElementById("agent-screen-wrap");
     if (wrap && !wrap.open) wrap.open = true;
   }
+  // Takeover: pin the pending drag-start marker back onto the same frame
+  // coordinates after a fresh capture replaced the displayed image.
+  repositionTakeoverMarker();
 }
 
-/** One unnamed stream frame: a frame object per capture. The lagged marker and
- *  any unknown shape are skipped defensively (like the workflow renderer) —
- *  the next capture re-syncs the view. */
+/** One unnamed stream frame: a combined {frame, tabs} payload per capture
+ *  (or tabs-only refresh). The lagged marker and any unknown shape are
+ *  skipped defensively (like the workflow renderer) — the next capture
+ *  re-syncs the view. The frame may be `null` on tabs-only refreshes: the
+ *  strip updates, the retained view stays. */
 function onScreenFrameMessage(msg) {
   if (!msg || typeof msg !== "object") return;
   if (msg.type === "eventsLagged") return;
-  renderScreenFrame(msg, { live: true }); // unnamed SSE frame = live capture
+  renderScreenFrame(msg.frame, { live: true }); // unnamed SSE frame = live capture
+  renderScreenTabs(msg.tabs);
 }
 
 /** Opens the SSE stream exactly once (single-owner guard, mirrored from
@@ -1654,7 +1749,10 @@ function startScreenStream() {
     try {
       const snap = JSON.parse(e.data);
       // (Re)connect snapshot, never a live arrival → never auto-opens
-      if (snap && typeof snap === "object") renderScreenFrame(snap.frame, { live: false });
+      if (snap && typeof snap === "object") {
+        renderScreenFrame(snap.frame, { live: false });
+        renderScreenTabs(snap.tabs);
+      }
     } catch {
       /* ignored frame */
     }
@@ -1715,7 +1813,10 @@ function startScreenPollFallback() {
         const snap = await res.json();
         // Poll tick = live arrival (may auto-open); identical-ts repeats of
         // the same capture stay silent via the tracker inside renderScreenFrame
-        if (snap && typeof snap === "object") renderScreenFrame(snap.frame, { live: true });
+        if (snap && typeof snap === "object") {
+          renderScreenFrame(snap.frame, { live: true });
+          renderScreenTabs(snap.tabs);
+        }
         if (!screenPanel.readopted && typeof EventSource !== "undefined") {
           // First healthy reply: hand consumption back to the stream. Only
           // when EventSource exists at all — without it the stream can never
@@ -1764,7 +1865,383 @@ function initAgentScreen() {
   if (!agentConfigured) return;
   block.hidden = false;
   showScreenNote("Aucune capture pour le moment — l'agent n'a pas encore navigué.");
+  bindScreenLightbox();
   startScreenStream();
+  initAgentTakeover(); // « Prendre la main » over the viewer (same-origin only)
+}
+
+/* -------- Screen lightbox (click-to-zoom of the agent screen viewer) -------- */
+
+/** Shared by the /agent panel and the /chat <details> panel (the same
+ *  #agent-screen-img): clicking a DISPLAYED frame opens a full-screen overlay
+ *  with the current frame at native size (object-fit: contain), the panel
+ *  caption reused in the footer and a × close. Closes on Escape, a backdrop
+ *  click and the × button. Purely presentational: the overlay DOM is created
+ *  lazily once (no chat/agent.html change needed), its payload is reset on
+ *  close. */
+
+/** Lazily created overlay root (null until the first open). */
+let screenLightbox = null;
+
+/** Thumbnail to restore focus to on close (kept across the open session). */
+let screenLightboxReturnFocus = null;
+
+/** Builds the overlay once and keeps it hidden; returns the root. */
+function ensureScreenLightbox() {
+  if (screenLightbox) return screenLightbox;
+  const overlay = document.createElement("div");
+  overlay.className = "screen-lightbox";
+  overlay.hidden = true;
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.setAttribute("aria-label", "Capture d'écran agrandie");
+  overlay.innerHTML =
+    '<div class="screen-lightbox-backdrop"></div>' +
+    '<figure class="screen-lightbox-figure">' +
+    '<img class="screen-lightbox-img" alt="Capture d\'écran du navigateur de l\'agent en taille réelle">' +
+    '<figcaption class="screen-lightbox-caption"></figcaption>' +
+    '</figure>' +
+    '<button type="button" class="screen-lightbox-close" aria-label="Fermer">✕</button>';
+  document.body.appendChild(overlay);
+  overlay.querySelector(".screen-lightbox-backdrop").addEventListener("click", closeScreenLightbox);
+  overlay.querySelector(".screen-lightbox-close").addEventListener("click", closeScreenLightbox);
+  screenLightbox = overlay;
+  return overlay;
+}
+
+/** Escape closes the overlay; the listener lives only while it is open. */
+function onScreenLightboxKeydown(e) {
+  if (e.key === "Escape") {
+    e.preventDefault();
+    closeScreenLightbox();
+  }
+}
+
+/** Opens the overlay with the CURRENT panel frame — a no-op when the panel
+ *  shows no frame (thumbnail hidden / no payload) or when the takeover is
+ *  ACTIVE (frame clicks drive the agent's browser instead of zooming; the
+ *  Enter/Space pseudo-button path is covered by the same guard). The panel
+ *  caption is reused in the footer (minus the zoom hint). Focus moves to the
+ *  close button and returns to the opening thumbnail on close. */
+function openScreenLightbox() {
+  const img = document.getElementById("agent-screen-img");
+  if (takeover.active) return;
+  if (!img || img.hidden || !img.src || !img.src.startsWith("data:image/")) return;
+  const overlay = ensureScreenLightbox();
+  const view = overlay.querySelector(".screen-lightbox-img");
+  view.src = img.src;
+  // Caption copy: strip the « Cliquer pour agrandir » hint (nonsensical in
+  // the zoom view); the html was built escaped by this same code path.
+  const caption = document.getElementById("agent-screen-caption");
+  let captionHtml = "";
+  if (caption && !caption.hidden) {
+    const clone = caption.cloneNode(true);
+    clone.querySelectorAll(".agent-screen-hint").forEach((el) => el.remove());
+    captionHtml = clone.innerHTML;
+  }
+  overlay.querySelector(".screen-lightbox-caption").innerHTML = captionHtml;
+  screenLightboxReturnFocus =
+    document.activeElement instanceof HTMLElement ? document.activeElement : img;
+  overlay.hidden = false;
+  // Scroll lock while the overlay is up (same pattern as html.nav-open)
+  document.documentElement.classList.add("screen-lightbox-open");
+  document.addEventListener("keydown", onScreenLightboxKeydown);
+  overlay.querySelector(".screen-lightbox-close").focus();
+}
+
+/** Closes the overlay and clears its payload (a stale frame must not flash
+ *  on a later open), then restores the focus. */
+function closeScreenLightbox() {
+  if (!screenLightbox || screenLightbox.hidden) return;
+  screenLightbox.hidden = true;
+  document.documentElement.classList.remove("screen-lightbox-open");
+  const view = screenLightbox.querySelector(".screen-lightbox-img");
+  if (view) view.removeAttribute("src");
+  const caption = screenLightbox.querySelector(".screen-lightbox-caption");
+  if (caption) caption.innerHTML = "";
+  document.removeEventListener("keydown", onScreenLightboxKeydown);
+  const back = screenLightboxReturnFocus;
+  if (back && document.contains(back)) back.focus();
+  screenLightboxReturnFocus = null;
+}
+
+/** One-time bindings on the shared thumbnail: click opens, Enter/Space on the
+ *  focused pseudo-button too (mirroring a native button). */
+function bindScreenLightbox() {
+  const img = document.getElementById("agent-screen-img");
+  if (!img || img.dataset.lightboxBound) return;
+  img.dataset.lightboxBound = "1";
+  img.addEventListener("click", openScreenLightbox);
+  img.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openScreenLightbox();
+    }
+  });
+}
+
+/* -------- Prise en main (operator takeover over the shared viewer) -------- */
+
+/** One input at a time to the agent's browser through
+ *  POST /api/agent/browser/input (goto / click / drag / type / key). The
+ *  viewer frame is the mapping surface: its NATURAL size is the page
+ *  content area, so a displayed pixel IS a viewport CSS pixel — the server
+ *  guarantees that 1:1 (see AGENTS.md, browser screen capture). Active only
+ *  same-origin (initAgentTakeover runs from initAgentScreen, which never
+ *  connects on a static deploy); a run-active server refuses every input
+ *  with 409, surfaced as a status line. */
+const takeover = {
+  active: false,    // « Prendre la main » engaged (frame clicks are inputs)
+  dragStart: null,  // pending drag start, in frame-space pixels {x, y}
+};
+
+function takeoverToggle() {
+  return document.getElementById("agent-takeover-toggle");
+}
+
+function setTakeoverStatus(text) {
+  const el = document.getElementById("agent-takeover-status");
+  if (el) el.textContent = text;
+}
+
+/** One-time bindings + toggle reveal; runs ONLY on same-origin, configured
+ *  deploys (initAgentScreen short-circuits in REMOTE_MODE / unconfigured
+ *  before calling this). Both pages share the exact ids. */
+function initAgentTakeover() {
+  const block = document.getElementById("agent-screen");
+  const toggle = takeoverToggle();
+  if (!block || !toggle || block.dataset.takeoverBound) return;
+  block.dataset.takeoverBound = "1";
+  const wrap = document.getElementById("agent-takeover");
+  if (wrap) wrap.hidden = false;
+  toggle.hidden = false;
+  toggle.addEventListener("click", () => {
+    if (takeover.active) exitAgentTakeover();
+    else enterAgentTakeover();
+  });
+  const img = document.getElementById("agent-screen-img");
+  if (img) img.addEventListener("click", onTakeoverFrameClick);
+  const go = document.getElementById("agent-takeover-go");
+  if (go) go.addEventListener("click", sendTakeoverGoto);
+  const typeBtn = document.getElementById("agent-takeover-type");
+  if (typeBtn) typeBtn.addEventListener("click", sendTakeoverType);
+  document
+    .querySelectorAll("#agent-screen [data-takeover-key]")
+    .forEach((btn) => {
+      btn.addEventListener("click", () =>
+        sendTakeoverInput({ kind: "key", key: btn.dataset.takeoverKey }),
+      );
+    });
+}
+
+function enterAgentTakeover() {
+  const controls = document.getElementById("agent-takeover-controls");
+  const img = document.getElementById("agent-screen-img");
+  const toggle = takeoverToggle();
+  takeover.active = true;
+  if (toggle) {
+    toggle.textContent = "Rendre la main";
+    toggle.setAttribute("aria-pressed", "true");
+  }
+  if (controls) controls.hidden = false;
+  if (img) img.classList.add("agent-screen-takeover");
+  setTakeoverStatus(
+    "Clic : cliquer à cet endroit. Maj+clic : premier point d'un glisser, puis clic à l'arrivée.",
+  );
+  const first = document.getElementById("agent-takeover-url");
+  if (first) first.focus();
+}
+
+/** Disengage everything: controls, pending drag marker, cursor, wording. */
+function exitAgentTakeover() {
+  const controls = document.getElementById("agent-takeover-controls");
+  const img = document.getElementById("agent-screen-img");
+  const toggle = takeoverToggle();
+  takeover.active = false;
+  takeover.dragStart = null;
+  hideTakeoverMarker();
+  if (toggle) {
+    toggle.textContent = "Prendre la main";
+    toggle.setAttribute("aria-pressed", "false");
+  }
+  if (controls) controls.hidden = true;
+  if (img) img.classList.remove("agent-screen-takeover");
+  setTakeoverStatus("");
+}
+
+/** displayed click → frame-space pixel: read the frame's NATURAL size (not
+ *  the CSS size) so the mapping stays exact at any displayed scale; tiny
+ *  misses clamp to the frame bounds instead of a confusing dead zone. */
+function framePixel(img, event) {
+  const naturalW = img.naturalWidth;
+  const naturalH = img.naturalHeight;
+  if (!naturalW || !naturalH) return null;
+  const rect = img.getBoundingClientRect();
+  if (!rect.width || !rect.height) return null;
+  const x = Math.round(((event.clientX - rect.left) * naturalW) / rect.width);
+  const y = Math.round(((event.clientY - rect.top) * naturalH) / rect.height);
+  return {
+    x: Math.min(naturalW - 1, Math.max(0, x)),
+    y: Math.min(naturalH - 1, Math.max(0, y)),
+  };
+}
+
+/** Frame click routing (one listener, gated on the active flag — inactive
+ *  clicks keep opening the lightbox). Plain click = immediate click; a
+ *  pending drag start turns the next plain click into the drag end;
+ *  Shift+click (re)moves the start point. */
+function onTakeoverFrameClick(event) {
+  if (!takeover.active) return; // inactive: the lightbox handler takes it
+  event.preventDefault();
+  const img = event.currentTarget;
+  const at = framePixel(img, event);
+  if (!at) return;
+  if (event.shiftKey) {
+    takeover.dragStart = at;
+    showTakeoverMarker(at);
+    setTakeoverStatus(
+      `Départ du glisser : (${at.x}, ${at.y}) — cliquez à l'arrivée.`,
+    );
+  } else if (takeover.dragStart) {
+    const start = takeover.dragStart;
+    takeover.dragStart = null;
+    hideTakeoverMarker();
+    sendTakeoverInput({
+      kind: "drag",
+      x1: start.x,
+      y1: start.y,
+      x2: at.x,
+      y2: at.y,
+    });
+  } else {
+    sendTakeoverInput({ kind: "click", x: at.x, y: at.y });
+  }
+}
+
+/* Pending drag-start marker: an absolutely positioned dot inside
+   #agent-screen (position:relative via CSS), placed relative to the img's
+   box so it follows the displayed size, not the frame size. */
+
+function ensureTakeoverMarker() {
+  let marker = document.getElementById("agent-takeover-marker");
+  if (!marker) {
+    marker = document.createElement("div");
+    marker.id = "agent-takeover-marker";
+    marker.hidden = true;
+    const block = document.getElementById("agent-screen");
+    if (block) block.appendChild(marker);
+  }
+  return marker;
+}
+
+function showTakeoverMarker(at) {
+  const marker = ensureTakeoverMarker();
+  const img = document.getElementById("agent-screen-img");
+  if (!img || !img.naturalWidth || !img.naturalHeight) return marker;
+  const scaleX = img.offsetWidth / img.naturalWidth;
+  const scaleY = img.offsetHeight / img.naturalHeight;
+  // offsetLeft/offsetTop are relative to the .agent-screen block (its
+  // position:relative makes it the offsetParent).
+  marker.style.left = `${img.offsetLeft + at.x * scaleX}px`;
+  marker.style.top = `${img.offsetTop + at.y * scaleY}px`;
+  marker.hidden = false;
+  return marker;
+}
+
+function hideTakeoverMarker() {
+  const marker = document.getElementById("agent-takeover-marker");
+  if (marker) marker.hidden = true;
+}
+
+/** Fresh captures replace the displayed image: keep the pending drag start
+ *  pinned to the SAME frame coordinates (called from renderScreenFrame). */
+function repositionTakeoverMarker() {
+  if (!takeover.active || !takeover.dragStart) return;
+  showTakeoverMarker(takeover.dragStart);
+}
+
+/* Takeover controls + POST plumbing. */
+
+function sendTakeoverGoto() {
+  const field = document.getElementById("agent-takeover-url");
+  if (!field) return;
+  const url = field.value.trim();
+  if (!url) {
+    setTakeoverStatus("Entrez une URL d'abord.");
+    field.focus();
+    return;
+  }
+  sendTakeoverInput({ kind: "goto", url });
+}
+
+function sendTakeoverType() {
+  const field = document.getElementById("agent-takeover-text");
+  if (!field) return;
+  // Raw value on purpose: leading/trailing spaces are meaningful input.
+  const text = field.value;
+  if (!text) {
+    setTakeoverStatus("Entrez un texte d'abord.");
+    field.focus();
+    return;
+  }
+  sendTakeoverInput({ kind: "type", text });
+}
+
+/** One POST /api/agent/browser/input + its French status lines (409 /
+ *  400 / 401 / 503 / network), then nothing more: a succeeding frame
+ *  refresh and capture arrive through the screen SSE stream naturally. */
+async function sendTakeoverInput(payload) {
+  setTakeoverStatus("Envoi…");
+  let res;
+  try {
+    res = await fetch(apiUrl(SCREEN_INPUT_PATH), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  } catch {
+    setTakeoverStatus("Serveur injoignable (prise en main refusée).");
+    return;
+  }
+  if (res.ok) {
+    const data = await res.json().catch(() => ({}));
+    switch (payload.kind) {
+      case "goto": {
+        const url = data && typeof data.url === "string" ? data.url : "";
+        setTakeoverStatus(url ? `Page ouverte : ${url}` : "Navigation envoyée.");
+        break;
+      }
+      case "click":
+        setTakeoverStatus(`Clic envoyé (${payload.x}, ${payload.y}).`);
+        break;
+      case "drag":
+        setTakeoverStatus(
+          `Glisser envoyé : (${payload.x1}, ${payload.y1}) → (${payload.x2}, ${payload.y2}).`,
+        );
+        break;
+      case "type":
+        setTakeoverStatus("Texte saisi.");
+        break;
+      case "key":
+        setTakeoverStatus("Touche envoyée.");
+        break;
+      default:
+        setTakeoverStatus("Saisie envoyée.");
+    }
+    return;
+  }
+  if (res.status === 409) {
+    setTakeoverStatus("Run actif — reprends après la fin du run.");
+  } else if (res.status === 503) {
+    setTakeoverStatus("Navigateur indisponible — agent non configuré.");
+  } else if (res.status === 401) {
+    setTakeoverStatus("Autorisation refusée (jeton requis).");
+  } else {
+    const data = await res.json().catch(() => ({}));
+    const detail =
+      data && typeof data.error === "string" ? data.error : `HTTP ${res.status}`;
+    setTakeoverStatus(`Échec de la saisie (${res.status}) : ${detail}`);
+  }
 }
 
 /* ------------------------------ Agent status pill ------------------------------ */
@@ -1799,7 +2276,10 @@ function renderAgentPill(status) {
       pill.classList.add("run");
       pill.innerHTML = `<span class="pill-dot"></span>Exécution en cours…`;
     } else {
-      const errored = agent.lastRunOutcome === "error" || agent.lastRunOutcome === "timeout";
+      const errored =
+        agent.lastRunOutcome === "error" ||
+        agent.lastRunOutcome === "timeout" ||
+        agent.lastRunOutcome === "stopped";
       if (errored) pill.classList.add("err");
       if (errored && agent.lastRunSummary) {
         pill.setAttribute("title", agent.lastRunSummary);
@@ -1830,6 +2310,7 @@ async function loadAgentStatus() {
       renderAgentPill(null);
       updateRunButtonVisibility(lastAgentStatus);
       renderScheduleEditor(lastAgentStatus);
+      renderBrowserClearBlock(lastAgentStatus);
       syncHistoryVisibility();
       return null;
     }
@@ -1838,6 +2319,7 @@ async function loadAgentStatus() {
     renderAgentPill(status);
     updateRunButtonVisibility(status);
     renderScheduleEditor(status);
+    renderBrowserClearBlock(status);
     syncHistoryVisibility();
     return status;
   } catch {
@@ -1845,6 +2327,7 @@ async function loadAgentStatus() {
     renderAgentPill(null);
     updateRunButtonVisibility(lastAgentStatus);
     renderScheduleEditor(lastAgentStatus);
+    renderBrowserClearBlock(lastAgentStatus);
     syncHistoryVisibility();
     return null;
   }
@@ -1902,6 +2385,39 @@ async function triggerAgentUpdate() {
   if (btn) btn.disabled = false; // only reached on failure: 202 keeps it disabled while polling
 }
 
+/** « Arrêter » (workflow panel of the /agent page): POST /api/agent/stop for
+ *  the run shown in the live header — same POST and status lines as the
+ *  chat-page stop, surfaced in the section header's inline message. Only
+ *  reachable on same-origin deploys (the button is not rendered under
+ *  REMOTE_MODE; the delegation binding is agent-page-only too). */
+async function stopAgentRun() {
+  showAgentMessage("");
+  try {
+    const res = await fetch(apiUrl(AGENT_STOP_PATH), { method: "POST" });
+    if (res.ok) {
+      let body = null;
+      try {
+        body = await res.json();
+      } catch {
+        /* malformed body: fall through to the "déjà terminée" reading */
+      }
+      showAgentMessage(
+        body && body.stopped
+          ? "Arrêt demandé — l'exécution va s'interrompre."
+          : "L'exécution s'est déjà terminée.",
+      );
+      return;
+    }
+    if (res.status === 401) {
+      showAgentMessage("Accès refusé — l'arrêt exige le jeton d'authentification du serveur.");
+    } else {
+      showAgentMessage(`Échec de l'arrêt (code HTTP ${res.status}).`);
+    }
+  } catch {
+    showAgentMessage("Serveur injoignable — arrêt non envoyé.");
+  }
+}
+
 /** Optimistic pill state between the 202 and the first poll. */
 function renderPollingPill() {
   const pill = document.getElementById("agent-pill");
@@ -1937,6 +2453,7 @@ function pollAgentStatus() {
           renderAgentPill(status);
           updateRunButtonVisibility(status);
           renderScheduleEditor(status);
+          renderBrowserClearBlock(status);
           if (status.agent.running === false) {
             // Run confirmed finished by the server: refresh what it can change
             await refreshData();
@@ -2356,6 +2873,94 @@ async function initCredentials() {
   await loadCredentials();
 }
 
+/* ------------------------------ Navigateur de l'agent (browser profile reset, agent page) ------------------------------ */
+
+/** Inline message of the browser reset block (same conventions as showCredentialsMsg). */
+function showBrowserClearMsg(msg) {
+  const el = document.getElementById("browser-clear-status");
+  if (el) el.textContent = msg;
+}
+
+/** Renders the browser reset block from a /api/status payload — same call
+ *  sites and REMOTE_MODE rule as renderScheduleEditor. Visible same-origin
+ *  once ANY status payload is known (the profile path is a serve-level
+ *  setting, surfaced with or without a configured agent — like the
+ *  connexions block, without the agent-configured gate). null profile =
+ *  transient mode: the « profil transitoire » line + a disabled button
+ *  (nothing is persisted, nothing to reset). A failed status fetch hides
+ *  the block again (hide-on-failure rule of the dynamic blocks). */
+function renderBrowserClearBlock(status) {
+  const block = document.getElementById("browser-clear-block");
+  if (!block) return;
+  if (REMOTE_MODE) {
+    // Static deploy: the site never POSTs (no auth token) — never shows
+    block.hidden = true;
+    return;
+  }
+  const profile = status?.agent ? status.agent.browserProfile : undefined;
+  if (profile === undefined) {
+    // No usable status payload yet (or a failed fetch): stay hidden
+    block.hidden = true;
+    return;
+  }
+  block.hidden = false;
+  const line = document.getElementById("browser-profile-line");
+  if (line) line.textContent = profile === null
+    ? "profil transitoire — rien à réinitialiser"
+    : `Profil : ${profile}`;
+  const btn = document.getElementById("browser-clear-btn");
+  if (btn) {
+    btn.hidden = false; // revealed with the block (ships hidden)
+    btn.disabled = profile === null;
+  }
+}
+
+/** « Réinitialiser »: French confirm (what is lost, what is kept), then
+ *  POST /api/agent/browser/clear → render the outcome in the status line.
+ *  200: ok/cleared; 409: a run is active — retry after it ends; other
+ *  errors: the server's error text when readable. The button stays
+ *  disabled while the request is in flight. */
+async function clearBrowserProfile() {
+  const profile = lastAgentStatus?.agent?.browserProfile;
+  if (!profile) return; // transient mode: the disabled button guards this too
+  if (!window.confirm("Réinitialise le navigateur de l'agent : ferme le navigateur et efface son profil — toutes les sessions enregistrées (connexions aux sites) sont déconnectées. Les identifiants stockés (connexions & TOTP) sont conservés.")) {
+    return;
+  }
+  const btn = document.getElementById("browser-clear-btn");
+  if (btn) btn.disabled = true;
+  showBrowserClearMsg("");
+  try {
+    const res = await fetch(apiUrl(BROWSER_CLEAR_PATH), { method: "POST" });
+    if (res.ok) {
+      const body = await res.json().catch(() => null);
+      if (body && body.cleared === true) {
+        // The profile is recreated on the agent's next browser use
+        showBrowserClearMsg("Profil réinitialisé ; les sites se reconnecteront à la prochaine navigation.");
+      } else {
+        showBrowserClearMsg("Profil transitoire — rien à réinitialiser.");
+      }
+    } else if (res.status === 409) {
+      showBrowserClearMsg("Une mise à jour est en cours — réessaie après la fin de l'exécution.");
+    } else if (res.status === 401) {
+      showBrowserClearMsg("Accès refusé — la réinitialisation exige le jeton d'authentification du serveur.");
+    } else {
+      // Other errors (400/500): surface the server error text when readable
+      let msg = `Échec de la réinitialisation (code HTTP ${res.status}).`;
+      try {
+        const body = await res.json();
+        if (body && typeof body.error === "string" && body.error !== "") msg = body.error;
+      } catch {
+        /* malformed error body: keep the generic message */
+      }
+      showBrowserClearMsg(msg);
+    }
+  } catch {
+    showBrowserClearMsg("Serveur injoignable — profil non réinitialisé.");
+  }
+  // Restore the button: enabled only when a persistent profile exists
+  if (btn) btn.disabled = lastAgentStatus?.agent?.browserProfile == null;
+}
+
 /* ------------------------------ Discussion avec l'agent (chat page) ------------------------------ */
 
 /** Mutable chat-waiting state; single owner of the EventSource, the fallback
@@ -2396,12 +3001,21 @@ function clearChatMsg() {
   showChatMsg("");
 }
 
-/** Send + clear stay disabled while a run is active. */
+/** Send + clear stay disabled while a run is active. The stop button follows
+ *  the waiting state: hidden+disabled when idle, visible+enabled while
+ *  watching a run (enterWaiting flips it on through this same call). A
+ *  stopped/timed-out run re-enables it only via the waiting end —
+ *  setChatControls(false) hides it again for the idle state. */
 function setChatControls(running) {
   const send = document.getElementById("chat-send");
   const clear = document.getElementById("chat-clear");
+  const stop = document.getElementById("chat-stop");
   if (send) send.disabled = running;
   if (clear) clear.disabled = running;
+  if (stop) {
+    stop.hidden = !running;
+    stop.disabled = !running;
+  }
 }
 
 /** Local time "14:05:32" under a bubble; empty when the record carries no
@@ -2409,6 +3023,93 @@ function setChatControls(running) {
 function chatTimestampHtml(ts) {
   const time = formatTimeSeconds(ts);
   return time ? `<span class="chat-ts">${escapeHtml(time)}</span>` : "";
+}
+
+/** French token count: full grouping below 10 000 ("1 432"), then the "k"/
+ *  "M" short forms ("24,5 k"). null when the value is not a usable number. */
+function fmtTokenCount(n) {
+  if (typeof n !== "number" || !Number.isFinite(n) || n < 0) return null;
+  if (n < 10000) return n.toLocaleString("fr-FR");
+  if (n < 1000000) return `${(n / 1000).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} k`;
+  return `${(n / 1000000).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} M`;
+}
+
+/** "≈ 0,0122 $" style USD figure (fr-FR decimal comma, 4 significant digits);
+ *  the « ≈ » marks every displayed cost as possibly an estimate (catalog
+ *  list price or operator rates, per the server's costSource). null when
+ *  the value is not a usable number. */
+function fmtCostUsd(value) {
+  if (typeof value !== "number" || !Number.isFinite(value) || value < 0) return null;
+  return `≈ ${value.toLocaleString("fr-FR", { maximumSignificantDigits: 4 })} $`;
+}
+
+/** Tooltip naming where a usage cost figure comes from (matches the
+ *  server's costSource values; anything unknown degrades to the
+ *  tokens-only wording). */
+function usageCostTitle(source) {
+  if (typeof source === "string" && source) {
+    return USAGE_SOURCE_TITLES[source] ?? USAGE_SOURCE_TITLE_NONE;
+  }
+  return USAGE_SOURCE_TITLE_NONE;
+}
+
+/** Grey micro-line under a successful assistant bubble, naming the run's
+ *  token usage (+ the resolved cost line when the cost source could be
+ *  established): "1 432 tok. in · 210 tok. out · ≈ 0,0122 $". Empty when the
+ *  record carries no usage (user/error records, older servers, provider
+ *  reporting nothing) — rows render exactly as before. */
+function chatUsageLineHtml(usage) {
+  if (!usage || typeof usage !== "object") return "";
+  const parts = [];
+  const input = fmtTokenCount(usage.inputTokens);
+  const output = fmtTokenCount(usage.outputTokens);
+  if (input) parts.push(`${input} tok. in`);
+  if (output) parts.push(`${output} tok. out`);
+  const cost = fmtCostUsd(usage.costUsd);
+  if (cost) parts.push(cost);
+  if (!parts.length) return "";
+  const text = parts.join(" · ");
+  return `<span class="chat-usage-line" title="${escapeHtml(usageCostTitle(usage.costSource))}">${escapeHtml(text)}</span>`;
+}
+
+/** Session usage chip (#chat-usage, sits right above the transcript), fed
+ *  from the GET usage totals on every wholesale render:
+ *  "Session : 12 échanges · ≈ 0,094 $" — tokens-only variant "Session :
+ *  12 échanges · 24,5 k tokens". Hidden while the session counts no usage
+ *  (fresh page, or right after a chat clear) and on data-less renders
+ *  (busy-clear re-sync, failures). Same tooltip treatment as the bubble
+ *  micro-line. */
+function renderChatUsage(usage) {
+  const el = document.getElementById("chat-usage");
+  if (!el) return;
+  if (!usage || typeof usage !== "object" || !(usage.turns > 0)) {
+    el.hidden = true;
+    el.removeAttribute("title");
+    el.textContent = "";
+    return;
+  }
+  const turns = Number(usage.turns).toLocaleString("fr-FR");
+  const parts = [
+    `Session : ${turns} ${usage.turns === 1 ? "échange" : "échanges"}`,
+  ];
+  // The chip shows the cost when known (the plan's session shape), else the
+  // session token total (totalTokens, or input+output when the provider
+  // never reported their sum).
+  const cost = fmtCostUsd(usage.costUsd);
+  const totalTokens = typeof usage.totalTokens === "number"
+    ? usage.totalTokens
+    : (typeof usage.inputTokens === "number" && typeof usage.outputTokens === "number"
+      ? usage.inputTokens + usage.outputTokens
+      : null);
+  if (cost) {
+    parts.push(cost);
+  } else {
+    const tokens = fmtTokenCount(totalTokens);
+    if (tokens) parts.push(`${tokens} tokens`);
+  }
+  el.textContent = parts.join(" · ");
+  el.title = usageCostTitle(usage.costSource);
+  el.hidden = false;
 }
 
 /** One transcript row per message — shared by wholesale renders and live
@@ -2429,7 +3130,7 @@ function makeUserRow(text, ts) {
   return row;
 }
 
-function makeAssistantRow(text, ts, activity) {
+function makeAssistantRow(text, ts, activity, usage) {
   const row = document.createElement("div");
   row.className = "chat-row chat-row-assistant";
   const bubble = document.createElement("div");
@@ -2441,7 +3142,9 @@ function makeAssistantRow(text, ts, activity) {
   // activity block instead of assigning bubble.innerHTML wholesale.
   bubble.insertAdjacentHTML("beforeend", renderMarkdown(String(text ?? "")));
   row.appendChild(bubble);
-  row.insertAdjacentHTML("beforeend", chatTimestampHtml(ts));
+  // Usage micro-line under the timestamp (absent when the record carries
+  // none — renders exactly as before).
+  row.insertAdjacentHTML("beforeend", chatTimestampHtml(ts) + chatUsageLineHtml(usage));
   return row;
 }
 
@@ -2478,8 +3181,9 @@ function renderChatTranscript(messages) {
       zone.appendChild(makeUserRow(rec.text, rec.ts));
     } else if (rec.role === "assistant") {
       // rec.activity (absent on older servers / user records) flows to the
-      // collapsed block builder — rows without it render exactly as before.
-      zone.appendChild(rec.error ? makeErrorRow(rec) : makeAssistantRow(rec.text, rec.ts, rec.activity));
+      // collapsed block builder, rec.usage (successful turns only) to the
+      // grey micro-line — rows without them render exactly as before.
+      zone.appendChild(rec.error ? makeErrorRow(rec) : makeAssistantRow(rec.text, rec.ts, rec.activity, rec.usage));
     }
   }
   scrollChatToBottom();
@@ -2650,7 +3354,8 @@ function showChatFinalReply(ev) {
 
 /** Enters the waiting state: pending bubble + watch on the live workflow
  *  stream. runId comes from the accepted POST (null while boot-waiting: the
- *  single-run guard makes the next run on the stream the watched one). */
+ *  single-run guard makes the next run on the stream the watched one). The
+ *  waiting state also exposes the « Arrêter » stop button (setChatControls). */
 function enterWaiting(runId) {
   chat.running = true;
   chat.expectedRunId = runId ?? null;
@@ -2846,6 +3551,9 @@ async function refreshChatState() {
     const body = await res.json();
     if (!body || !Array.isArray(body.messages)) return { json: null };
     renderChatTranscript(body.messages);
+    // The wholesale render is also the session-chip refresh point (the
+    // totals ride the same GET answer; absent on older servers → hidden).
+    renderChatUsage(body.usage);
     return { json: body };
   } catch {
     return { json: null };
@@ -2932,6 +3640,45 @@ async function sendChatMessage() {
   if (sendBtn) sendBtn.disabled = false; // failure path only: 202 keeps it disabled while watching
 }
 
+/** « Arrêter »: POST /api/agent/stop — best-effort cooperative stop of the
+ *  run being watched (same-origin page: plain fetch, no CORS concern). The
+ *  button stays disabled for the rest of the waiting state — it is re-shown
+ *  re-enabled only when the watch ends (finishChat → setChatControls(false);
+ *  a new waiting session re-arms it). The stopped run's finalization (audit,
+ *  transcript error bubble) flows through the ordinary runFinished frames —
+ *  the error record shows the raw server string "stopped by operator", the
+ *  same convention as "timeout". */
+async function stopChatRun() {
+  if (!chat.running) return;
+  const stopBtn = document.getElementById("chat-stop");
+  if (stopBtn) stopBtn.disabled = true;
+  clearChatMsg();
+  try {
+    const res = await fetch(apiUrl(AGENT_STOP_PATH), { method: "POST" });
+    if (res.ok) {
+      let body = null;
+      try {
+        body = await res.json();
+      } catch {
+        /* malformed body: fall through to the "déjà terminée" reading */
+      }
+      if (body && body.stopped) {
+        showChatMsg("Arrêt demandé — l'exécution va s'interrompre.");
+      } else {
+        showChatMsg("L'exécution s'est déjà terminée.");
+      }
+      return; // stop accepted (or already finished): the watch closes the session
+    }
+    if (res.status === 401) {
+      showChatMsg("Accès refusé — l'arrêt exige le jeton d'authentification du serveur.");
+    } else {
+      showChatMsg(`Échec de l'arrêt (code HTTP ${res.status}).`);
+    }
+  } catch {
+    showChatMsg("Serveur injoignable — arrêt non envoyé.");
+  }
+}
+
 /** « Effacer la conversation »: idempotent server-side clear, then the local
  *  transcript is wiped too (no confirmation asked). Blocked while running.
  *  A 200 answer can still report ok:false/busy:true (a run — chat or
@@ -2958,6 +3705,8 @@ async function clearConversation() {
         return;
       }
       renderChatTranscript([]);
+      // Real clear: the server wiped the session usage with the transcript.
+      renderChatUsage(null);
       return;
     }
     if (res.status === 401) {
@@ -2990,6 +3739,7 @@ async function initChat() {
   if (!body || !Array.isArray(body.messages)) return;
   section.hidden = false;
   renderChatTranscript(body.messages);
+  renderChatUsage(body.usage);
   if (body.running) {
     enterWaiting(null);
   } else {
@@ -3255,8 +4005,9 @@ async function loadData() {
 
 /** One-time setup per page (shared pieces everywhere, page pieces behind the
  *  dispatcher): map + tables + timeline filter (home), navigation + active-
- *  page highlight (all), run button + schedule editor + connexions editor
- *  (agent, same-origin deploys only), chat input bindings (chat). */
+ *  page highlight (all), run button + schedule editor + connexions editor +
+ *  browser reset (agent, same-origin deploys only), chat input bindings
+ *  (chat). */
 function setupStatic(page) {
   if (page === "home") {
     const mapOk = initMap();
@@ -3279,20 +4030,42 @@ function setupStatic(page) {
       // Same rule for the connexions editor (initCredentials never runs)
       const credBlock = document.getElementById("credentials-block");
       if (credBlock) credBlock.hidden = true;
+      // Same rule for the browser reset block (renderBrowserClearBlock
+      // keeps it hidden on status updates too)
+      const browserBlock = document.getElementById("browser-clear-block");
+      if (browserBlock) browserBlock.hidden = true;
     } else {
       const updateBtn = document.getElementById("agent-update-btn");
       if (updateBtn) updateBtn.addEventListener("click", triggerAgentUpdate);
       bindScheduleEditor();
       bindCredentialsEditor();
       void initCredentials(); // reveal + list load (GET-only until a save)
+      const browserClearBtn = document.getElementById("browser-clear-btn");
+      if (browserClearBtn) {
+        browserClearBtn.addEventListener("click", clearBrowserProfile);
+      }
+      // Workflow-header stop button: bound ONCE by event delegation on the
+      // activity zone (the header — and its button — is re-rendered
+      // wholesale by the live-view snapshots/appends).
+      const activityZone = document.getElementById("agent-activity");
+      if (activityZone) {
+        activityZone.addEventListener("click", (e) => {
+          const btn = e.target.closest("#agent-run-stop");
+          if (!btn || btn.disabled) return;
+          btn.disabled = true; // one stop per render; the finished-state swap re-renders
+          void stopAgentRun();
+        });
+      }
     }
   }
   if (page === "chat") {
     const sendBtn = document.getElementById("chat-send");
     const clearBtn = document.getElementById("chat-clear");
+    const stopBtn = document.getElementById("chat-stop");
     const input = document.getElementById("chat-input");
     if (sendBtn) sendBtn.addEventListener("click", sendChatMessage);
     if (clearBtn) clearBtn.addEventListener("click", clearConversation);
+    if (stopBtn) stopBtn.addEventListener("click", stopChatRun);
     if (input) {
       // Enter sends, Shift+Enter inserts a newline (standard chat-input
       // behavior; isComposing keeps IME composition from sending)
