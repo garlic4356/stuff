@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastVerified": "2026-10-23",
+    "lastVerified": "2026-11-03",
     "manualFields": [
       "cout"
     ]
@@ -28,7 +28,7 @@
       ],
       "type": "Asso 1901 · 01/03/2021 (W353021572)",
       "distance": "~30 min",
-      "statutDetail": "topic France-Airsoft « Concept Airsoft Iffendic » re-vérifié en ligne le 23/10/2026 (terrain face au Lac de Trémelin, ~2 week-ends/mois avec 30 à 40 joueurs, réservations via la page Facebook ; derniers messages datés du 04/05/2025 constatés le 14/10) ; dominicale du 19/07/2026 constatée sur la page Facebook (re-vérifiée le 09/10/2026 ; publication à nouveau inaccessible sans connexion le 23/10 — page vide)",
+      "statutDetail": "topic France-Airsoft « Concept Airsoft Iffendic » re-vérifié le 03/11/2026 : contenu identique (terrain face au Lac de Trémelin, ~2 week-ends/mois avec 30 à 40 joueurs, réservations via la page Facebook), aucun nouveau message depuis le 04/05/2025 ; aucune preuve de partie datée depuis la dominicale du 19/07/2026 constatée sur la page Facebook (re-vérifiée le 09/10/2026 — page Facebook toujours non accessible sans connexion)",
       "frequence": "~2 week-ends/mois",
       "prochaines": "Suivantes via Facebook",
       "terrain": "Forêt + bâtiments (vestiaires, eau, BBQ) · stand 55 m · chrony · recharge HPA/LiPo",
@@ -66,7 +66,7 @@
       ],
       "type": "Asso 1901 · 05/12/2008 · ex-Foug'R'Soft (~30 actifs)",
       "distance": "~35–45 min",
-      "statutDetail": "calendrier re-vérifié le 23/10/2026 sur le forum des parties : la partie du 31/10/2026 à Combourg est aujourd'hui marquée COMPLÈTE (sujet toujours actif, dernier message posté le 23/10 à 14h48), « L'Usine de Percy » du 21/11 toujours listée (réservé aux membres et sur invitations, dernier message le 20/10), entretien du terrain à Mordelles le 14/11 (sans partie), partie du 12/12 à Combourg toujours listée ; partie du 10/10/2026 annulée (sujet marqué ANNULE)",
+      "statutDetail": "calendrier re-vérifié le 03/11/2026 sur le forum des parties : la partie du 31/10/2026 à Combourg (marquée COMPLÈTE) a eu lieu (sujet encore actif après la date, dernier message le 01/11/2026 à 12h51) ; « L'Usine de Percy » du 21/11 toujours listée (réservé aux membres et sur invitations, dernier message le 02/11/2026) ; partie du 12/12 à Combourg toujours listée (dernier message le 02/11/2026) ; entretien du terrain à Mordelles le 14/11 (sans partie, dernier message le 02/11/2026) ; partie du 10/10/2026 annulée (sujet marqué ANNULE)",
       "frequence": "2 samedis/mois",
       "terrain": "2 sites forêt semi-CQB + Fun Parc (membres)",
       "cout": "n.c.",
@@ -74,22 +74,22 @@
         {
           "date": "2026-08-29",
           "lieu": "Mordelles",
-          "note": "Partie tenue — compte-rendu au forum (preuve d'activité)"
+          "note": "Partie tenue — compte-rendu au forum (partie passée, preuve d'activité)"
         },
         {
           "date": "2026-10-31",
           "lieu": "Combourg",
-          "note": "Partie complète (forêt semi-CQB)"
+          "note": "Partie complète (forêt semi-CQB) — sujet du forum encore actif le 01/11/2026"
         },
         {
           "date": "2026-11-21",
           "lieu": "L'Usine de Percy",
-          "note": "Réservé aux membres et sur invitations"
+          "note": "Réservé aux membres et sur invitations — toujours listé au forum (re-vérifié le 03/11/2026)"
         },
         {
           "date": "2026-12-12",
           "lieu": "Combourg",
-          "note": "Sujet ouvert au forum"
+          "note": "Sujet ouvert au forum — toujours listé (re-vérifié le 03/11/2026)"
         }
       ],
       "coords": {
@@ -150,7 +150,7 @@
       ],
       "type": "Asso + team",
       "distance": "~40 min",
-      "statutDetail": "page Facebook « Panthera Forest - Association Airsoft » consultée le 23/10/2026 : publication d'il y a un jour (22/10) annonçant la « Dominical du dimanche 1 novembre 2026 » avec inscription obligatoire ; site officiel en ligne le même jour (OP mensuelles, terrain Le Bourgneuf à Meillac, aucune date affichée sur la page d'accueil du site) ; l'OP des 17-18/10 est passée",
+      "statutDetail": "page Facebook « Panthera Forest - Association Airsoft » publique consultée le 03/11/2026 : publication du 27/10/2026 annonçant la « Dominical du dimanche 1 novembre 2026 » avec inscription obligatoire ; site officiel en ligne le même jour (OP mensuelles, terrain Le Bourgneuf à Meillac, aucune date affichée sur la page d'accueil) ; OP des 17-18/10 passée",
       "frequence": "~1 OP/mois (souvent vacances scol., 1–2 j)",
       "prochaines": "Dates via Facebook / bandeau du site",
       "terrain": "2 forêts + zone CQB · terrain ouvert (découverte)",
@@ -220,17 +220,22 @@
           "url": "https://ia-asso.fr/associations/W354007855"
         },
         {
+          "texte": "Fiche annuaire (Airsoft en France)",
+          "url": "https://airsoft-en-france.fr/associations/breizh-special-force-airsoft/"
+        },
+        {
           "texte": "Annuaire entreprises",
           "url": "https://annuaire-entreprises.data.gouv.fr/entreprise/924995855"
         }
       ],
       "sources": [
         "https://ia-asso.fr/associations/W354007855",
-        "https://www.societe.com/societe/breizh-special-force-airsoft-924995855.html"
+        "https://www.societe.com/societe/breizh-special-force-airsoft-924995855.html",
+        "https://airsoft-en-france.fr/associations/breizh-special-force-airsoft/"
       ],
       "type": "Asso 1901 · 29/01/2024 (JO 05/03/2024, SIRET 924 995 855 00013)",
       "distance": "~1h",
-      "statutDetail": "fiche RNA re-vérifiée le 14/10/2026 (ia-asso.fr — « Breizh Special Force Airsoft », Pleugueneuc, « association a but non lucratif association sportive d'airsoft organisateur d'évènements sportifs airsoft ») ; page annuaire-entreprises protégée par anti-bot (répond sans afficher la fiche, constaté le 09/10/2026) ; aucune date de partie publique trouvée en ligne (recherche DDG du 14/10/2026 sans résultat daté)",
+      "statutDetail": "fiche RNA re-vérifiée le 14/10/2026 (ia-asso.fr — « Breizh Special Force Airsoft », Pleugueneuc, association sportive d'airsoft organisatrice d'événements) ; fiche annuaire airsoft-en-france.fr consultée le 03/11/2026 (fiche établie à partir des données déclaratives : SIRET 924 995 855 00013, 1 La Lande Besnard, 35720 Pleugueneuc — non revendiquée par l'association, aucune actu du lieu) ; aucune date de partie publique trouvée en ligne (recherches Bing du 03/11/2026 et DDG du 14/10/2026 : annuaires et fiches déclaratives seulement)",
       "frequence": "n.c.",
       "prochaines": "Via leurs réseaux",
       "terrain": "n.c.",
@@ -262,7 +267,7 @@
       ],
       "type": "Asso · bureau de 5 bénévoles · groupes GIL & GOR",
       "distance": "~1h20–1h30 (limite sud)",
-      "statutDetail": "agenda public re-vérifié le 23/10/2026 (ath-airsoft.fr/agenda) : FLEX 24/10 et 01/11 (ouverts aux débutants), 100 % ATH (membres uniquement) le 07/11, entretien du terrain le 14/11 (sans partie), FLEX 29/11 et 05/12/2026 ; pour les joueurs externes, l'inscription ouvre 15 jours avant chaque partie",
+      "statutDetail": "agenda public re-vérifié le 03/11/2026 (ath-airsoft.fr/agenda) : « 100 % ATH » (membres uniquement) le 07/11, entretien du terrain le 14/11 (sans partie), FLEX 29/11 et 05/12/2026 ; les FLEX des 24/10 et 01/11 ne figurent plus à l'agenda (parties passées) ; pour les joueurs externes, l'inscription ouvre 15 jours avant chaque partie",
       "frequence": "2 événements/mois (sam./dim. alternés), 30 joueurs max",
       "terrain": "1 ha · village CQB bois · safe zone",
       "cout": "10 €/journée (ext.) · 30 €/an illimité",
@@ -452,7 +457,7 @@
       ],
       "type": "Asso · 2006",
       "distance": "~1h30 (bord de zone)",
-      "statutDetail": "page HelloAsso re-vérifiée le 23/10/2026 : billetterie « 20 ans de la Mayenne Airsoft » toujours ouverte pour la partie du 25/10/2026 (5 à 15 €) et adhésion 2026 en cours (35 €) ; la dominicale du 11/10/2026 est passée (n'apparaît plus parmi les actions en cours)",
+      "statutDetail": "page HelloAsso re-vérifiée le 03/11/2026 : billetterie « Dominical le dimanche 08 novembre 2026 » ouverte (0 à 15 €) et adhésion 2026 en cours (35 €) ; la billetterie de la partie « 20 ans de la Mayenne Airsoft » du 25/10/2026 n'apparaît plus parmi les actions en cours (partie passée) ; la dominicale du 11/10/2026 est passée",
       "frequence": "n.c.",
       "prochaines": "Via HelloAsso",
       "terrain": "n.c.",
@@ -461,12 +466,17 @@
         {
           "date": "2026-10-11",
           "lieu": "n.c.",
-          "note": "Partie dominicale — billetterie HelloAsso (0 à 15 €)"
+          "note": "Partie dominicale — billetterie HelloAsso (0 à 15 €) (partie passée, preuve d'activité — relevé du 23/10)"
         },
         {
           "date": "2026-10-25",
           "lieu": "n.c.",
-          "note": "Partie « 20 ans de la Mayenne Airsoft » — 5 à 15 € (HelloAsso)"
+          "note": "Partie « 20 ans de la Mayenne Airsoft » — 5 à 15 € (HelloAsso) (partie passée, relevé du 23/10)"
+        },
+        {
+          "date": "2026-11-08",
+          "lieu": "n.c.",
+          "note": "Dominical — billetterie HelloAsso 0 à 15 € (ouverte, constatée le 03/11/2026)"
         }
       ],
       "coords": {
@@ -499,7 +509,7 @@
       ],
       "type": "Asso · 01/2026 (W532007909)",
       "distance": "~1h45–2h (hors zone)",
-      "statutDetail": "page HelloAsso re-vérifiée le 23/10/2026 : toujours aucune action en cours, message « nous sommes en train de mettre en place nos prochaines initiatives ; revenez bientôt » ; aucune partie publique trouvée en ligne (recherches du 09/10/2026)",
+      "statutDetail": "page HelloAsso re-vérifiée le 03/11/2026 : toujours aucune action en cours (message « nous sommes en train de mettre en place nos prochaines initiatives ; revenez bientôt ») ; l'objet affiché sur la fiche annonce des événements réguliers et des journées de jeu scénarisées et immersives ; aucune partie publique trouvée en ligne (recherches du 03/11/2026 et du 09/10/2026 sans résultat)",
       "frequence": "n.c.",
       "terrain": "n.c.",
       "cout": "n.c.",
@@ -569,7 +579,7 @@
       ],
       "type": "Asso 1901 · 27/04/2024 (W442029485)",
       "distance": "~1h30",
-      "statutDetail": "Association déclarée le 27/04/2024, publiée au Journal officiel le 07/05/2024 (RNA W442029485, siège 19 bis avenue de la Baudinière, Thouaré-sur-Loire) — fiche annuaire re-vérifiée le 14/10/2026 ; page Facebook active (consultée le 23/10/2026 : publication d'il y a 4 jours « Inscription prioritaire sur le discord » accompagnée d'un lien Google Maps, coordonnées 47.460192 / -1.585800, préparation des prochaines parties) ; calendrier des parties 2026 publié sur Facebook le 30/03/2026, dates à confirmer dans le salon Discord « Partie BSC » (invitation non publique) ; aucune date de partie publiée hors Facebook/Discord (recherche complète du 14/10/2026 : web, HelloAsso, Billetweb, France-Airsoft, annuaires d'associations)",
+      "statutDetail": "Association déclarée le 27/04/2024, publiée au Journal officiel le 07/05/2024 (RNA W442029485, siège 19 bis avenue de la Baudinière, Thouaré-sur-Loire) — fiche annuaire re-vérifiée le 14/10/2026 ; page Facebook toujours en ligne (consultée le 03/11/2026 : 447 abonnés affichés sur le mur de connexion, publications non visibles sans connexion ; le 23/10/2026, publication d'il y a 4 jours « Inscription prioritaire sur le discord » avec lien Google Maps 47.460192 / -1.585800) ; calendrier des parties 2026 publié sur Facebook le 30/03/2026, dates à confirmer dans le salon Discord « Partie BSC » (invitation non publique) ; aucune date de partie publiée hors Facebook/Discord (recherches du 14/10 et du 23/10/2026 : web, HelloAsso, Billetweb, France-Airsoft, annuaires d'associations)",
       "frequence": "n.c.",
       "prochaines": "Calendrier des parties publié sur Facebook · confirmations sur le salon Discord « Partie BSC »",
       "terrain": "Terrains privés (Saffré et Héric)",
@@ -639,7 +649,7 @@
       ],
       "type": "Asso 1901 · créée 11/10/2006 (W142002276, SIRET 847 646 429 00021)",
       "distance": "~20–25 min de Caen",
-      "statutDetail": "page HelloAsso re-vérifiée le 23/10/2026 : billetterie « Partie publique du 1 Novembre » (10 €) toujours ouverte pour le 01/11/2026 (remboursement uniquement jusqu'à 72 h avant la partie) ; la billetterie de la partie du 18/10 n'apparaît plus parmi les actions en cours ; la partie du 01/11 est aussi relevée par le tracker places-airsoft (maj du jour) ; terrain CQB « The Store » (Ouézy) toujours annoncé sur la page HelloAsso",
+      "statutDetail": "page HelloAsso re-vérifiée le 03/11/2026 : trois billetteries ouvertes — « Partie publique du 15 Novembre », « Partie publique du 29 Novembre » et « Partie publique du 6 Décembre » (10 € chacune, remboursement uniquement jusqu'à 72 h avant la partie) ; la billetterie de la partie publique du 01/11 n'y figure plus (partie passée) ; les trois nouvelles parties publiques sont aussi relevées par le tracker places-airsoft (maj du 03/11/2026) ; terrain CQB « The Store » (Ouézy) toujours annoncé sur la page HelloAsso",
       "frequence": "n.c.",
       "prochaines": "Via HelloAsso (billetteries)",
       "terrain": "CQB en bâtiment fortifié (« The Store ») · 72 places",
@@ -648,12 +658,27 @@
         {
           "date": "2026-10-18",
           "lieu": "Ouézy (The Store)",
-          "note": "Partie publique — 10 € (billetterie HelloAsso)"
+          "note": "Partie publique — 10 € (billetterie HelloAsso) (partie passée, relevé du 23/10)"
         },
         {
           "date": "2026-11-01",
           "lieu": "Ouézy (The Store)",
-          "note": "Partie publique — 10 € (billetterie HelloAsso)"
+          "note": "Partie publique — 10 € (partie passée — prévue à la billetterie lors du relevé du 23/10)"
+        },
+        {
+          "date": "2026-11-15",
+          "lieu": "Ouézy (The Store)",
+          "note": "Partie publique — 10 € (billetterie HelloAsso ouverte, constatée le 03/11/2026)"
+        },
+        {
+          "date": "2026-11-29",
+          "lieu": "Ouézy (The Store)",
+          "note": "Partie publique — 10 € (billetterie HelloAsso ouverte, constatée le 03/11/2026)"
+        },
+        {
+          "date": "2026-12-06",
+          "lieu": "Ouézy (The Store)",
+          "note": "Partie publique — 10 € (billetterie HelloAsso ouverte, constatée le 03/11/2026)"
         }
       ],
       "coords": {
@@ -723,7 +748,7 @@
       ],
       "type": "Asso 1901 · créée 26/09/2019 (W144004478, SIRET 909757288) · 10 membres · assurance FFA",
       "distance": "~1h–1h05 de Caen",
-      "statutDetail": "annuaire FFA re-vérifié le 12/10/2026 (pages clubs visibles après connexion ; le résultat DDG du 23/10 montre l'annuaire fédéral relais reload-airsoft.fr avec « 0 membres » affichés) ; page HelloAsso sans action en cours (consultée le 12/10/2026) ; page Facebook « Association Tactical airsoft group 14 » toujours en ligne (35 abonnés ; dernières publications visibles dans le résultat DDG du 23/10 datent d'octobre–novembre 2023 : bureau et inscriptions 2024) ; aucune date de partie publique récente (recherche du 23/10 sans résultat)",
+      "statutDetail": "annuaire FFA re-vérifié le 12/10/2026 (pages clubs visibles après connexion ; le résultat DDG du 23/10 montre l'annuaire fédéral relais reload-airsoft.fr avec « 0 membres » affichés) ; page HelloAsso sans action en cours (re-vérifiée le 03/11/2026) ; page Facebook « Association Tactical airsoft group 14 » toujours en ligne (35 abonnés affichés ; consultée le 03/11/2026 : contenu « indisponible » au chargement sans connexion, dernières publications datées visibles dans le résultat DDG du 23/10 remontant à octobre–novembre 2023) ; aucune date de partie publique récente (recherches du 23/10 et du 03/11 sans résultat)",
       "frequence": "n.c.",
       "prochaines": "n.c.",
       "terrain": "n.c.",
@@ -757,7 +782,7 @@
       ],
       "type": "Asso 1901 · créée 23/11/2015 (W612002807) · ~15 actifs",
       "distance": "~45 min–1h15 de Caen",
-      "statutDetail": "re-vérifié le 23/10/2026 : la dominicale « C'est reparti ! » du 18/10/2026 à Le Breuil/Caligny (35 joueurs, 10 €) est passée (constatée sur Airsoft XP lors de la consultation du 14/10) ; OP Halloween 14/11 à Woodcamp Flers et OP Conquête 29/11 à Putanges constatées le 09/10/2026 sur Airsoft XP (hors de la fenêtre d'environ une semaine de la liste du 23/10) ; site officiel e-monsite en ligne (consulté le 14/10/2026)",
+      "statutDetail": "dominicale « C'est reparti ! » du 18/10/2026 à Le Breuil/Caligny (35 joueurs, 10 €) passée (constatée sur Airsoft XP lors de la consultation du 14/10) ; OP Halloween du 14/11 à Woodcamp Flers et OP Conquête du 29/11 à Putanges avaient été constatées le 09/10/2026 sur Airsoft XP — re-vérification du 03/11/2026 : ces deux fiches ne figurent plus parmi les parties à venir affichées sur la liste publique airsoft-xp.com et la page Facebook reste derrière l'authentification ; dates à re-confirmer sur Facebook ; site officiel e-monsite en ligne (consulté le 14/10/2026)",
       "frequence": "tous les 15 jours le dimanche + OP",
       "prochaines": "Via leur page Facebook",
       "terrain": "Bois aménagé (tranchées, miradors, caravane) à Caligny · sites partenaires Orne",
@@ -809,7 +834,7 @@
       ],
       "type": "Asso 1901 · créée 03/08/2012 (W721001003, SIRET 85215809600019) · 28 actifs · affiliée FédéraGN/MDF",
       "distance": "~2h de Caen",
-      "statutDetail": "page HelloAsso re-vérifiée le 23/10/2026 : aucune billetterie en cours (message « mettre en place nos prochaines initiatives » visible), fiche association à jour (28 membres actifs, terrain privé de Cérans-Foulletourte, parties découvertes 5 €) ; dernières preuves datées de parties : dominicale du 15/02/2026 et partie affichée le 08/03/2026 sur Airsoft XP ; un événement Facebook « Partie du dimanche 17 octobre » existe (non datable sans connexion — non retenu) ; aucune preuve de fermeture",
+      "statutDetail": "page HelloAsso re-vérifiée le 03/11/2026 : aucune billetterie en cours (message « mettre en place nos prochaines initiatives »), fiche association à jour (28 membres actifs, terrain privé de Cérans-Foulletourte, parties découvertes 5 €, cotisation 25 €, 1 dimanche + 1 samedi/mois) ; dernières preuves datées de parties : dominicale du 15/02/2026 et partie affichée le 08/03/2026 sur Airsoft XP ; un événement Facebook « Partie du dimanche 17 octobre » existe (non datable sans connexion — non retenu) ; aucune preuve de fermeture",
       "frequence": "~1 dimanche + ~1 samedi/mois",
       "prochaines": "Via leur groupe Facebook / formulaire d'inscription",
       "terrain": "Terrain privé 7 ha : forêt + constructions bois à étages (mixte)",
@@ -892,7 +917,7 @@
       ],
       "type": "Société organisatrice (2 sites)",
       "distance": "~40–50 min",
-      "statutDetail": "calendrier re-vérifié le 23/10/2026 via le tracker places-airsoft (maj du jour) : parties à Mercurow les 25/10 (classique nouvelle génération), 01/11 (real cap spéciale Halloween), 15/11 (GBBR/SPRING/AEP) et 22/11 (classique nouvelle génération), dominicale à La Tanière le 29/11, OP « Souffle du Dragon » à La Tanière le 20/03/2027 ; dominicale du 18/10 passée ; brocante du 10/10 et session GBBR/AEP du 11/10 passées (le 10/10 étant une brocante, la session de jeu est affichée au 11/10 comme dans le relevé du 14/10) ; site officiel en ligne (consulté le 14/10/2026, coordonnées à Lainville-en-Vexin)",
+      "statutDetail": "calendrier re-vérifié le 03/11/2026 via le tracker places-airsoft (maj du jour 12h11) : parties à venir à Mercurow les 15/11 (GBBR/SPRING/AEP) et 22/11 (classique nouvelle génération), dominicale à La Tanière le 29/11, OP « Souffle du Dragon » à La Tanière le 20/03/2027 (inscriptions bientôt en ligne) ; les parties des 25/10 et 01/11 ne figurent plus au relevé du jour (fenêtre écoulée) ; dominicale du 18/10 passée ; brocante du 10/10 et session de jeu du 11/10 passées ; site officiel en ligne (consulté le 14/10/2026, coordonnées à Lainville-en-Vexin)",
       "frequence": "~3–4 évts/mois",
       "terrain": "2 sites : Mercurow (vallée de la Seine) / La Tanière (forêt du Vexin)",
       "cout": "n.c.",
@@ -910,32 +935,32 @@
         {
           "date": "2026-10-25",
           "lieu": "Mercurow",
-          "note": "Partie classique nouvelle génération (tracker places-airsoft maj 23/10)"
+          "note": "Partie classique nouvelle génération (partie passée — relevé tracker du 23/10)"
         },
         {
           "date": "2026-11-01",
           "lieu": "Mercurow",
-          "note": "Partie real cap spéciale Halloween (tracker places-airsoft maj 23/10)"
+          "note": "Partie real cap spéciale Halloween (partie passée — relevé tracker du 23/10)"
         },
         {
           "date": "2026-11-15",
           "lieu": "Mercurow",
-          "note": "GBBR/SPRING/AEP (tracker places-airsoft maj 23/10)"
+          "note": "GBBR/SPRING/AEP (tracker places-airsoft maj du 03/11)"
         },
         {
           "date": "2026-11-22",
           "lieu": "Mercurow",
-          "note": "Partie classique nouvelle génération (tracker places-airsoft maj 23/10)"
+          "note": "Partie classique nouvelle génération (tracker places-airsoft maj du 03/11)"
         },
         {
           "date": "2026-11-29",
           "lieu": "La Tanière (Lainville-en-Vexin)",
-          "note": "Dominicale (tracker places-airsoft maj 23/10)"
+          "note": "Dominicale (tracker places-airsoft maj du 03/11)"
         },
         {
           "date": "2027-03-20",
           "lieu": "La Tanière (Lainville-en-Vexin)",
-          "note": "OP « Souffle du Dragon » — inscriptions bientôt en ligne (tracker places-airsoft maj 23/10)"
+          "note": "OP « Souffle du Dragon » — inscriptions bientôt en ligne (tracker places-airsoft maj du 03/11)"
         }
       ],
       "coords": {
@@ -969,7 +994,7 @@
       ],
       "type": "Orga + terrain",
       "distance": "~50–60 min",
-      "statutDetail": "tracker places-airsoft re-vérifié le 23/10/2026 (maj du jour) : nocturne Halloween « SILO 2.0 » du 31/10/2026 toujours listée (orga Delta Unit, catacombes de Laigneville) ; « SILO 3.0 » du 11/10 jouée ; page Facebook « Delta Airsoft 95 | Bruyères-sur-Oise » en ligne (consultée le 14/10/2026)",
+      "statutDetail": "tracker places-airsoft re-vérifié le 03/11/2026 (maj du jour) : la nocturne Halloween « SILO 2.0 » du 31/10 n'y figure plus (fenêtre écoulée depuis son relevé du 23/10, aucune nouvelle date Delta listée ce jour) ; « SILO 3.0 » du 11/10 jouée ; page Facebook « Delta Airsoft 95 | Bruyères-sur-Oise » en ligne (consultée le 14/10/2026)",
       "frequence": "~2/mois",
       "terrain": "Catacombes de Laigneville (60) — CQB souterrain",
       "cout": "n.c.",
@@ -1007,7 +1032,7 @@
       ],
       "type": "Orga sur site privé",
       "distance": "~45–50 min",
-      "statutDetail": "tracker places-airsoft re-vérifié le 23/10/2026 (maj du jour) : « AIRSOFT SANATORIUM 08/11/2026 (Orga Alpha Unit) » listée (dimanche 08/11) ; l'OP Sanatorium du 18/10/2026 est passée (elle était listée lors de la consultation du 14/10) ; annuaire SpawnForge en ligne (consulté le 14/10/2026)",
+      "statutDetail": "OP « Airsoft Sanatorium » du 08/11/2026 (orga Alpha Unit) confirmée le 03/11/2026 par le tracker places-airsoft (maj du jour) et par la fiche publique Airsoft XP (« Airsoft Sanatorium » le dimanche 08/11 à Aincourt (95), 60 joueurs, 20 €) ; l'OP Sanatorium du 18/10/2026 est passée (elle était listée lors de la consultation du 14/10) ; annuaire SpawnForge en ligne (consulté le 14/10/2026)",
       "frequence": "~1+/mois",
       "terrain": "Sanatorium d'Aincourt — 13 ha, bâti désaffecté, très immersif",
       "cout": "n.c.",
@@ -1020,7 +1045,7 @@
         {
           "date": "2026-11-08",
           "lieu": "Sanatorium d'Aincourt",
-          "note": "OP Sanatorium (dimanche) — tracker places-airsoft maj 23/10"
+          "note": "OP Sanatorium (dimanche) — 60 joueurs, 20 € (Airsoft XP et tracker places-airsoft, consultés le 03/11)"
         }
       ],
       "coords": {
@@ -1045,7 +1070,7 @@
       ],
       "type": "Équipe / organisateur",
       "distance": "n.c.",
-      "statutDetail": "tracker places-airsoft re-vérifié le 23/10/2026 (maj 23/10 23h11) : sessions confirmées le samedi 24/10, le dimanche 01/11, le samedi 07/11 et le dimanche 15/11/2026 ; les sessions des 10/10 et 18/10 sont passées",
+      "statutDetail": "tracker places-airsoft re-vérifié le 03/11/2026 (maj du jour 12h11) : sessions à venir les 07/11, 15/11, 21/11 et 29/11/2026 et le 05/12/2026 (libellés « m2j » les samedis et « sob » les dimanches) ; partie ouverte du 01/11 confirmée par la fiche Airsoft XP publiée le 28/10/2026 (CQB végétal Max2Joules, route de Dourdan RD116, Sainte-Mesme 78730, PAF 20 €, 40 joueurs maximum, maintien à partir de 15 inscrits) ; les sessions des 10/10, 18/10 et 24/10 sont passées",
       "frequence": "~2–3/mois",
       "terrain": "n.c.",
       "cout": "n.c.",
@@ -1063,22 +1088,37 @@
         {
           "date": "2026-10-24",
           "lieu": "n.c. (IDF)",
-          "note": "Samedi (tracker places-airsoft maj 23/10)"
+          "note": "Samedi (partie passée — relevé tracker du 23/10)"
         },
         {
           "date": "2026-11-01",
-          "lieu": "n.c. (IDF)",
-          "note": "Dimanche (tracker places-airsoft maj 23/10)"
+          "lieu": "Sainte-Mesme (78)",
+          "note": "Partie ouverte CQB végétal — PAF 20 €, 40 joueurs max (fiche Airsoft XP du 28/10, consultée le 03/11)"
         },
         {
           "date": "2026-11-07",
           "lieu": "n.c. (IDF)",
-          "note": "Samedi (tracker places-airsoft maj 23/10)"
+          "note": "Samedi, libellé « m2j » (tracker places-airsoft maj du 03/11)"
         },
         {
           "date": "2026-11-15",
           "lieu": "n.c. (IDF)",
-          "note": "Dimanche (tracker places-airsoft, maj 23/10 23h11)"
+          "note": "Dimanche, libellé « sob » (tracker places-airsoft maj du 03/11)"
+        },
+        {
+          "date": "2026-11-21",
+          "lieu": "n.c. (IDF)",
+          "note": "Samedi, libellé « m2j » (tracker places-airsoft maj du 03/11)"
+        },
+        {
+          "date": "2026-11-29",
+          "lieu": "n.c. (IDF)",
+          "note": "Dimanche, libellé « sob » (tracker places-airsoft maj du 03/11)"
+        },
+        {
+          "date": "2026-12-05",
+          "lieu": "n.c. (IDF)",
+          "note": "Samedi, libellé « m2j » (tracker places-airsoft maj du 03/11)"
         }
       ],
       "coords": null
@@ -1100,7 +1140,7 @@
       ],
       "type": "Équipe / organisateur",
       "distance": "n.c.",
-      "statutDetail": "tracker places-airsoft re-vérifié le 23/10/2026 (maj du jour) : dominicales confirmées les 01/11, 15/11, 29/11 et 13/12/2026 ; la dominicale du 18/10 est passée ; elle figurait aussi sur Airsoft XP (« Dominicale TAT » organisée par TAT 91 à Saint-Maurice-Montcouronne (91), 10 €) lors de la consultation du 14/10",
+      "statutDetail": "tracker places-airsoft re-vérifié le 03/11/2026 (maj du jour 12h11) : dominicales listées les 15/11, 29/11 et 13/12/2026 ; la dominicale du 01/11 ne figure plus au relevé du jour (fenêtre écoulée depuis le relevé du 23/10) ; la dominicale du 18/10 est passée ; elle figurait aussi sur Airsoft XP (« Dominicale TAT » organisée par TAT 91 à Saint-Maurice-Montcouronne (91), 10 €) lors de la consultation du 14/10",
       "frequence": "bimensuel (dimanches en alternance)",
       "terrain": "n.c.",
       "cout": "n.c.",
@@ -1150,7 +1190,7 @@
       ],
       "type": "Équipe",
       "distance": "n.c.",
-      "statutDetail": "tracker places-airsoft re-vérifié le 23/10/2026 (maj du jour) : « Rien trouvé pour Bratva » — aucune nouvelle date de partie listée ; la partie confirmée le 11/10/2026 est passée (preuve d'activité)",
+      "statutDetail": "tracker places-airsoft re-vérifié le 03/11/2026 (maj du jour) : « Rien trouvé pour Bratva » — aucune nouvelle date de partie listée ; la partie confirmée le 11/10/2026 est passée (preuve d'activité)",
       "frequence": "~1/mois",
       "terrain": "n.c.",
       "cout": "n.c.",
@@ -1180,7 +1220,7 @@
       ],
       "type": "Équipe",
       "distance": "n.c.",
-      "statutDetail": "tracker places-airsoft re-vérifié le 23/10/2026 (maj du jour) : partie sur NewCastle confirmée le 25/10/2026, toujours listée",
+      "statutDetail": "tracker places-airsoft re-vérifié le 03/11/2026 (maj du jour 12h11) : « Tankthieves - Partie d'Airsoft sur NewCastle - Partie du 15/11/2026 » listée (dimanche 15/11) ; la partie du 25/10/2026 est passée (elle était listée au relevé du 23/10)",
       "frequence": "~1/mois",
       "terrain": "n.c.",
       "cout": "n.c.",
@@ -1188,7 +1228,12 @@
         {
           "date": "2026-10-25",
           "lieu": "NewCastle",
-          "note": "Dimanche"
+          "note": "Dimanche (partie passée — relevé tracker du 23/10)"
+        },
+        {
+          "date": "2026-11-15",
+          "lieu": "NewCastle",
+          "note": "Dimanche (tracker places-airsoft maj du 03/11)"
         }
       ],
       "coords": null
@@ -1210,7 +1255,7 @@
       ],
       "type": "Asso",
       "distance": "n.c.",
-      "statutDetail": "tracker places-airsoft re-vérifié le 23/10/2026 (maj du jour) : dominicale du 08/11/2026 listée (« AFBA - Dominicale 08 Novembre 2026 ») ; la dominicale du 18/10 est passée (elle figurait aussi sur Airsoft XP à Saint-Sauveur-sur-École (77), 15 €, lors de la consultation du 14/10)",
+      "statutDetail": "dominicale du 08/11/2026 listée le 03/11/2026 par le tracker places-airsoft (« AFBA - Dominicale 08 Novembre 2026 ») et par la fiche publique Airsoft XP (« Dominicale AFBA » de 9h30 à 17h, Saint-Sauveur-sur-École (77), 15 €) ; la dominicale du 18/10 est passée (elle figurait aussi sur Airsoft XP au même lieu, 15 €, lors de la consultation du 14/10)",
       "frequence": "~1/mois",
       "terrain": "n.c.",
       "cout": "n.c.",
@@ -1222,8 +1267,8 @@
         },
         {
           "date": "2026-11-08",
-          "lieu": "n.c. (IDF)",
-          "note": "Dominicale (tracker places-airsoft maj 23/10)"
+          "lieu": "Saint-Sauveur-sur-École (77)",
+          "note": "Dominicale — 15 € (Airsoft XP et tracker places-airsoft, consultés le 03/11)"
         }
       ],
       "coords": null
@@ -1289,7 +1334,7 @@
       ],
       "type": "Terrain commercial d'airsoft",
       "distance": "~35–40 min",
-      "statutDetail": "Site officiel airsoft75.com en ligne (re-vérifié le 23/10/2026 : réservations par téléphone, numéro 06 46 05 84 03 affiché sur le site, sessions adultes/enfants et journées pour sociétés) ; fiche SpawnForge dédiée re-vérifiée le 23/10/2026 (toujours en ligne, modifiée le 07/09/2026 : terrain de plus de 30 ha à Flins-sur-Seine, zones thématiques et village, sessions en packs tout compris avec location)",
+      "statutDetail": "site officiel airsoft75.com en ligne (re-vérifié le 03/11/2026 : réservations par téléphone, numéro 06 46 05 84 03 affiché sur le site, packs « journée fun » (12-70 ans), anniversaires enfants (12-15) et (16-70+), journée famille, journées sociétés et écoles, +30 hectares de zones de jeux) ; fiche SpawnForge dédiée re-vérifiée le 23/10/2026 (toujours en ligne, modifiée le 07/09/2026 : terrain de plus de 30 ha à Flins-sur-Seine, zones thématiques et village, sessions en packs tout compris avec location)",
       "frequence": "n.c.",
       "prochaines": "Sessions sur réservation via le site officiel",
       "terrain": "Plus de 30 ha outdoor, zones thématiques et village (fiche SpawnForge)",
@@ -1321,7 +1366,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~30–40 min",
-      "statutDetail": "Calendrier Trigger Games re-vérifié le 23/10/2026 : la session « N.A » du 07/11/2026 (première de novembre) reste affichée au calendrier ; sessions N.A tous les samedis de novembre et décembre 2026, du 07/11 au 26/12, relevées le 14/10/2026 (mois suivants non affichés dans la vue par défaut ce jour)",
+      "statutDetail": "Calendrier Trigger Games re-vérifié le 03/11/2026 : la vue de novembre (du 26/10 au 06/12) affiche des sessions Home, Firm, Editor, Center, Domus, North et INOX, et une session « N.A » apparaît sur la rangée du 30/11–06/12 ; les sessions N.A des samedis de novembre relevées le 14/10 (du 07/11 au 28/11) ne s'identifient pas dans la vue du jour — dates à confirmer sur le calendrier (mois suivants non affichés dans la vue par défaut ce jour)",
       "frequence": "n.c.",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "New Agency - CQB (immeuble de bureaux, parking souterrain, 240 places)",
@@ -1395,7 +1440,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~40–50 min",
-      "statutDetail": "Géré par Trigger Games (ex Wild Trigger). Calendrier Trigger Games re-vérifié le 14/10/2026 : pas de session « Office » listée pour octobre–décembre 2026 (terrain Palm voisin actif).",
+      "statutDetail": "Calendrier Trigger Games re-vérifié le 03/11/2026 : pas de session « Office » identifiable dans la vue de novembre (vue affichée du 26/10 au 06/12) ; géré par Trigger Games (ex Wild Trigger), dernier relevé détaillé du 14/10/2026 ne listait pas de session Office pour octobre–décembre 2026 (terrain Palm voisin actif)",
       "frequence": "n.c.",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "Office - CQB (4 étages, parkings)",
@@ -1427,7 +1472,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~30–40 min",
-      "statutDetail": "Calendrier Trigger Games re-vérifié le 23/10/2026 : la session « Home - SURVIVAL ZOMBIE » du 31/10 reste affichée au calendrier (week-end du 25/10–01/11 : Home le 25/10 et le 31/10) ; les sessions Home quasi chaque week-end d'octobre à décembre 2026 relevées le 14/10/2026 restent la référence pour les mois suivants (non affichés dans la vue par défaut ce jour)",
+      "statutDetail": "Calendrier Trigger Games re-vérifié le 03/11/2026 : des sessions Home sont affichées à chaque semaine de novembre (dont « Home - SURVIVAL ZOMBIE » visible le week-end du 31/10–01/11) ; les sessions Home quasi chaque week-end d'octobre à décembre 2026 relevées le 14/10 restent la référence pour les mois suivants (non affichés dans la vue par défaut ce jour)",
       "frequence": "n.c.",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "Home - Ultra CQB",
@@ -1531,7 +1576,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~45–55 min",
-      "statutDetail": "Calendrier Trigger Games re-vérifié le 14/10/2026 : sessions Center les 15/11 et 13/12/2026 (fort de Buc) ; la session du 11/10/2026 est jouée",
+      "statutDetail": "Calendrier Trigger Games re-vérifié le 03/11/2026 : une session Center visible dans la vue de novembre (cohérente avec la session du 15/11 relevée le 14/10) ; session du 13/12 hors de la vue affichée ; la session du 11/10/2026 est jouée (fort de Buc)",
       "frequence": "~1 dim./mois",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "Center (ex Enduring) - ancien fort militaire 14 ha, CQB & forêt, 60 places",
@@ -1580,7 +1625,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~50–60 min",
-      "statutDetail": "Calendrier Trigger Games re-vérifié le 23/10/2026 : session The Editor du 25/10/2026 confirmée au calendrier ; mention boutique « avenue Creté, Corbeil-Essonnes » constatée lors de la re-vérification du 14/10/2026",
+      "statutDetail": "Calendrier Trigger Games re-vérifié le 03/11/2026 : une session Editor visible dans la vue de novembre (jour non identifiable sur la vue texte du calendrier) ; la session The Editor du 25/10/2026 est passée (confirmée au calendrier lors du relevé du 23/10) ; mention boutique « avenue Creté, Corbeil-Essonnes » constatée lors de la re-vérification du 14/10/2026",
       "frequence": "~1 dim./mois",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "The Editor (ex Publisher) - ancienne usine industrielle 5 ha, CQB urbex, 150 places",
@@ -1619,7 +1664,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~40–50 min",
-      "statutDetail": "Calendrier Trigger Games re-vérifié le 14/10/2026 : sessions Palm les 28/11 et 26/12/2026 ; fiche produit Palm en ligne (re-vérifiée le même jour : rue James Joule à Guyancourt, 40 places)",
+      "statutDetail": "Calendrier Trigger Games re-vérifié le 03/11/2026 : aucune session Palm identifiable dans la vue de novembre (sessions Home, Firm, Editor, Center, Domus, North et INOX visibles) ; les sessions Palm des 28/11 et 26/12/2026 relevées le 14/10 restent maintenues sans nouvelle confirmation (mois suivants non affichés dans la vue par défaut ce jour) ; fiche produit Palm en ligne (re-vérifiée le 14/10/2026 : rue James Joule à Guyancourt, 40 places)",
       "frequence": "~1–2 sam./mois",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "Palm - Ultra CQB (bâtiment 1 ha, 4 étages + 2 niveaux de sous-sol, ex-hôtel), rue James Joule",
@@ -1663,7 +1708,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~35–45 min",
-      "statutDetail": "Calendrier Trigger Games re-vérifié le 23/10/2026 : les sessions Firm du 10/10 (dont nocturne), 11/10 et 17/10/2026 sont passées (plus affichées au calendrier courant) ; aucune session Firm future visible dans la fenêtre affichée (octobre – début novembre) ; fiche produit Firm en ligne (re-vérifiée le 14/10/2026 : place de la division Leclerc, Clamart, 60 places)",
+      "statutDetail": "Calendrier Trigger Games re-vérifié le 03/11/2026 : des sessions Firm sont affichées dans la vue de novembre (dont une « Firm -NOCTURNE ») ; les sessions Firm d'octobre (nocturne et parties des 10, 11 et 17/10) sont passées (plus affichées au calendrier courant) ; jour exact des sessions de novembre non identifiable sur la vue texte du calendrier ; fiche produit Firm en ligne (re-vérifiée le 14/10/2026 : place de la division Leclerc, Clamart, 60 places)",
       "frequence": "~2–3 sam./mois (+ nocturnes)",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "Firm - CQB (immeuble de bureaux + parking souterrain multi-niveaux)",
@@ -1719,7 +1764,7 @@
       ],
       "type": "Asso 1901 · créée 28/01/2013 (W271001485, SIRET 799 000 369 00014)",
       "distance": "~1h–1h15",
-      "statutDetail": "liste des parties Airsoft XP consultée le 23/10/2026 : la dominicale GIS27 du 18/10/2026 à Gisors (30 joueurs, 10 €, constatée le 14/10) est passée ; site Wix re-vérifié le 23/10/2026 (en ligne : « nous vous accueillons tous les 15 jours le dimanche sur notre terrain », route de Paris à Gisors — dernière actualité toujours la dominicale du 13/04/2025) ; fiche nocturne Gis27 sur Airsoft XP en ligne (re-vérifiée le 14/10/2026)",
+      "statutDetail": "dominicale du 18/10/2026 à Gisors (30 joueurs, 10 €, constatée le 14/10 sur Airsoft XP) passée ; liste publique airsoft-xp.com consultée le 03/11/2026 : aucune fiche GIS27 à venir visible à ce jour ; site Wix re-vérifié le 03/11/2026 (contenu identique : « nous vous accueillons tous les 15 jours le dimanche sur notre terrain », route de Paris à Gisors — dernière actualité toujours la dominicale du 13/04/2025) ; fiche nocturne Gis27 sur Airsoft XP en ligne (re-vérifiée le 14/10/2026)",
       "frequence": "tous les 15 jours le dimanche",
       "prochaines": "Dominicales tous les 15 jours — dates via site / réseaux",
       "terrain": "Forêt avec zone CQB (mixte)",
