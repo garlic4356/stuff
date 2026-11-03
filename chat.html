@@ -47,6 +47,26 @@
   <section id="chat" hidden>
     <h2>Discussion avec l'agent</h2>
     <p class="chat-intro">Posez vos questions sur l'inventaire&nbsp;: l'agent répond à partir des données vérifiées du site.</p>
+    <!-- Écran de l'agent: live viewport screenshot of the agent's headless
+         browser, mirroring the /agent panel (agent.html). The ids are shared
+         ON PURPOSE: app.js's viewer (screenPanel + initAgentScreen) is
+         id-driven and null-guarded, and ids are per-document, so the same
+         code drives both pages with zero duplication — the <summary> takes
+         the title role of agent.html's h3, everything else carries the same
+         ids/classes/attributes. Placement inside #chat matters: the panel
+         inherits the section's gating (unconfigured agent / REMOTE_MODE /
+         down server all keep the section hidden), and the screenshot
+         endpoints are same-origin only, so the viewer only ever connects on
+         the dynamic server. Closed by default; app.js auto-opens it when a
+         genuinely new capture arrives live. -->
+    <details id="agent-screen-wrap" class="agent-screen-wrap">
+      <summary>Écran de l'agent</summary>
+      <div id="agent-screen" class="agent-screen" hidden>
+        <img id="agent-screen-img" class="agent-screen-img" alt="Dernière capture d'écran du navigateur de l'agent" hidden>
+        <p id="agent-screen-caption" class="agent-screen-caption" hidden></p>
+        <p id="agent-screen-status" class="agent-screen-status" role="status" aria-live="polite"></p>
+      </div>
+    </details>
     <div id="chat-transcript" class="chat-transcript" role="log" aria-label="Conversation avec l'agent"></div>
     <div class="chat-input-row">
       <textarea id="chat-input" rows="2" enterkeyhint="send" placeholder="Écrivez votre message…"

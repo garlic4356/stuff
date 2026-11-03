@@ -52,6 +52,73 @@
     <!-- Live agent activity: GET /api/agent/workflow + SSE stream (hidden by default,
          surfaced only for a configured agent; falls back with the pill's silent rule) -->
     <div id="agent-activity" class="agent-activity" hidden></div>
+    <!-- Écran de l'agent: live viewport screenshot of the agent's headless
+         browser (snapshot GET + SSE stream). The backend serves these endpoints
+         same-origin only (deliberately not CORS-readable), so a static deploy
+         gets a degraded note instead of the stream. Hidden by default like the
+         other dynamic blocks; app.js reveals it under the same gate as
+         #agent-activity (configured agent). -->
+    <div id="agent-screen" class="agent-screen" hidden>
+      <h3 class="schedule-title">Écran de l'agent</h3>
+      <img id="agent-screen-img" class="agent-screen-img" alt="Dernière capture d'écran du navigateur de l'agent" hidden>
+      <p id="agent-screen-caption" class="agent-screen-caption" hidden></p>
+      <p id="agent-screen-status" class="agent-screen-status" role="status" aria-live="polite"></p>
+    </div>
+    <!-- Planification: weekday schedule editor for the maintenance runs (hidden by
+         default like the other dynamic blocks). app.js reveals it only for a
+         same-origin, configured agent exposing agent.schedule, and preselects the
+         current values from /api/status (no schedule value is hard-coded here). -->
+    <div id="schedule-block" class="schedule-block" hidden>
+      <h3 class="schedule-title">Planification</h3>
+      <div class="schedule-controls">
+        <div class="schedule-days" role="group" aria-label="Jours d'exécution de la mise à jour automatique">
+          <button type="button" class="schedule-chip" data-day="mon" aria-pressed="false">lundi</button>
+          <button type="button" class="schedule-chip" data-day="tue" aria-pressed="false">mardi</button>
+          <button type="button" class="schedule-chip" data-day="wed" aria-pressed="false">mercredi</button>
+          <button type="button" class="schedule-chip" data-day="thu" aria-pressed="false">jeudi</button>
+          <button type="button" class="schedule-chip" data-day="fri" aria-pressed="false">vendredi</button>
+          <button type="button" class="schedule-chip" data-day="sat" aria-pressed="false">samedi</button>
+          <button type="button" class="schedule-chip" data-day="sun" aria-pressed="false">dimanche</button>
+        </div>
+        <label class="schedule-time-wrap" for="schedule-time">Heure
+          <input type="time" id="schedule-time">
+        </label>
+        <label class="schedule-disable-wrap" for="schedule-disable">
+          <input type="checkbox" id="schedule-disable"> Désactiver la planification
+        </label>
+        <button type="button" id="schedule-save" class="agent-run-btn" hidden
+                title="Enregistre les jours et l'heure choisis pour la mise à jour automatique">Enregistrer</button>
+        <span id="schedule-msg" class="inline-msg" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+    <!-- Connexions (agent credentials): the login/password/TOTP entries the
+         agent uses to open sources requiring a connection. Hidden by default
+         like the other dynamic blocks; app.js reveals it on same-origin deploys
+         only (the POSTs ship no auth token) and NEVER renders a stored value —
+         names and field badges only. A stored connexion is replaced wholesale:
+         re-send its values, or remove it (« Retirer »). -->
+    <div id="credentials-block" class="credentials-block" hidden>
+      <h3 class="schedule-title">Connexions (identifiants &amp; TOTP)</h3>
+      <p class="credentials-help">Les connexions donnent à l'agent ses identifiants (login, mot de passe, code TOTP) pour consulter les sources exigeant une connexion. Les valeurs ne sont jamais affichées ici&nbsp;: une connexion enregistrée ne peut être modifiée que par remplacement. Un champ laissé vide conserve la valeur enregistrée&nbsp;; un nom jamais enregistré crée une connexion. Collez le secret TOTP exactement tel que fourni (URI otpauth:// ou code base32).</p>
+      <div id="credentials-list"></div>
+      <div class="schedule-controls">
+        <label class="cred-field" for="cred-name">Nom
+          <input type="text" id="cred-name" autocomplete="off" spellcheck="false">
+        </label>
+        <label class="cred-field" for="cred-login">Login
+          <input type="text" id="cred-login" autocomplete="off" spellcheck="false">
+        </label>
+        <label class="cred-field" for="cred-password">Mot de passe
+          <input type="password" id="cred-password" autocomplete="new-password">
+        </label>
+        <label class="cred-field" for="cred-totp-secret">Secret TOTP
+          <input type="text" id="cred-totp-secret" autocomplete="off" spellcheck="false">
+        </label>
+        <button type="button" id="credentials-save" class="agent-run-btn" hidden
+                title="Enregistre la connexion — un champ laissé vide conserve la valeur enregistrée">Enregistrer la connexion</button>
+        <span id="credentials-msg" class="inline-msg" role="status" aria-live="polite"></span>
+      </div>
+    </div>
     <!-- Static-deploy degradation slot: app.js fills it (plain text node — the
          exact notice lives in one place, API_UNAVAILABLE_MSG) and unhides it
          only when the API is unreachable at load (status/history failed) -->

@@ -782,7 +782,7 @@
       ],
       "type": "Asso 1901 · créée 23/11/2015 (W612002807) · ~15 actifs",
       "distance": "~45 min–1h15 de Caen",
-      "statutDetail": "dominicale « C'est reparti ! » du 18/10/2026 à Le Breuil/Caligny (35 joueurs, 10 €) passée (constatée sur Airsoft XP lors de la consultation du 14/10) ; OP Halloween du 14/11 à Woodcamp Flers et OP Conquête du 29/11 à Putanges avaient été constatées le 09/10/2026 sur Airsoft XP — re-vérification du 03/11/2026 : ces deux fiches ne figurent plus parmi les parties à venir affichées sur la liste publique airsoft-xp.com et la page Facebook reste derrière l'authentification ; dates à re-confirmer sur Facebook ; site officiel e-monsite en ligne (consulté le 14/10/2026)",
+      "statutDetail": "dominicale « C'est reparti ! » du 18/10/2026 à Le Breuil/Caligny (35 joueurs, 10 €) passée (Airsoft XP) ; re-vérification du 03/11/2026 dans la base Airsoft XP (API, 475 fiches) : « OP Halloween » du samedi 14/11/2026 à Flers et « Domini OP Conquête » du dimanche 29/11/2026 à Putanges-le-Lac y figurent toujours (publiées le 08/10/2026, non-archivées) — la liste publique du site ne les affiche plus (fenêtre d'affichage limitée, constat du même jour) ; page Facebook toujours derrière l'authentification ; site officiel e-monsite en ligne (consulté le 03/11/2026)",
       "frequence": "tous les 15 jours le dimanche + OP",
       "prochaines": "Via leur page Facebook",
       "terrain": "Bois aménagé (tranchées, miradors, caravane) à Caligny · sites partenaires Orne",
@@ -1366,51 +1366,31 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~30–40 min",
-      "statutDetail": "Calendrier Trigger Games re-vérifié le 03/11/2026 : la vue de novembre (du 26/10 au 06/12) affiche des sessions Home, Firm, Editor, Center, Domus, North et INOX, et une session « N.A » apparaît sur la rangée du 30/11–06/12 ; les sessions N.A des samedis de novembre relevées le 14/10 (du 07/11 au 28/11) ne s'identifient pas dans la vue du jour — dates à confirmer sur le calendrier (mois suivants non affichés dans la vue par défaut ce jour)",
+      "statutDetail": "Calendrier Trigger Games (trigger-games.fr/reservations) lu le 03/11/2026 dans sa structure de données FooEvents (JSON embarqué, 132 fiches datées) : sessions « N.A » (New Agency) listées les 05/12, 12/12, 19/12 et 26/12/2026 (produits n-a-18 à n-a-21) ; aucune session N.A en novembre au calendrier du jour — les samedis N.A relevés le 14/10 n'y figurent plus ; fiche DTG New Agency (Nanterre, CQB bureaux 240 places) toujours en ligne (consultée le 14/10/2026)",
       "frequence": "n.c.",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "New Agency - CQB (immeuble de bureaux, parking souterrain, 240 places)",
       "cout": "n.c.",
       "events": [
         {
-          "date": "2026-11-07",
-          "lieu": "New Agency (Nanterre)",
-          "note": "Session Trigger Games (calendrier réservations)"
-        },
-        {
-          "date": "2026-11-14",
-          "lieu": "New Agency (Nanterre)",
-          "note": "Session Trigger Games (calendrier réservations)"
-        },
-        {
-          "date": "2026-11-21",
-          "lieu": "New Agency (Nanterre)",
-          "note": "Session Trigger Games (calendrier réservations)"
-        },
-        {
-          "date": "2026-11-28",
-          "lieu": "New Agency (Nanterre)",
-          "note": "Session Trigger Games (calendrier réservations)"
-        },
-        {
           "date": "2026-12-05",
           "lieu": "New Agency (Nanterre)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session « N.A » — calendrier Trigger Games (produit n-a-18, lu le 03/11/2026)"
         },
         {
           "date": "2026-12-12",
           "lieu": "New Agency (Nanterre)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session « N.A » — calendrier Trigger Games (produit n-a-19, lu le 03/11/2026)"
         },
         {
           "date": "2026-12-19",
           "lieu": "New Agency (Nanterre)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session « N.A » — calendrier Trigger Games (produit n-a-20, lu le 03/11/2026)"
         },
         {
           "date": "2026-12-26",
           "lieu": "New Agency (Nanterre)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session « N.A » — calendrier Trigger Games (produit n-a-21, lu le 03/11/2026)"
         }
       ],
       "coords": {
@@ -1472,7 +1452,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~30–40 min",
-      "statutDetail": "Calendrier Trigger Games re-vérifié le 03/11/2026 : des sessions Home sont affichées à chaque semaine de novembre (dont « Home - SURVIVAL ZOMBIE » visible le week-end du 31/10–01/11) ; les sessions Home quasi chaque week-end d'octobre à décembre 2026 relevées le 14/10 restent la référence pour les mois suivants (non affichés dans la vue par défaut ce jour)",
+      "statutDetail": "Calendrier Trigger Games lu le 03/11/2026 dans sa structure de données FooEvents (JSON embarqué, 132 fiches datées) : sessions Home les 01, 11, 14, 22, 28 et 29/11 puis 06, 13, 20 et 27/12/2026 ; « Home - SURVIVAL ZOMBIE » du 31/10/2026 passée, session du 01/11 passée ; les sessions des 08 et 15/11 relevées le 14/10 n'apparaissent plus (dates corrigées au calendrier) ; fiche DTG Home (Rueil-Malmaison) toujours en ligne (consultée le 14/10/2026)",
       "frequence": "n.c.",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "Home - Ultra CQB",
@@ -1481,72 +1461,77 @@
         {
           "date": "2026-10-04",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session Trigger Games (partie passée, relevé 14/10)"
         },
         {
           "date": "2026-10-10",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session Trigger Games (partie passée, relevé 14/10)"
         },
         {
           "date": "2026-10-18",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session Trigger Games (partie passée, relevé 14/10)"
         },
         {
           "date": "2026-10-25",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session (partie passée — confirmée au calendrier FooEvents le 03/11/2026)"
         },
         {
           "date": "2026-10-31",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games + Survival Zombie (calendrier réservations)"
+          "note": "Home - SURVIVAL ZOMBIE (partie passée — confirmée au calendrier FooEvents le 03/11/2026)"
         },
         {
           "date": "2026-11-01",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session (partie passée — calendrier FooEvents, lu le 03/11/2026)"
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-11",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-14",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
         },
         {
           "date": "2026-11-22",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
+        },
+        {
+          "date": "2026-11-28",
+          "lieu": "Home (Rueil-Malmaison)",
+          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
         },
         {
           "date": "2026-11-29",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
         },
         {
           "date": "2026-12-06",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
         },
         {
           "date": "2026-12-13",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
         },
         {
           "date": "2026-12-20",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
         },
         {
           "date": "2026-12-27",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
         }
       ],
       "coords": {
@@ -1625,7 +1610,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~50–60 min",
-      "statutDetail": "Calendrier Trigger Games re-vérifié le 03/11/2026 : une session Editor visible dans la vue de novembre (jour non identifiable sur la vue texte du calendrier) ; la session The Editor du 25/10/2026 est passée (confirmée au calendrier lors du relevé du 23/10) ; mention boutique « avenue Creté, Corbeil-Essonnes » constatée lors de la re-vérification du 14/10/2026",
+      "statutDetail": "Calendrier Trigger Games lu le 03/11/2026 dans sa structure de données FooEvents (JSON embarqué, 132 fiches datées) : sessions The Editor les 08/11/2026 (produit editor-2) et 22/11/2026 (produit editor-3) — jours désormais identifiés ; session du 25/10/2026 passée ; mention boutique « avenue Creté, Corbeil-Essonnes » constatée lors de la re-vérification du 14/10/2026",
       "frequence": "~1 dim./mois",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "The Editor (ex Publisher) - ancienne usine industrielle 5 ha, CQB urbex, 150 places",
@@ -1634,7 +1619,17 @@
         {
           "date": "2026-10-25",
           "lieu": "The Editor (Corbeil-Essonnes)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session Trigger Games (partie passée — relevé du 23/10)"
+        },
+        {
+          "date": "2026-11-08",
+          "lieu": "The Editor (Corbeil-Essonnes)",
+          "note": "Session — calendrier FooEvents (produit editor-2, lu le 03/11/2026)"
+        },
+        {
+          "date": "2026-11-22",
+          "lieu": "The Editor (Corbeil-Essonnes)",
+          "note": "Session — calendrier FooEvents (produit editor-3, lu le 03/11/2026)"
         }
       ],
       "coords": {
@@ -1664,21 +1659,16 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~40–50 min",
-      "statutDetail": "Calendrier Trigger Games re-vérifié le 03/11/2026 : aucune session Palm identifiable dans la vue de novembre (sessions Home, Firm, Editor, Center, Domus, North et INOX visibles) ; les sessions Palm des 28/11 et 26/12/2026 relevées le 14/10 restent maintenues sans nouvelle confirmation (mois suivants non affichés dans la vue par défaut ce jour) ; fiche produit Palm en ligne (re-vérifiée le 14/10/2026 : rue James Joule à Guyancourt, 40 places)",
+      "statutDetail": "Calendrier Trigger Games lu le 03/11/2026 dans sa structure de données FooEvents (JSON embarqué, 132 fiches datées) : une seule session Palm à venir — le 26/12/2026 (produit palm-5) ; la session du 28/11 relevée le 14/10 n'apparaît plus au calendrier du jour (retirée) ; aucune session Palm en novembre ; fiche produit Palm en ligne (re-vérifiée le 14/10/2026 : rue James Joule à Guyancourt, 40 places)",
       "frequence": "~1–2 sam./mois",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "Palm - Ultra CQB (bâtiment 1 ha, 4 étages + 2 niveaux de sous-sol, ex-hôtel), rue James Joule",
       "cout": "n.c.",
       "events": [
         {
-          "date": "2026-11-28",
-          "lieu": "Palm (Guyancourt)",
-          "note": "Session Trigger Games (calendrier réservations)"
-        },
-        {
           "date": "2026-12-26",
           "lieu": "Palm (Guyancourt)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session — calendrier FooEvents (produit palm-5, lu le 03/11/2026)"
         }
       ],
       "coords": {
@@ -1708,7 +1698,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~35–45 min",
-      "statutDetail": "Calendrier Trigger Games re-vérifié le 03/11/2026 : des sessions Firm sont affichées dans la vue de novembre (dont une « Firm -NOCTURNE ») ; les sessions Firm d'octobre (nocturne et parties des 10, 11 et 17/10) sont passées (plus affichées au calendrier courant) ; jour exact des sessions de novembre non identifiable sur la vue texte du calendrier ; fiche produit Firm en ligne (re-vérifiée le 14/10/2026 : place de la division Leclerc, Clamart, 60 places)",
+      "statutDetail": "Calendrier Trigger Games lu le 03/11/2026 dans sa structure de données FooEvents (JSON embarqué, 132 fiches datées) : sessions Firm les 07, 08, 15 et 21/11/2026 et nocturne « Firm - NOCTURNE » le 14/11/2026 (produits firm-25 à firm-28 et firm-nocturne-3) ; sessions d'octobre (10, 11 et 17/10) passées ; fiche produit Firm en ligne (re-vérifiée le 14/10/2026 : place de la division Leclerc, Clamart, 60 places)",
       "frequence": "~2–3 sam./mois (+ nocturnes)",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "Firm - CQB (immeuble de bureaux + parking souterrain multi-niveaux)",
@@ -1717,22 +1707,47 @@
         {
           "date": "2026-10-10",
           "lieu": "Firm (Clamart)",
-          "note": "Nocturne (calendrier réservations)"
+          "note": "Nocturne (partie passée, relevé 14/10)"
         },
         {
           "date": "2026-10-10",
           "lieu": "Firm (Clamart)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session Trigger Games (partie passée, relevé 14/10)"
         },
         {
           "date": "2026-10-11",
           "lieu": "Firm (Clamart)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session Trigger Games (partie passée, relevé 14/10)"
         },
         {
           "date": "2026-10-17",
           "lieu": "Firm (Clamart)",
-          "note": "Session Trigger Games (calendrier réservations)"
+          "note": "Session Trigger Games (partie passée, relevé 14/10)"
+        },
+        {
+          "date": "2026-11-07",
+          "lieu": "Firm (Clamart)",
+          "note": "Session — calendrier FooEvents (produit firm-25, lu le 03/11/2026)"
+        },
+        {
+          "date": "2026-11-08",
+          "lieu": "Firm (Clamart)",
+          "note": "Session — calendrier FooEvents (produit firm-26, lu le 03/11/2026)"
+        },
+        {
+          "date": "2026-11-14",
+          "lieu": "Firm (Clamart)",
+          "note": "« Firm - NOCTURNE » — calendrier FooEvents (produit firm-nocturne-3, lu le 03/11/2026)"
+        },
+        {
+          "date": "2026-11-15",
+          "lieu": "Firm (Clamart)",
+          "note": "Session — calendrier FooEvents (produit firm-27, lu le 03/11/2026)"
+        },
+        {
+          "date": "2026-11-21",
+          "lieu": "Firm (Clamart)",
+          "note": "Session — calendrier FooEvents (produit firm-28, lu le 03/11/2026)"
         }
       ],
       "coords": {

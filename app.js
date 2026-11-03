@@ -78,6 +78,15 @@ const WORKFLOW_ERR_LIMIT = 2;                  // consecutive SSE errors → pol
 const WORKFLOW_COLLAPSE_MS = 4000;             // finished live view → collapsed details
 const WORKFLOW_PREVIEW_MAX = 160;              // toolResult preview inline vs expandable
 
+/* Écran de l'agent (agent page): live viewport screenshot the server captures
+ * after every browser tool command. Same stream shape as the workflow (named
+ * snapshot frame, then one unnamed frame per capture) and the same SSE +
+ * poll-fallback machinery — it reuses the workflow constants above. The
+ * backend serves these endpoints SAME-ORIGIN ONLY (deliberately not
+ * CORS-readable): a static deploy degrades to a French note instead. */
+const SCREEN_PATH = "/api/agent/browser/screen";
+const SCREEN_STREAM_PATH = SCREEN_PATH + "/stream";
+
 /* Interactive chat with the agent (chat page): the conversation transcript is
  * GET /api/agent/chat, POST starts a chat run through the shared single-run
  * guard (409 while a run is active) and POST /clear wipes it idempotently.
@@ -88,6 +97,24 @@ const CHAT_PATH = "/api/agent/chat";
 const CHAT_CLEAR_PATH = "/api/agent/chat/clear";
 const CHAT_ACTIVITY_MAX = 120;                 // argsPreview chars kept in an activity line
 const CHAT_REWATCH_LIMIT = 3;                  // finish→rewatch cycles before stopping (hot-loop guard)
+
+/* Weekday schedule editor (agent page): POST /api/agent/schedule is a partial
+ * update ({disabled?, days?, time?} — absent keys keep the server values), 200
+ * → {ok, schedule, nextRunAt}, 400 (0 day while enabled / bad time), 401, 503.
+ * No 409: saving during a running agent is safe by contract. Like the update
+ * trigger, the editor POSTs same-origin only (REMOTE_MODE hides it — no auth
+ * token ships with the static site). */
+const SCHEDULE_PATH = "/api/agent/schedule";
+
+/* Connexions (agent credentials, agent page): GET /api/agent/credentials lists
+ * the stored connections {name, hasLogin, hasPassword, hasTotp} — names +
+ * field presence only, never values. POST upserts ONE credential (a key ABSENT
+ * from the body keeps the stored value) and POST /delete removes one
+ * (idempotent); both work with or without a configured agent. Like every UI
+ * POST they are same-origin only (no auth token ships with the site) and carry
+ * no Authorization header. */
+const CREDENTIALS_PATH = "/api/agent/credentials";
+const CREDENTIALS_DELETE_PATH = CREDENTIALS_PATH + "/delete";
 
 /** Current page, from the server-served <body data-page> (home|agent|chat) —
  *  drives the init dispatcher: home carries map + calendar + tables, agent
@@ -908,6 +935,7 @@ function historyKindLabel(kind) {
   switch (kind) {
     case "commit": return "Mise à jour des données";
     case "run": return "Exécution de l'agent";
+    case "credentials": return "Gestion des connexions";
     default: return kind || "—";
   }
 }
@@ -973,6 +1001,12 @@ function historyErrorPart(h) {
  *  together with agentConfigured (see updateHistorySection). */
 let historyShown = false;
 
+/** True once the connexions editor is revealed on the agent page (see
+ *  initCredentials): keeps #historique visible even with an empty history and
+ *  an unconfigured agent — the credentials GET answers regardless of the
+ *  agent state, so the section must keep hosting the block in that case too. */
+let credentialsShown = false;
+
 /* -------- API-unreachable degradation (agent page, static deploys) -------- */
 
 /** Exact notice shown when the API (status/history) is unreachable at load —
@@ -1012,7 +1046,7 @@ function updateHistorySection() {
   const section = document.getElementById("historique");
   const list = document.getElementById("history-list");
   if (!section || !list) return;
-  if (!historyShown && !agentConfigured && !apiUnavailable) {
+  if (!historyShown && !agentConfigured && !apiUnavailable && !credentialsShown) {
     section.hidden = true;
     return;
   }
@@ -1505,6 +1539,234 @@ async function initAgentActivity() {
   if (!ok) zone.hidden = true;
 }
 
+/* ------------------------------ Écran de l'agent (browser screenshot) ------------------------------ */
+
+/** Mutable screen-panel state; single owner of the EventSource and the
+ *  fallback poller (same single-owner pattern as wf). Named `screenPanel`
+ *  rather than `screen` to avoid shadowing the platform's window.screen. */
+const screenPanel = {
+  es: null,          // live SSE EventSource (null when closed)
+  errCount: 0,       // consecutive SSE errors → poll fallback
+  pollToken: null,   // generation token of the fallback poller (null = stopped)
+  pollTimer: null,
+  pollStarted: 0,    // fallback start instant (bounded by WORKFLOW_POLL_MAX_MS)
+  readopted: false,  // poll→stream hand-back: tried at most once per fallback round
+  lastRenderedTs: null, // raw ts of the last successfully rendered frame (fresh-capture gate)
+};
+
+/** French "03/11/2026 15:05:32" for the frame caption (seconds matter —
+ *  captures land seconds apart, while formatTimestamp carries minutes only);
+ *  null when absent/invalid. */
+const SCREEN_TS_FMT = new Intl.DateTimeFormat("fr-FR", { dateStyle: "short", timeStyle: "medium" });
+function formatScreenTimestamp(iso) {
+  const ms = timestampMs(iso);
+  return ms === null ? null : SCREEN_TS_FMT.format(new Date(ms));
+}
+
+/** Shows the status/placeholder line and hides image + caption — the degraded
+ *  state (no capture yet, REMOTE_MODE or a persistent 503). */
+function showScreenNote(text) {
+  const note = document.getElementById("agent-screen-status");
+  const img = document.getElementById("agent-screen-img");
+  const caption = document.getElementById("agent-screen-caption");
+  if (note) {
+    note.textContent = text;
+    note.hidden = false;
+  }
+  if (img) img.hidden = true;
+  if (caption) caption.hidden = true;
+}
+
+/** One well-formed frame → view: image source + escaped caption (timestamp,
+ *  title, url — empty parts omitted; url stays plain diagnostic text, no link)
+ *  and the note line swaps to the capture. Unknown/invalid shapes are skipped
+ *  defensively: the server retains the latest frame, so the last good view
+ *  simply stays on screen. `opts.live` tells LIVE arrivals (unnamed SSE frame
+ *  or poll-fallback tick) apart from the (re)connect snapshot — only live
+ *  arrivals may auto-open the chat page's collapsed panel. */
+function renderScreenFrame(frame, opts) {
+  const img = document.getElementById("agent-screen-img");
+  if (!img) return;
+  if (!frame || typeof frame !== "object"
+      || typeof frame.image !== "string" || !frame.image.startsWith("data:image/")) {
+    return;
+  }
+  img.src = frame.image;
+  img.hidden = false;
+  const title = typeof frame.title === "string" ? frame.title : "";
+  const url = typeof frame.url === "string" ? frame.url : "";
+  const ts = formatScreenTimestamp(frame.ts);
+  // Caption: label line first, page title after it, url on its own line —
+  // all dynamic values escaped (title/url are external page data)
+  let html = "";
+  if (ts) html += `Capture : ${escapeHtml(ts)}`;
+  if (title) html += `${html ? " — " : ""}${escapeHtml(title)}`;
+  if (url) html += `<span class="agent-screen-url">${escapeHtml(url)}</span>`;
+  const caption = document.getElementById("agent-screen-caption");
+  if (caption) {
+    caption.innerHTML = html;
+    caption.hidden = !html;
+  }
+  const note = document.getElementById("agent-screen-status");
+  if (note) note.hidden = true; // a displayed capture replaces the placeholder
+
+  // Auto-open on genuinely NEW live captures (chat page's collapsible panel):
+  // only a LIVE arrival (opts.live) whose ts differs from the last rendered
+  // frame's re-opens a collapsed panel — the connect snapshot never auto-opens
+  // (an old capture from a previous run is not "new") and an identical ts
+  // (repeated poll ticks without a fresh capture) cannot re-open a manually
+  // collapsed one. Only successful renders move the tracker: skipped and
+  // invalid shapes returned above. The wrapper is absent on the /agent page —
+  // null-guarded no-op there.
+  const fresh = frame.ts !== screenPanel.lastRenderedTs;
+  screenPanel.lastRenderedTs = frame.ts;
+  if (opts && opts.live && fresh) {
+    const wrap = document.getElementById("agent-screen-wrap");
+    if (wrap && !wrap.open) wrap.open = true;
+  }
+}
+
+/** One unnamed stream frame: a frame object per capture. The lagged marker and
+ *  any unknown shape are skipped defensively (like the workflow renderer) —
+ *  the next capture re-syncs the view. */
+function onScreenFrameMessage(msg) {
+  if (!msg || typeof msg !== "object") return;
+  if (msg.type === "eventsLagged") return;
+  renderScreenFrame(msg, { live: true }); // unnamed SSE frame = live capture
+}
+
+/** Opens the SSE stream exactly once (single-owner guard, mirrored from
+ *  startStream): named snapshot event → frame-or-null render; unnamed events →
+ *  one frame per capture; persistent errors → poll fallback. */
+function startScreenStream() {
+  if (screenPanel.es) return;
+  if (typeof EventSource === "undefined") {
+    startScreenPollFallback(); // very old browser: poll instead
+    return;
+  }
+  screenPanel.errCount = 0;
+  const es = new EventSource(apiUrl(SCREEN_STREAM_PATH)); // GET-only, no credentials involved
+  screenPanel.es = es;
+  es.onopen = () => {
+    screenPanel.errCount = 0; // successful (re)connection resets the failure streak
+  };
+  es.addEventListener("snapshot", (e) => {
+    try {
+      const snap = JSON.parse(e.data);
+      // (Re)connect snapshot, never a live arrival → never auto-opens
+      if (snap && typeof snap === "object") renderScreenFrame(snap.frame, { live: false });
+    } catch {
+      /* ignored frame */
+    }
+  });
+  es.onmessage = (e) => {
+    try {
+      onScreenFrameMessage(JSON.parse(e.data));
+    } catch {
+      /* ignored frame */
+    }
+  };
+  es.onerror = () => {
+    screenPanel.errCount += 1;
+    // Persistent failure: close the stream and fall back to polling (bounded,
+    // see startScreenPollFallback) — mirrors the workflow fallback lifecycle.
+    if (screenPanel.errCount >= WORKFLOW_ERR_LIMIT) {
+      stopScreenStream();
+      startScreenPollFallback();
+    }
+  };
+}
+
+function stopScreenStream() {
+  if (screenPanel.es) {
+    screenPanel.es.close();
+    screenPanel.es = null;
+  }
+}
+
+function stopScreenPollFallback() {
+  screenPanel.pollToken = null; // in-flight tick results are discarded via the token
+  if (screenPanel.pollTimer) {
+    clearTimeout(screenPanel.pollTimer);
+    screenPanel.pollTimer = null;
+  }
+}
+
+/** SSE fallback: poll the snapshot endpoint at the workflow fallback cadence
+ *  (same 2 s tick, same 50 min bound). Screenshot frames can arrive at any
+ *  later time (unlike a workflow run), so one hand-back to the stream is
+ *  attempted on the first healthy reply — a still-broken stream re-enters the
+ *  fallback after WORKFLOW_ERR_LIMIT errors and then keeps polling (no
+ *  reconnect spam). Without any EventSource support the hand-back never
+ *  happens: the poll simply runs its full bound. A 503 means the agent got
+ *  unconfigured mid-session: a stable server state → degraded note, polling
+ *  stops. */
+function startScreenPollFallback() {
+  stopScreenPollFallback(); // single fallback at a time
+  screenPanel.pollStarted = Date.now();
+  screenPanel.readopted = false;
+  const token = screenPanel.pollStarted;
+  screenPanel.pollToken = token;
+  const tick = async () => {
+    if (screenPanel.pollToken !== token) return;
+    try {
+      const res = await fetch(apiUrl(SCREEN_PATH));
+      if (res.ok) {
+        const snap = await res.json();
+        // Poll tick = live arrival (may auto-open); identical-ts repeats of
+        // the same capture stay silent via the tracker inside renderScreenFrame
+        if (snap && typeof snap === "object") renderScreenFrame(snap.frame, { live: true });
+        if (!screenPanel.readopted && typeof EventSource !== "undefined") {
+          // First healthy reply: hand consumption back to the stream. Only
+          // when EventSource exists at all — without it the stream can never
+          // start and the hand-back would re-enter this fallback instantly
+          // (runaway fetch loop); the poll keeps its cadence and bound.
+          screenPanel.readopted = true;
+          stopScreenPollFallback();
+          startScreenStream();
+          return;
+        }
+      } else if (res.status === 503) {
+        stopScreenPollFallback();
+        showScreenNote("Écran de l'agent indisponible — agent non configuré.");
+        return;
+      }
+    } catch {
+      /* transient: keep polling until the bound */
+    }
+    if (Date.now() - screenPanel.pollStarted > WORKFLOW_POLL_MAX_MS) {
+      stopScreenPollFallback(); // bound reached: leave the last known view on screen
+      return;
+    }
+    screenPanel.pollTimer = setTimeout(tick, WORKFLOW_POLL_MS);
+  };
+  tick();
+}
+
+/** Bootstrap (same gate as #agent-activity — see init): unhide the panel, show
+ *  the placeholder, then open the stream (its snapshot frame carries the last
+ *  capture). REMOTE_MODE short-circuits FIRST: the screenshot endpoints are
+ *  same-origin only by design (no CORS header, no auth token client-side), so
+ *  a static deploy degrades to a note and never connects. */
+function initAgentScreen() {
+  const block = document.getElementById("agent-screen");
+  if (!block) return;
+  // Static deploy of a live, configured API: explain why no stream is possible
+  // here. Every other unconfigured case keeps the panel hidden (same rule as
+  // the workflow block).
+  if (REMOTE_MODE) {
+    if (agentConfigured) {
+      block.hidden = false;
+      showScreenNote("Écran de l'agent : disponible uniquement sur le serveur dynamique (VPS).");
+    }
+    return;
+  }
+  if (!agentConfigured) return;
+  block.hidden = false;
+  showScreenNote("Aucune capture pour le moment — l'agent n'a pas encore navigué.");
+  startScreenStream();
+}
+
 /* ------------------------------ Agent status pill ------------------------------ */
 
 /** Small header pill: last/next automatic update, orange on error, grey when
@@ -1567,6 +1829,7 @@ async function loadAgentStatus() {
       markApiUnavailable();
       renderAgentPill(null);
       updateRunButtonVisibility(lastAgentStatus);
+      renderScheduleEditor(lastAgentStatus);
       syncHistoryVisibility();
       return null;
     }
@@ -1574,12 +1837,14 @@ async function loadAgentStatus() {
     lastAgentStatus = status;
     renderAgentPill(status);
     updateRunButtonVisibility(status);
+    renderScheduleEditor(status);
     syncHistoryVisibility();
     return status;
   } catch {
     markApiUnavailable(); // network error: treat the API as unreachable
     renderAgentPill(null);
     updateRunButtonVisibility(lastAgentStatus);
+    renderScheduleEditor(lastAgentStatus);
     syncHistoryVisibility();
     return null;
   }
@@ -1671,6 +1936,7 @@ function pollAgentStatus() {
           lastAgentStatus = status;
           renderAgentPill(status);
           updateRunButtonVisibility(status);
+          renderScheduleEditor(status);
           if (status.agent.running === false) {
             // Run confirmed finished by the server: refresh what it can change
             await refreshData();
@@ -1707,6 +1973,387 @@ function pollAgentStatus() {
     setTimeout(tick, AGENT_POLL_MS);
   };
   setTimeout(tick, AGENT_POLL_MS);
+}
+
+/* ------------------------------ Planification (weekday schedule editor) ------------------------------ */
+
+/** Last server-side schedule rendered into the editor (normalized shape —
+ *  see normalizeSchedule): the baseline of the unsaved-edit pin. A status
+ *  poll re-rendering the SAME values must not wipe edits mid-selection (the
+ *  poller re-evaluates this every 5 s while a run is going); a genuinely
+ *  CHANGED server schedule (a save landing, an operator CLI flag, another
+ *  tab) releases the pin. null = nothing rendered yet / baseline reset. */
+let scheduleRendered = null;
+
+/** Normalizes a raw agent.schedule to the editor's selection shape
+ *  ({disabled: bool, days: [chip codes], time: "HH:MM"}) — days intersected
+ *  with the real chips (an unknown tag could never be represented in the DOM
+ *  and would stick the pin forever) — or null when the payload is not
+ *  renderable (absent object, bad time format): the block then stays hidden,
+ *  no schedule value is ever invented client-side. */
+function normalizeSchedule(block, schedule) {
+  if (!schedule || typeof schedule !== "object" || !Array.isArray(schedule.days)) return null;
+  if (typeof schedule.time !== "string" || !/^\d{2}:\d{2}$/.test(schedule.time)) return null;
+  const wanted = new Set(schedule.days.filter((d) => typeof d === "string"));
+  const days = [...block.querySelectorAll(".schedule-chip[data-day]")]
+    .filter((chip) => wanted.has(chip.dataset.day))
+    .map((chip) => chip.dataset.day);
+  return { disabled: schedule.disabled === true, days, time: schedule.time };
+}
+
+/** Value equality of two normalized schedules (days compared as a set — the
+ *  DOM order is fixed, but the comparison must not depend on it). */
+function schedulesEqual(a, b) {
+  if (!a || !b) return false;
+  if (a.disabled !== b.disabled || a.time !== b.time) return false;
+  if (a.days.length !== b.days.length) return false;
+  const set = new Set(b.days);
+  return a.days.every((d) => set.has(d));
+}
+
+/** Renders the schedule editor from a /api/status payload — same call sites
+ *  and REMOTE_MODE rule as updateRunButtonVisibility. Visible only same-origin,
+ *  for a configured agent AND with well-formed agent.schedule data (an older
+ *  server keeps the block hidden; the current values always come from
+ *  /api/status, never invented client-side). Overwrite rules: server truth is
+ *  written whenever it differs from the last-rendered baseline, or when the
+ *  editor already matches it; an identical re-render (poll noise) is skipped
+ *  while the editor holds UNSAVED EDITS. A completed save releases everything
+ *  by value: success → the fresh /api/status differs from the baseline (or the
+ *  selection already equals it) → the saved state re-renders; failure → no pin
+ *  state is created, the refused selection stays until the user or the server
+ *  changes it. */
+function renderScheduleEditor(status) {
+  const block = document.getElementById("schedule-block");
+  if (!block) return;
+  if (REMOTE_MODE) {
+    // Static deploy: the site never POSTs (no auth token) — never shows
+    block.hidden = true;
+    scheduleRendered = null;
+    return;
+  }
+  const server = status?.agent?.configured ? normalizeSchedule(block, status.agent.schedule) : null;
+  // Malformed/absent schedule = feature not available server-side → stay hidden
+  if (!server) {
+    block.hidden = true;
+    scheduleRendered = null;
+    return;
+  }
+  // A save in flight pins the editor: a status poll tick must not clobber the
+  // selection the POST is about to carry (the save re-enables on every path)
+  const save = document.getElementById("schedule-save");
+  if (save && save.disabled) return;
+  // Unsaved-edit pin: identical server values must not wipe in-progress edits;
+  // a server-side change releases it (stale-pin guard)
+  const unchanged = schedulesEqual(scheduleRendered, server);
+  if (unchanged && !schedulesEqual(scheduleSelection(), server)) return;
+  block.hidden = false;
+  if (save) save.hidden = false; // revealed with the block (ships hidden)
+  const wanted = new Set(server.days);
+  for (const chip of block.querySelectorAll(".schedule-chip[data-day]")) {
+    chip.setAttribute("aria-pressed", wanted.has(chip.dataset.day) ? "true" : "false");
+  }
+  const time = document.getElementById("schedule-time");
+  if (time) time.value = server.time;
+  const disable = document.getElementById("schedule-disable");
+  if (disable) {
+    disable.checked = server.disabled;
+    applyScheduleDisabledState();
+  }
+  scheduleRendered = server;
+}
+
+/** Presentation-only rule of the « Désactiver la planification » checkbox: the
+ *  days chips + time input lose interactivity and dim. The underlying selection
+ *  is kept — the save POSTs it unambiguously alongside disabled:true. */
+function applyScheduleDisabledState() {
+  const block = document.getElementById("schedule-block");
+  const disable = document.getElementById("schedule-disable");
+  if (!block || !disable) return;
+  for (const chip of block.querySelectorAll(".schedule-chip[data-day]")) {
+    chip.disabled = disable.checked;
+  }
+  const time = document.getElementById("schedule-time");
+  if (time) time.disabled = disable.checked;
+}
+
+/** Current editor selection as the POST payload: {disabled, days, time} — the
+ *  FULL set, not a partial one, so the saved intent is unambiguous. */
+function scheduleSelection() {
+  const block = document.getElementById("schedule-block");
+  const disable = document.getElementById("schedule-disable");
+  const time = document.getElementById("schedule-time");
+  return {
+    disabled: Boolean(disable?.checked),
+    days: block
+      ? [...block.querySelectorAll('.schedule-chip[data-day][aria-pressed="true"]')].map((c) => c.dataset.day)
+      : [],
+    time: typeof time?.value === "string" ? time.value : "",
+  };
+}
+
+function showScheduleMsg(msg) {
+  const el = document.getElementById("schedule-msg");
+  if (el) el.textContent = msg;
+}
+
+/** « Enregistrer »: client-side mirror of the server's 400 rules first (one
+ *  day minimum while enabled, always a well-formed HH:MM time — no POST for a
+ *  selection the server would refuse), then the full selection through the
+ *  same fetch pattern as the « Lancer la mise à jour » trigger (apiUrl + plain
+ *  POST, no Authorization header; same-origin deploys only). On success the
+ *  agent status re-refreshes so the pill nextRunAt + editor re-render from the
+ *  saved state; on failure an inline French message keeps the selection. */
+async function saveSchedule() {
+  const sel = scheduleSelection();
+  if (!sel.disabled && sel.days.length === 0) {
+    showScheduleMsg("Choisissez au moins un jour — ou désactivez la planification.");
+    return;
+  }
+  if (!/^\d{2}:\d{2}$/.test(sel.time)) {
+    showScheduleMsg("Choisissez une heure d'exécution.");
+    return;
+  }
+  const btn = document.getElementById("schedule-save");
+  if (btn) btn.disabled = true;
+  showScheduleMsg("");
+  let saved = false;
+  try {
+    const res = await fetch(apiUrl(SCHEDULE_PATH), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ disabled: sel.disabled, days: sel.days, time: sel.time }),
+    });
+    if (res.ok) {
+      saved = true;
+      showScheduleMsg("Planification enregistrée.");
+    } else if (res.status === 400) {
+      showScheduleMsg("Planification refusée par le serveur — vérifiez les jours sélectionnés et l'heure.");
+    } else if (res.status === 401) {
+      showScheduleMsg("Accès refusé — l'enregistrement exige le jeton d'authentification du serveur.");
+    } else if (res.status === 503) {
+      showScheduleMsg("Agent indisponible pour le moment.");
+    } else {
+      showScheduleMsg(`Échec de l'enregistrement (code HTTP ${res.status}).`);
+    }
+  } catch {
+    showScheduleMsg("Serveur injoignable — planification non enregistrée.");
+  }
+  // Every path (also after a save): releases the editor's busy pin
+  if (btn) btn.disabled = false;
+  if (saved) await loadAgentStatus();
+}
+
+/** One-time editor bindings (agent page, same-origin deploys only): chip
+ *  toggling flips aria-pressed (the CSS renders the selection), the disable
+ *  checkbox applies the dim rule, any interaction clears the inline message,
+ *  and the save button triggers saveSchedule. */
+function bindScheduleEditor() {
+  const block = document.getElementById("schedule-block");
+  if (!block) return;
+  for (const chip of block.querySelectorAll(".schedule-chip[data-day]")) {
+    chip.addEventListener("click", () => {
+      const on = chip.getAttribute("aria-pressed") === "true";
+      chip.setAttribute("aria-pressed", on ? "false" : "true");
+      showScheduleMsg("");
+    });
+  }
+  const disable = document.getElementById("schedule-disable");
+  if (disable) disable.addEventListener("change", applyScheduleDisabledState);
+  const time = document.getElementById("schedule-time");
+  if (time) time.addEventListener("input", () => showScheduleMsg(""));
+  const save = document.getElementById("schedule-save");
+  if (save) save.addEventListener("click", saveSchedule);
+}
+
+/* ------------------------------ Connexions (agent credentials, agent page) ------------------------------ */
+
+/** Inline message of the connexions editor (same conventions as showScheduleMsg). */
+function showCredentialsMsg(msg) {
+  const el = document.getElementById("credentials-msg");
+  if (el) el.textContent = msg;
+}
+
+/** One French badge per SET field of a credentials row — names + field
+ *  presence only, the credentials endpoint never carries values. */
+function credentialBadgesHtml(cred) {
+  const badges = [];
+  if (cred.hasLogin) badges.push(`<span class="hist-chip">login</span>`);
+  if (cred.hasPassword) badges.push(`<span class="hist-chip">mot de passe</span>`);
+  if (cred.hasTotp) badges.push(`<span class="hist-chip">TOTP</span>`);
+  return badges.join(" ");
+}
+
+/** Renders the stored credentials (rows: name + badges + per-row « Retirer »).
+ *  Names are data values: escaped like every interpolation. */
+function renderCredentials(credentials) {
+  const zone = document.getElementById("credentials-list");
+  if (!zone) return;
+  zone.innerHTML = "";
+  const rows = Array.isArray(credentials)
+    ? credentials.filter((c) => c && typeof c === "object" && typeof c.name === "string" && c.name !== "")
+    : [];
+  if (rows.length === 0) {
+    zone.innerHTML = `<p class="credentials-empty">Aucune connexion enregistrée pour le moment.</p>`;
+    return;
+  }
+  for (const cred of rows) {
+    const row = document.createElement("div");
+    row.className = "cred-row";
+    row.innerHTML =
+      `<code class="cred-name">${escapeHtml(cred.name)}</code>` +
+      `<span class="cred-badges">${credentialBadgesHtml(cred)}</span>` +
+      `<button type="button" class="chat-clear-btn cred-delete">Retirer</button>`;
+    // Rows are rebuilt wholesale (like the table rows): bind per row
+    const del = row.querySelector(".cred-delete");
+    if (del) del.addEventListener("click", () => deleteCredential(cred.name));
+    zone.appendChild(row);
+  }
+}
+
+/** GET /api/agent/credentials → render the rows. A failure renders an inline
+ *  note — the GET is open even for an unconfigured agent, so every failure is
+ *  a genuine server problem worth naming. */
+async function loadCredentials() {
+  const zone = document.getElementById("credentials-list");
+  if (!zone) return;
+  try {
+    const res = await fetch(apiUrl(CREDENTIALS_PATH));
+    if (!res.ok) throw new Error(`GET /api/agent/credentials → HTTP ${res.status}`);
+    const body = await res.json();
+    renderCredentials(body && Array.isArray(body.credentials) ? body.credentials : []);
+  } catch {
+    zone.innerHTML = `<p class="credentials-empty">Connexions indisponibles — le serveur ne répond pas.</p>`;
+  }
+}
+
+/** « Enregistrer la connexion»: client-side mirror of the upsert semantics.
+ *  A BLANK field is deliberately omitted from the body (absent key = the
+ *  server keeps the stored value): the UI never sends "" — clearing a single
+ *  field is not offered, a saved connexion is replaced with new values or
+ *  removed wholesale via « Retirer ». Sent values are the typed ones (name
+ *  trimmed; TOTP secret only outer-trimmed — interior spaces stay meaningful,
+ *  "JBSWY3DP EHPK3PXP"); passwords are sent untouched (a space is a legal
+ *  password character). */
+async function saveCredential() {
+  const nameInput = document.getElementById("cred-name");
+  const loginInput = document.getElementById("cred-login");
+  const passwordInput = document.getElementById("cred-password");
+  const totpInput = document.getElementById("cred-totp-secret");
+  const name = (nameInput?.value ?? "").trim();
+  if (!name) {
+    showCredentialsMsg("Donnez un nom à la connexion (par exemple facebook-main).");
+    return;
+  }
+  const login = (loginInput?.value ?? "").trim();
+  const password = passwordInput?.value ?? "";
+  const totpSecret = (totpInput?.value ?? "").trim();
+  if (login === "" && password === "" && totpSecret === "") {
+    showCredentialsMsg("Rien à enregistrer — remplissez au moins un champ (login, mot de passe ou secret TOTP).");
+    return;
+  }
+  // Blank = keep the stored value: build the body from the fields actually typed
+  const payload = { name };
+  if (login !== "") payload.login = login;
+  if (password !== "") payload.password = password;
+  if (totpSecret !== "") payload.totpSecret = totpSecret;
+  const btn = document.getElementById("credentials-save");
+  if (btn) btn.disabled = true;
+  showCredentialsMsg("");
+  let saved = false;
+  try {
+    const res = await fetch(apiUrl(CREDENTIALS_PATH), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      saved = true;
+      showCredentialsMsg(`Connexion « ${name} » enregistrée.`);
+      // The typed values never stay in the form; the name does (a follow-up
+      // edit of the same connexion starts from its name)
+      for (const input of [loginInput, passwordInput, totpInput]) {
+        if (input) input.value = "";
+      }
+    } else if (res.status === 400) {
+      // The server's validation error is operator-facing: surface it as-is
+      let msg = "Connexion refusée par le serveur — vérifiez les valeurs saisies.";
+      try {
+        const body = await res.json();
+        if (body && typeof body.error === "string" && body.error !== "") msg = body.error;
+      } catch {
+        /* malformed error body: keep the generic message */
+      }
+      showCredentialsMsg(msg);
+    } else if (res.status === 401) {
+      showCredentialsMsg("Accès refusé — l'enregistrement exige le jeton d'authentification du serveur.");
+    } else {
+      showCredentialsMsg(`Échec de l'enregistrement (code HTTP ${res.status}).`);
+    }
+  } catch {
+    showCredentialsMsg("Serveur injoignable — connexion non enregistrée.");
+  }
+  // Every path (also after a save): releases the button's busy state
+  if (btn) btn.disabled = false;
+  if (saved) {
+    await loadCredentials();
+    await loadAgentStatus(); // refresh the status fetch (agent.credentialsFound)
+  }
+}
+
+/** « Retirer»: French confirm, then POST /delete and refresh the list + the
+ *  status fetch. Idempotent server-side (an unknown name still answers ok). */
+async function deleteCredential(name) {
+  if (!window.confirm(`Retirer la connexion « ${name} » ? Les valeurs seront supprimées du serveur.`)) {
+    return;
+  }
+  showCredentialsMsg("");
+  try {
+    const res = await fetch(apiUrl(CREDENTIALS_DELETE_PATH), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    });
+    if (res.ok) {
+      showCredentialsMsg(`Connexion « ${name} » retirée.`);
+      await loadCredentials();
+      await loadAgentStatus();
+    } else if (res.status === 401) {
+      showCredentialsMsg("Accès refusé — le retrait exige le jeton d'authentification du serveur.");
+    } else {
+      showCredentialsMsg(`Échec du retrait (code HTTP ${res.status}).`);
+    }
+  } catch {
+    showCredentialsMsg("Serveur injoignable — connexion non retirée.");
+  }
+}
+
+/** One-time bindings of the connexions editor (agent page, same-origin deploys
+ *  only): typed input clears the inline message, save triggers saveCredential. */
+function bindCredentialsEditor() {
+  const block = document.getElementById("credentials-block");
+  if (!block) return;
+  for (const id of ["cred-name", "cred-login", "cred-password", "cred-totp-secret"]) {
+    const input = document.getElementById(id);
+    if (input) input.addEventListener("input", () => showCredentialsMsg(""));
+  }
+  const save = document.getElementById("credentials-save");
+  if (save) save.addEventListener("click", saveCredential);
+}
+
+/** Reveals the connexions editor and loads the stored list once. Visibility
+ *  mirrors the schedule editor's own rule (same-origin agent page only — on a
+ *  static deploy the POSTs are unusable, so the block never shows) WITHOUT the
+ *  agent-configured gate: the credentials GET answers regardless, which is why
+ *  #historique must stay hostable for it (credentialsShown). */
+async function initCredentials() {
+  const block = document.getElementById("credentials-block");
+  if (!block) return;
+  credentialsShown = true;
+  block.hidden = false;
+  const save = document.getElementById("credentials-save");
+  if (save) save.hidden = false; // revealed with the block (ships hidden)
+  await loadCredentials();
 }
 
 /* ------------------------------ Discussion avec l'agent (chat page) ------------------------------ */
@@ -2608,8 +3255,8 @@ async function loadData() {
 
 /** One-time setup per page (shared pieces everywhere, page pieces behind the
  *  dispatcher): map + tables + timeline filter (home), navigation + active-
- *  page highlight (all), run button (agent, same-origin deploys only), chat
- *  input bindings (chat). */
+ *  page highlight (all), run button + schedule editor + connexions editor
+ *  (agent, same-origin deploys only), chat input bindings (chat). */
 function setupStatic(page) {
   if (page === "home") {
     const mapOk = initMap();
@@ -2626,9 +3273,18 @@ function setupStatic(page) {
       // once here (updateRunButtonVisibility keeps it hidden on status updates)
       const btn = document.getElementById("agent-update-btn");
       if (btn) btn.hidden = true;
+      // Same rule for the schedule editor (renderScheduleEditor keeps it hidden)
+      const scheduleBlock = document.getElementById("schedule-block");
+      if (scheduleBlock) scheduleBlock.hidden = true;
+      // Same rule for the connexions editor (initCredentials never runs)
+      const credBlock = document.getElementById("credentials-block");
+      if (credBlock) credBlock.hidden = true;
     } else {
       const updateBtn = document.getElementById("agent-update-btn");
       if (updateBtn) updateBtn.addEventListener("click", triggerAgentUpdate);
+      bindScheduleEditor();
+      bindCredentialsEditor();
+      void initCredentials(); // reveal + list load (GET-only until a save)
     }
   }
   if (page === "chat") {
@@ -2659,7 +3315,14 @@ function init() {
   // Pill on every page; the workflow block and history list are agent-page-only
   // (their DOM is absent on the home page — both are null-guarded anyway)
   loadAgentStatus().then(() => {
-    if (PAGE === "agent" && agentConfigured) void initAgentActivity();
+    if (PAGE === "agent" && agentConfigured) {
+      void initAgentActivity();
+      initAgentScreen(); // « Écran de l'agent » viewer, next to the workflow block
+    }
+    // Chat page: the same viewer folded into a collapsible panel inside #chat.
+    // The REMOTE_MODE guard inside initAgentScreen stays authoritative — on a
+    // static deploy #chat never unhides anyway, so nothing shows regardless.
+    if (PAGE === "chat" && agentConfigured) initAgentScreen();
   });
   if (PAGE === "agent") loadHistory();
   if (PAGE === "chat") void initChat(); // silent-hide on remote deploys / unconfigured agent

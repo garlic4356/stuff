@@ -592,6 +592,133 @@ td.cell-nom a { font-weight: 600; }
 .hist-summary > :first-child { margin-top: 0; }
 .hist-summary > :last-child { margin-bottom: 0; }
 
+/* ---------- Planification (weekday schedule editor, agent page) ---------- */
+/* Compact config strip inside #historique, same visual family as the activity
+   card and the run button. Weekday toggle chips mirror .filter-controls .chip;
+   values are filled from /api/status by app.js. */
+.schedule-block {
+  margin: .9rem 0;
+  padding: .55rem .8rem .6rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.schedule-title {
+  margin: 0 0 .45rem;
+  font-size: .78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--accent-bright);
+}
+.schedule-controls {
+  display: flex;
+  align-items: center;
+  gap: .6rem 1rem;
+  flex-wrap: wrap;
+  font-size: .8rem;
+  color: var(--text-dim);
+}
+.schedule-days {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  flex-wrap: wrap;
+}
+.schedule-chip {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  border-radius: 999px;
+  padding: .22rem .6rem;
+  font: inherit;
+  font-size: .74rem;
+  cursor: pointer;
+  transition: color .15s, background .15s, border-color .15s;
+}
+.schedule-chip:hover:not(:disabled) { color: var(--text); }
+.schedule-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.schedule-chip[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #10120b;
+  font-weight: 600;
+}
+.schedule-chip:disabled { opacity: .45; cursor: default; }
+.schedule-time-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+}
+/* The connexions form reuses .schedule-controls: its text/password inputs join
+   the same styling (the time/checkbox rules stay scoped as written). */
+.schedule-controls input[type="time"],
+.credentials-block input[type="text"],
+.credentials-block input[type="password"] {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: .22rem .45rem;
+  font: inherit;
+  font-size: .78rem;
+}
+.schedule-controls input[type="time"]:focus,
+.credentials-block input[type="text"]:focus,
+.credentials-block input[type="password"]:focus {
+  outline: 1px solid var(--accent);
+}
+.schedule-controls input[type="time"]:disabled { opacity: .45; }
+.schedule-disable-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  cursor: pointer;
+}
+.schedule-disable-wrap:focus-within { outline: 1px solid var(--accent); outline-offset: 2px; }
+.schedule-controls input[type="checkbox"] { accent-color: var(--accent); margin: 0; }
+
+/* ---------- Connexions (agent credentials, agent page) ---------- */
+/* Card mirrors .schedule-block (same visual family). The list shows the stored
+   connection NAMES only — never a value: badges reuse .hist-chip, each row
+   carries its own destructive button (reuses .chat-clear-btn) and the form
+   reuses .schedule-controls above. */
+.credentials-block {
+  margin: .9rem 0;
+  padding: .55rem .8rem .6rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.credentials-help { margin: 0 0 .5rem; font-size: .76rem; color: var(--text-dim); }
+#credentials-list:not(:empty) { margin-bottom: .55rem; }
+.cred-row {
+  display: flex;
+  align-items: center;
+  gap: .4rem .8rem;
+  flex-wrap: wrap;
+  padding: .3rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: .8rem;
+}
+.cred-row:last-child { border-bottom: none; }
+.cred-name {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .76rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 .3rem;
+  word-break: break-all;
+}
+.cred-badges { display: inline-flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
+.cred-delete { margin-left: auto; }
+.cred-field { display: inline-flex; align-items: center; gap: .35rem; min-width: 0; }
+.cred-field input[type="text"],
+.cred-field input[type="password"] { width: 10rem; min-width: 0; max-width: 100%; }
+#cred-totp-secret { width: 26rem; max-width: 100%; }
+.credentials-empty { margin: .1rem 0; font-size: .78rem; color: var(--text-dim); }
+
 /* ---------- Activité de l'agent (live workflow, agent page) ---------- */
 /* Lives at the top of #historique: panel card, events streamed/polled. */
 .agent-activity {
@@ -699,6 +826,62 @@ details.wf-result > summary:hover .wf-preview { color: var(--text); }
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: .74rem;
 }
+
+/* ---------- Écran de l'agent (viewport screenshot, agent page) ---------- */
+/* Sits under the live workflow card: latest browser screenshot + escaped
+   caption (timestamp, title, url), or the dimmed placeholder/degraded note.
+   Same panel vocabulary as .agent-activity. */
+.agent-screen {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .6rem .8rem .7rem;
+  margin-bottom: .9rem;
+}
+.agent-screen-img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-top: .45rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.agent-screen-caption {
+  margin: .35rem 0 0;
+  font-size: .78rem;
+  color: var(--text-dim);
+  word-break: break-word;
+}
+.agent-screen-url {
+  display: block;
+  word-break: break-all;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .73rem;
+}
+.agent-screen-status {
+  margin: 0;
+  font-size: .85rem;
+  color: var(--text-dim);
+}
+
+/* ---------- Écran de l'agent on the chat page (collapsible wrapper) ---------- */
+/* The chat page folds the same screenshot viewer into a native <details> that
+   stays closed until a genuinely new live capture auto-opens it. Only the
+   summary is a new surface: the inner .agent-screen* block keeps its existing
+   styles unchanged, and the img's max-width:100% already fits the chat column
+   (the details spans that column, like .chat-intro). Summary vocabulary and
+   native disclosure marker match the site's other <details>/<summary> pairs;
+   spacing follows #chat's rhythm (.8rem gaps). */
+.agent-screen-wrap { margin: 0 0 .8rem; }
+.agent-screen-wrap > summary {
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-dim);
+  font-size: .85rem;
+}
+.agent-screen-wrap > summary:hover { color: var(--text); }
+.agent-screen-wrap[open] > summary { margin-bottom: .45rem; }
 
 /* ---------- Discussion avec l'agent (chat page) ---------- */
 /* Transcript: scrollable log, bubbles appended at the bottom. Same panel
