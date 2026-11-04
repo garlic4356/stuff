@@ -140,6 +140,17 @@ const SCHEDULE_PATH = "/api/agent/schedule";
 const CREDENTIALS_PATH = "/api/agent/credentials";
 const CREDENTIALS_DELETE_PATH = CREDENTIALS_PATH + "/delete";
 
+/* Mémoire de l'agent (notes, agent page): list/edit/forget the agent's
+ * self-memory research notes. GET lists the active notes (+ retiredCount),
+ * POST upserts ONE note through the same remember semantics the agent tools
+ * use (editing an existing note = the same scope/key pair, a new text — the
+ * old one is superseded into the note's history) and POST /delete forgets
+ * one (idempotent; the note is archived in the store, not destroyed). Both
+ * work with or without a configured agent; same-origin only like every UI
+ * POST (no auth token ships with the site). */
+const NOTES_PATH = "/api/agent/notes";
+const NOTES_DELETE_PATH = NOTES_PATH + "/delete";
+
 /* Navigateur de l'agent (browser profile reset, agent page): shows the
  * resolved profile path from /api/status (agent.browserProfile — null =
  * transient "off" profile) and POST /api/agent/browser/clear wipes it
@@ -969,6 +980,7 @@ function historyKindLabel(kind) {
     case "run": return "Exécution de l'agent";
     case "credentials": return "Gestion des connexions";
     case "browser": return "Navigateur de l'agent";
+    case "notes": return "Mémoire de l'agent";
     default: return kind || "—";
   }
 }
@@ -1040,6 +1052,12 @@ let historyShown = false;
  *  agent state, so the section must keep hosting the block in that case too. */
 let credentialsShown = false;
 
+/** True once the notes editor (« Mémoire de l'agent ») is revealed on the
+ *  agent page (see initNotes): same visibility rule as the connexions
+ *  editor — the notes GET answers regardless of the agent state, so
+ *  #historique must stay hostable for it too. */
+let notesShown = false;
+
 /* -------- API-unreachable degradation (agent page, static deploys) -------- */
 
 /** Exact notice shown when the API (status/history) is unreachable at load —
@@ -1079,7 +1097,7 @@ function updateHistorySection() {
   const section = document.getElementById("historique");
   const list = document.getElementById("history-list");
   if (!section || !list) return;
-  if (!historyShown && !agentConfigured && !apiUnavailable && !credentialsShown) {
+  if (!historyShown && !agentConfigured && !apiUnavailable && !credentialsShown && !notesShown) {
     section.hidden = true;
     return;
   }
@@ -2873,6 +2891,266 @@ async function initCredentials() {
   await loadCredentials();
 }
 
+/* ------------------------------ Mémoire de l'agent (notes, agent page) ------------------------------ */
+
+/** Inline message of the notes block (same conventions as showCredentialsMsg). */
+function showNotesMsg(msg) {
+  const el = document.getElementById("notes-msg");
+  if (el) el.textContent = msg;
+}
+
+/** French badge label of one scope tag (data values are escaped like every
+ *  interpolation; an unknown tag is displayed raw). */
+function noteScopeLabel(scope) {
+  switch (scope) {
+    case "field": return "champ";
+    case "entry": return "fiche";
+    case "global": return "générale";
+    default: return scope || "—";
+  }
+}
+
+/** Renders the stored notes (wholesale rebuild, like the connexions rows):
+ *  id + scope badge + « mise à jour » timestamp + the text exactly as stored
+ *  (escaped, pre-wrap) + per-row « Modifier » / « Oublier ». The wire carries
+ *  historyCount but the list shows the note as it lives — the history chain
+ *  stays a server-side fact named in the help text. */
+function renderNotes(notes) {
+  const zone = document.getElementById("notes-list");
+  if (!zone) return;
+  zone.innerHTML = "";
+  const rows = Array.isArray(notes)
+    ? notes.filter((n) => n && typeof n === "object" && typeof n.id === "string" && n.id !== "")
+    : [];
+  if (rows.length === 0) {
+    zone.innerHTML = `<p class="credentials-empty">Aucune note enregistrée pour le moment — l'agent en apprendra au fil des mises à jour.</p>`;
+    return;
+  }
+  for (const note of rows) {
+    const row = document.createElement("div");
+    row.className = "cred-row note-row";
+    row.innerHTML =
+      `<code class="cred-name">${escapeHtml(note.id)}</code>` +
+      `<span class="cred-badges"><span class="hist-chip">${escapeHtml(noteScopeLabel(note.scope))}</span></span>` +
+      `<span class="note-updated">mise à jour ${escapeHtml(formatTimestamp(note.updatedAt))}</span>` +
+      `<p class="note-text">${escapeHtml(note.text)}</p>` +
+      `<button type="button" class="chat-clear-btn note-edit">Modifier</button>` +
+      `<button type="button" class="chat-clear-btn cred-delete note-delete">Oublier</button>`;
+    // Rows are rebuilt wholesale (like the table rows): bind per row
+    const edit = row.querySelector(".note-edit");
+    if (edit) edit.addEventListener("click", () => startNoteEdit(row, note));
+    const del = row.querySelector(".note-delete");
+    if (del) del.addEventListener("click", () => deleteNote(note.id));
+    zone.appendChild(row);
+  }
+}
+
+/** GET /api/agent/notes → render the rows. A failure renders an inline note
+ *  — the GET is open even for an unconfigured agent, so every failure is a
+ *  genuine server problem worth naming. */
+async function loadNotes() {
+  const zone = document.getElementById("notes-list");
+  if (!zone) return;
+  try {
+    const res = await fetch(apiUrl(NOTES_PATH));
+    if (!res.ok) throw new Error(`GET /api/agent/notes → HTTP ${res.status}`);
+    const body = await res.json();
+    renderNotes(body && Array.isArray(body.notes) ? body.notes : []);
+  } catch {
+    zone.innerHTML = `<p class="credentials-empty">Mémoire de l'agent indisponible — le serveur ne répond pas.</p>`;
+  }
+}
+
+/** « Enregistrer la note » — the shared sender of the form and the inline
+ *  editor: one body `{scope, key?, text}`, per-action French messages, error
+ *  handling mirroring the connexions editor. `cleanup` restores the caller's
+ *  inputs on success (the ADD form clears them; the editor's loadNotes()
+ *  rebuild suffices). The action names come from the server (created /
+ *  updated / unchanged — unchanged was already stored, nothing changed). */
+async function saveNote(payload, cleanup) {
+  showNotesMsg("");
+  try {
+    const res = await fetch(apiUrl(NOTES_PATH), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      const body = await res.json().catch(() => null);
+      const action = body && typeof body.action === "string" ? body.action : "";
+      const id = body && typeof body.id === "string" ? body.id : "";
+      if (action === "created") {
+        showNotesMsg(`Note « ${id} » créée.`);
+      } else if (action === "updated") {
+        showNotesMsg(`Note « ${id} » mise à jour — la version précédente est conservée dans l'historique de la note.`);
+      } else {
+        showNotesMsg(`Note « ${id} » inchangée — elle avait déjà ce texte.`);
+      }
+      if (cleanup) await cleanup();
+      await loadNotes();
+    } else if (res.status === 400) {
+      // The server's validation error is operator-facing: surface it as-is
+      let msg = "Note refusée par le serveur — vérifiez les valeurs saisies.";
+      try {
+        const body = await res.json();
+        if (body && typeof body.error === "string" && body.error !== "") msg = body.error;
+      } catch {
+        /* malformed error body: keep the generic message */
+      }
+      showNotesMsg(msg);
+    } else if (res.status === 401) {
+      showNotesMsg("Accès refusé — l'enregistrement exige le jeton d'authentification du serveur.");
+    } else {
+      showNotesMsg(`Échec de l'enregistrement (code HTTP ${res.status}).`);
+    }
+  } catch {
+    showNotesMsg("Serveur injoignable — note non enregistrée.");
+  }
+}
+
+/** « Enregistrer la note » from the ADD form: client-side mirror of the
+ *  remember semantics. global OMITS the key from the body (a global note
+ *  carries none); field/entry REQUIRE a non-empty key. The text is sent
+ *  as typed (the server trims; a whitespace-only text is refused there). */
+async function saveNoteFromForm() {
+  const scopeEl = document.getElementById("note-scope");
+  const keyInput = document.getElementById("note-key");
+  const textEl = document.getElementById("note-text");
+  const scope = scopeEl?.value || "global";
+  const key = (keyInput?.value ?? "").trim();
+  const text = textEl?.value ?? "";
+  if (text.trim() === "") {
+    showNotesMsg("Écrivez le texte de la note.");
+    return;
+  }
+  const payload = { scope };
+  if (scope === "field" || scope === "entry") {
+    if (key === "") {
+      showNotesMsg("Une note de portée champ ou fiche doit porter une clé (nom du champ ou id de la fiche).");
+      return;
+    }
+    payload.key = key;
+  }
+  const btn = document.getElementById("notes-save");
+  if (btn) btn.disabled = true;
+  try {
+    await saveNote(payload, () => {
+      // The typed values never stay in the form (the next note starts clean)
+      if (keyInput) keyInput.value = "";
+      if (textEl) textEl.value = "";
+    });
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+/** « Modifier » (inline edit): swaps the row's text for a textarea — the
+ *  scope/key are NOT editable here (renaming = create a new note + forget
+ *  the old one, per the help text); POSTs the SAME note's scope/key with
+ *  the edited text through the shared sender. Cancel restores the view. */
+function startNoteEdit(row, note) {
+  const textEl = row.querySelector(".note-text");
+  if (!textEl || row.querySelector(".note-edit-zone")) return; // edit already open
+  showNotesMsg("");
+  const editor = document.createElement("div");
+  editor.className = "note-edit-zone";
+  editor.innerHTML =
+    `<textarea class="note-edit-text" maxlength="500" rows="4" spellcheck="false" aria-label="Texte modifié de la note"></textarea>` +
+    `<div class="note-edit-actions">` +
+    `<button type="button" class="agent-run-btn note-edit-save">Enregistrer</button>` +
+    `<button type="button" class="chat-clear-btn note-edit-cancel">Annuler</button>` +
+    `</div>`;
+  const area = editor.querySelector(".note-edit-text");
+  area.value = note.text ?? "";
+  textEl.hidden = true;
+  for (const btn of row.querySelectorAll(".note-edit, .note-delete")) btn.hidden = true;
+  row.insertBefore(editor, textEl.nextSibling);
+  const restore = () => {
+    editor.remove();
+    textEl.hidden = false;
+    for (const btn of row.querySelectorAll(".note-edit, .note-delete")) btn.hidden = false;
+  };
+  const saveBtn = editor.querySelector(".note-edit-save");
+  saveBtn.addEventListener("click", async () => {
+    saveBtn.disabled = true;
+    try {
+      await saveNote({ scope: note.scope, key: note.key ?? null, text: area.value }, restore);
+    } finally {
+      saveBtn.disabled = false;
+    }
+    // A 200 rebuilt the whole list (the editor row is gone); on a refusal
+    // the editor stays open with the re-enabled button.
+  });
+  const cancelBtn = editor.querySelector(".note-edit-cancel");
+  cancelBtn.addEventListener("click", restore);
+}
+
+/** « Oublier »: French confirm, then POST /delete and refresh the list.
+ *  Idempotent server-side (an unknown id still answers ok); the note is
+ *  archived in the store's retired list, not destroyed. */
+async function deleteNote(id) {
+  if (!window.confirm(`Oublier la note « ${id} » ? Elle disparaît de la mémoire de l'agent mais reste archivée dans le fichier de l'agent.`)) {
+    return;
+  }
+  showNotesMsg("");
+  try {
+    const res = await fetch(apiUrl(NOTES_DELETE_PATH), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    if (res.ok) {
+      showNotesMsg(`Note « ${id} » oubliée — elle reste archivée dans le fichier de l'agent.`);
+      await loadNotes();
+    } else if (res.status === 401) {
+      showNotesMsg("Accès refusé — l'oubli exige le jeton d'authentification du serveur.");
+    } else {
+      showNotesMsg(`Échec de l'oubli (code HTTP ${res.status}).`);
+    }
+  } catch {
+    showNotesMsg("Serveur injoignable — note non oubliée.");
+  }
+}
+
+/** One-time bindings of the notes editor (agent page, same-origin deploys
+ *  only): the scope select toggles the key input client-side (a global note
+ *  carries none), typed input clears the inline message, save triggers
+ *  saveNoteFromForm. */
+function bindNotesEditor() {
+  const block = document.getElementById("notes-block");
+  if (!block) return;
+  const scope = document.getElementById("note-scope");
+  const keyField = document.getElementById("note-key-field");
+  const syncKey = () => {
+    if (scope && keyField) keyField.hidden = scope.value !== "field" && scope.value !== "entry";
+  };
+  if (scope) {
+    scope.addEventListener("change", syncKey);
+    syncKey(); // the default global scope starts with the key input hidden
+  }
+  for (const id of ["note-key", "note-text"]) {
+    const input = document.getElementById(id);
+    if (input) input.addEventListener("input", () => showNotesMsg(""));
+  }
+  const save = document.getElementById("notes-save");
+  if (save) save.addEventListener("click", saveNoteFromForm);
+}
+
+/** Reveals the notes editor and loads the stored list once. Visibility
+ *  mirrors the connexions editor's own rule (same-origin agent page only —
+ *  on a static deploy the POSTs are unusable, so the block never shows)
+ *  WITHOUT the agent-configured gate: the notes GET answers regardless,
+ *  which is why #historique must stay hostable for it (notesShown). */
+async function initNotes() {
+  const block = document.getElementById("notes-block");
+  if (!block) return;
+  notesShown = true;
+  block.hidden = false;
+  const save = document.getElementById("notes-save");
+  if (save) save.hidden = false; // revealed with the block (ships hidden)
+  await loadNotes();
+}
+
 /* ------------------------------ Navigateur de l'agent (browser profile reset, agent page) ------------------------------ */
 
 /** Inline message of the browser reset block (same conventions as showCredentialsMsg). */
@@ -4006,8 +4284,8 @@ async function loadData() {
 /** One-time setup per page (shared pieces everywhere, page pieces behind the
  *  dispatcher): map + tables + timeline filter (home), navigation + active-
  *  page highlight (all), run button + schedule editor + connexions editor +
- *  browser reset (agent, same-origin deploys only), chat input bindings
- *  (chat). */
+ *  notes editor + browser reset (agent, same-origin deploys only), chat
+ *  input bindings (chat). */
 function setupStatic(page) {
   if (page === "home") {
     const mapOk = initMap();
@@ -4034,12 +4312,17 @@ function setupStatic(page) {
       // keeps it hidden on status updates too)
       const browserBlock = document.getElementById("browser-clear-block");
       if (browserBlock) browserBlock.hidden = true;
+      // Same rule for the notes editor (initNotes never runs)
+      const notesBlock = document.getElementById("notes-block");
+      if (notesBlock) notesBlock.hidden = true;
     } else {
       const updateBtn = document.getElementById("agent-update-btn");
       if (updateBtn) updateBtn.addEventListener("click", triggerAgentUpdate);
       bindScheduleEditor();
       bindCredentialsEditor();
       void initCredentials(); // reveal + list load (GET-only until a save)
+      bindNotesEditor();
+      void initNotes(); // reveal + list load (GET-only until a save)
       const browserClearBtn = document.getElementById("browser-clear-btn");
       if (browserClearBtn) {
         browserClearBtn.addEventListener("click", clearBrowserProfile);

@@ -168,6 +168,38 @@
         <span id="browser-clear-status" class="inline-msg" role="status" aria-live="polite"></span>
       </div>
     </div>
+    <!-- Mémoire de l'agent (notes): the agent's self-memory research notes,
+         read/written through GET/POST /api/agent/notes(+delete) — the same
+         NoteStore the agent's LLM tools manage. Hidden by default like the
+         other dynamic blocks; app.js reveals it on same-origin deploys only
+         (the POSTs ship no auth token). Texts are shown and edited exactly
+         as stored; a text edit supersedes into the note's history on the
+         server (« Modifier » edits text only — renaming = create a new note
+         + forget the old one); « Oublier » moves the note into the store's
+         retired archive. -->
+    <div id="notes-block" class="credentials-block" hidden>
+      <h3 class="schedule-title">Mémoire de l'agent</h3>
+      <p class="credentials-help">L'agent note ici ses recettes de recherche et les particularités des fiches&nbsp;; il les consulte au début de chaque mise à jour. Modifier une note change seulement son texte (l'ancien reste dans l'historique de la note)&nbsp;; pour la renommer, créez une nouvelle note puis oubliez l'ancienne. Les notes oubliées sont archivées, pas détruites. Texte limité à 500 caractères.</p>
+      <div id="notes-list"></div>
+      <div class="schedule-controls">
+        <label class="cred-field" for="note-scope">Portée
+          <select id="note-scope">
+            <option value="global">Générale (global)</option>
+            <option value="field">Champ (field)</option>
+            <option value="entry">Fiche (entry)</option>
+          </select>
+        </label>
+        <label class="cred-field" for="note-key" id="note-key-field" hidden>Clé
+          <input type="text" id="note-key" autocomplete="off" spellcheck="false">
+        </label>
+        <label class="cred-field" for="note-text">Texte
+          <textarea id="note-text" maxlength="500" rows="4" spellcheck="false"></textarea>
+        </label>
+        <button type="button" id="notes-save" class="agent-run-btn" hidden
+                title="Enregistre la note — modifier une note existante conserve l'ancien texte dans son historique">Enregistrer la note</button>
+        <span id="notes-msg" class="inline-msg" role="status" aria-live="polite"></span>
+      </div>
+    </div>
     <!-- Static-deploy degradation slot: app.js fills it (plain text node — the
          exact notice lives in one place, API_UNAVAILABLE_MSG) and unhides it
          only when the API is unreachable at load (status/history failed) -->

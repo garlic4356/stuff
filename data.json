@@ -583,6 +583,13 @@
       "frequence": "n.c.",
       "prochaines": "Calendrier des parties publié sur Facebook · confirmations sur le salon Discord « Partie BSC »",
       "terrain": "Terrains privés — hameau de Grand Lande, Saffré (44390) ; terrain à Héric",
+      "events": [
+        {
+          "date": "2026-12-12",
+          "lieu": "BSC, Saffré",
+          "note": "Journée spéciale partagée BSC + Licorne N.R.V : partie caritative + collecte de jouets pour les Restos du Cœur, 8h30-16h30 — annoncée le 16/10/2026 côté Licorne N.R.V (discord) et le 19/10/2026 par MadDog (BSC) (constat 04/11/2026)"
+        }
+      ],
       "coords": null
     },
     {
@@ -690,6 +697,89 @@
         "lat": 47.856953,
         "lon": -2.662023
       }
+    },
+    {
+      "id": "licornes-nrv",
+      "nom": "Licorne N.R.V",
+      "commune": "n.c.",
+      "dep": "44",
+      "statut": "actif",
+      "liens": [
+        {
+          "texte": "Linktree (tous les réseaux)",
+          "url": "https://linktr.ee/LicorneN.R.V"
+        },
+        {
+          "texte": "Facebook (page)",
+          "url": "https://www.facebook.com/profile.php?id=61585223012987"
+        }
+      ],
+      "sources": [
+        "https://www.facebook.com/profile.php?id=61585223012987",
+        "https://linktr.ee/LicorneN.R.V",
+        "https://discord.com/channels/1439705927472119981/1439709449794228396",
+        "https://discord.com/channels/1439705927472119981/1440583331325542503",
+        "https://discord.com/channels/1439705927472119981/1441784944526491760"
+      ],
+      "type": "Asso 1901 · 13/12/2025 (W441007922)",
+      "distance": "n.c. (asso itinérante sans siège publié)",
+      "statutDetail": "Asso déclarée « créée le 13/12/2025 », numéro RNA W441007922 (préfecture de Loire-Atlantique) cité dans la bio de leur page Facebook — page consultée connecté le 04/11/2026 ; pas encore de fiche publique dans la recherche RNA/SIRENE au jour du constat. Discord « Licorne N.R.V » (guild 1439705927472119981) consulté connecté le 04/11/2026, salons débloqués après validation du règlement et présentation : forum « agenda-et-parties » (charte « ✅ = validé ») avec la journée du sam. 12/12/2026 co-organisée avec BSC (Saffré) — partie caritative 8h30-16h30 + collecte de jouets Restos du Cœur, puis AG à 18h au Bar Le Pozay (l'AG n'est pas une session de jeu) ; sortie « 8 Novembre Family » annoncée le 02/11/2026 sur un terrain inédit, non barrée « ✅ » au jour du constat ; frise du forum « photos-parties » : 11/01 (Alba Breitz), 22/02 et 20/09 (44ᵉ Compagnie), 12/04 (Saint-CYR), 15-17/05 (OP Vindicta), 07/06 (RCA, orga licorne), 08/06 (La Rochelle), 11/10 (R'soft Game Shelter Players, RETEX 37 joueurs). Asso sans terrain : « pas de terrain = déplacement partout pour le moment » (Fanou, thread 12/12/2026). Pack de location de répliques lancé début octobre (annonce du 08/10/2026). Lien d'adhésion HelloAsso annoncé dans le salon « Adhésion » du Discord (page non consultable ce jour : contrôle anti-bot). Commune de siège non publiée — dep 44 tiré du numéro RNA.",
+      "frequence": "n.c.",
+      "prochaines": "Salon Discord « annonces » et forum « agenda-et-parties » de l'asso (parties à venir affichées barrées « ✅ »)",
+      "terrain": "n.c. (sans terrain fixe, déplacements chez des terrains partenaires)",
+      "events": [
+        {
+          "date": "2026-01-11",
+          "lieu": "Alba Breitz",
+          "note": "Partie — titre du thread « 11 janvier Alba Breitz » du salon photos (constat 04/11/2026)"
+        },
+        {
+          "date": "2026-02-22",
+          "lieu": "44ᵉ Compagnie (Pontchâteau)",
+          "note": "Thread photos « 22 février 2026 44eme compagnie » (constat 04/11/2026)"
+        },
+        {
+          "date": "2026-04-12",
+          "lieu": "Saint-CYR",
+          "note": "Thread photos « Saint CYR 12 avril » (constat 04/11/2026)"
+        },
+        {
+          "date": "2026-05-15",
+          "lieu": "OP Vindicta",
+          "note": "OP sur 3 jours, 15 au 17/05/2026 (thread photos) (constat 04/11/2026)"
+        },
+        {
+          "date": "2026-06-07",
+          "lieu": "RCA",
+          "note": "Thread photos « 7 JUIN RCA (orga licorne) » (constat 04/11/2026)"
+        },
+        {
+          "date": "2026-06-08",
+          "lieu": "La Rochelle",
+          "note": "Thread photos « Partie 8 Juin, Rochelle » (constat 04/11/2026)"
+        },
+        {
+          "date": "2026-09-20",
+          "lieu": "44ᵉ Compagnie (Pontchâteau)",
+          "note": "Thread agenda « 20 septembre 44eme compagnie (orga licorne) ✅ » (constat 04/11/2026)"
+        },
+        {
+          "date": "2026-10-11",
+          "lieu": "R'soft Game Shelter Players (près de La Rochelle)",
+          "note": "Thread agenda « 11 Octobre Private Licorne NRV R'soft Game Shelter✅ », partie privée ; RETEX 11/10/2026 : 37 joueurs (constat 04/11/2026)"
+        },
+        {
+          "date": "2026-11-08",
+          "lieu": "terrain inédit (non nommé)",
+          "note": "Sortie « 8 Novembre Family », thread agenda du 02/11/2026, terrain jamais testé, non barrée « ✅ » au jour du constat (constat 04/11/2026)"
+        },
+        {
+          "date": "2026-12-12",
+          "lieu": "BSC, Saffré",
+          "note": "Journée spéciale NRV & BSC barrée « ✅ » : partie caritative + collecte de jouets Restos du Cœur, 8h30-16h30 (début ~10h) ; AG de l'asso à 18h au Bar Le Pozay le soir — hors événement de jeu (constat 04/11/2026)"
+        }
+      ],
+      "coords": null
     }
   ],
   "caen": [

@@ -650,11 +650,13 @@ td.cell-nom a { font-weight: 600; }
   align-items: center;
   gap: .4rem;
 }
-/* The connexions form reuses .schedule-controls: its text/password inputs join
-   the same styling (the time/checkbox rules stay scoped as written). */
+/* The connexions and notes forms reuse .schedule-controls: their text/
+   password/textarea inputs join the same styling (the time/checkbox rules
+   stay scoped as written). */
 .schedule-controls input[type="time"],
 .credentials-block input[type="text"],
-.credentials-block input[type="password"] {
+.credentials-block input[type="password"],
+.credentials-block textarea {
   background: var(--panel-2);
   border: 1px solid var(--border);
   color: var(--text);
@@ -665,7 +667,8 @@ td.cell-nom a { font-weight: 600; }
 }
 .schedule-controls input[type="time"]:focus,
 .credentials-block input[type="text"]:focus,
-.credentials-block input[type="password"]:focus {
+.credentials-block input[type="password"]:focus,
+.credentials-block textarea:focus {
   outline: 1px solid var(--accent);
 }
 .schedule-controls input[type="time"]:disabled { opacity: .45; }
@@ -718,6 +721,30 @@ td.cell-nom a { font-weight: 600; }
 .cred-field input[type="password"] { width: 10rem; min-width: 0; max-width: 100%; }
 #cred-totp-secret { width: 26rem; max-width: 100%; }
 .credentials-empty { margin: .1rem 0; font-size: .78rem; color: var(--text-dim); }
+
+/* ---------- Mémoire de l'agent (notes, agent page) ---------- */
+/* The notes block reuses the .credentials-block card + .schedule-controls
+   form and .cred-row/.cred-name/.cred-delete/.hist-chip rows. Only the note
+   text and the inline edit zone need their own rules: the text renders
+   exactly as stored (pre-wrap) on its own line, the edit textarea mirrors
+   the block's inputs (selector above). */
+.note-row .note-text {
+  flex-basis: 100%;
+  margin: .1rem 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: .78rem;
+  color: var(--text);
+}
+.note-updated { font-size: .72rem; color: var(--text-dim); }
+.note-edit-zone {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+.note-edit-zone textarea { width: 100%; box-sizing: border-box; resize: vertical; }
+.note-edit-actions { display: flex; align-items: center; gap: .4rem; }
 
 /* ---------- Activité de l'agent (live workflow, agent page) ---------- */
 /* Lives at the top of #historique: panel card, events streamed/polled. */
