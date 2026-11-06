@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastVerified": "2026-11-04",
+    "lastVerified": "2026-11-06",
     "manualFields": [
       "cout"
     ]
@@ -28,7 +28,7 @@
       ],
       "type": "Asso 1901 · 01/03/2021 (W353021572)",
       "distance": "~30 min",
-      "statutDetail": "topic France-Airsoft « Concept Airsoft Iffendic » re-vérifié le 03/11/2026 : contenu identique (terrain face au Lac de Trémelin, ~2 week-ends/mois avec 30 à 40 joueurs, réservations via la page Facebook), aucun nouveau message depuis le 04/05/2025 ; aucune preuve de partie datée depuis la dominicale du 19/07/2026 constatée sur la page Facebook (re-vérifiée le 09/10/2026 — page Facebook toujours non accessible sans connexion)",
+      "statutDetail": "topic France-Airsoft « Concept Airsoft Iffendic » re-vérifié le 03/11/2026 (contenu identique, aucun nouveau message depuis le 04/05/2025) ; preuve d'activité la plus récente désormais : fiche Airsoft XP « Dominicale Concept Airsoft » publiée le 11/08/2026 pour la dominicale du 16/08/2026 au lieu-dit Le Landier des Paquerais, Iffendic (30 places, PAF 10 € — fiche relu le 06/11/2026) ; la dominicale du 19/07/2026 reste attestée par la page Facebook (re-vérifiée le 09/10/2026 — page toujours non accessible sans connexion) ; aucune fiche à venir pour cette asso à la base Airsoft XP au relevé du 06/11/2026",
       "frequence": "~2 week-ends/mois",
       "prochaines": "Suivantes via Facebook",
       "terrain": "Forêt + bâtiments (vestiaires, eau, BBQ) · stand 55 m · chrony · recharge HPA/LiPo",
@@ -150,7 +150,7 @@
       ],
       "type": "Asso + team",
       "distance": "~40 min",
-      "statutDetail": "page Facebook « Panthera Forest - Association Airsoft » publique consultée le 03/11/2026 : publication du 27/10/2026 annonçant la dominicale du dimanche 1er novembre 2026 avec inscription obligatoire — partie passée depuis ; site officiel en ligne le même jour (OP mensuelles, terrain Le Bourgneuf à Meillac, aucune date affichée sur la page d'accueil) ; OP des 17-18/10 passée",
+      "statutDetail": "page Facebook « Panthera Forest - Association Airsoft » consultée le 06/11/2026 (1,7k abonnés) : publication en tête de mur « Dominical du dimanche 15 novembre 2026 — inscription obligatoire » avec billetterie yp.events (frais d'annulation de 4 €, ouverture 9 h, dès 16 ans, répliques longues <2 joules / PA <1 joule) ; la publication du 27/10/2026 annonçant la dominicale du 1er novembre n'est plus en tête (partie passée) ; site officiel toujours en ligne (consulté le 03/11/2026 : OP mensuelles, terrain Le Bourgneuf à Meillac)",
       "frequence": "~1 OP/mois (souvent vacances scol., 1–2 j)",
       "prochaines": "Dates via Facebook / bandeau du site",
       "terrain": "2 forêts + zone CQB · terrain ouvert (découverte)",
@@ -165,6 +165,11 @@
           "date": "2026-11-01",
           "lieu": "Le Bourgneuf (Meillac)",
           "note": "Dominicale annoncée le 27/10/2026 sur Facebook avec inscription obligatoire (partie passée — preuve d'activité)"
+        },
+        {
+          "date": "2026-11-15",
+          "lieu": "Le Bourgneuf (Meillac)",
+          "note": "Dominicale — ouverture 9 h, dès 16 ans, répliques longues <2 joules / PA <1 joule, inscription obligatoire via la billetterie yp.events liée à la publication en tête du mur Facebook (publication consultée le 06/11/2026)"
         }
       ],
       "coords": {
@@ -267,7 +272,7 @@
       ],
       "type": "Asso · bureau de 5 bénévoles · groupes GIL & GOR",
       "distance": "~1h20–1h30 (limite sud)",
-      "statutDetail": "agenda public re-vérifié le 03/11/2026 (ath-airsoft.fr/agenda) : « 100 % ATH » (membres uniquement) le 07/11, entretien du terrain le 14/11 (sans partie), FLEX 29/11 et 05/12/2026 ; les FLEX des 24/10 et 01/11 ne figurent plus à l'agenda (parties passées) ; pour les joueurs externes, l'inscription ouvre 15 jours avant chaque partie",
+      "statutDetail": "agenda public re-vérifié le 06/11/2026 (ath-airsoft.fr/agenda) : « 100 % ATH » (membres uniquement) le 07/11, entretien du terrain le 14/11 (sans partie), FLEX 29/11 et 05/12/2026 — agenda inchangé depuis le relevé du 03/11 ; pour les joueurs externes, l'inscription ouvre 15 jours avant chaque partie",
       "frequence": "2 événements/mois (sam./dim. alternés), 30 joueurs max",
       "terrain": "1 ha · village CQB bois · safe zone",
       "cout": "10 €/journée (ext.) · 30 €/an illimité",
@@ -643,7 +648,7 @@
       ],
       "type": "Équipe / organisateur de dominicales",
       "distance": "~1 h 10",
-      "statutDetail": "fiche « Dominicale BSO 56 » relevée le 03/11/2026 dans la base Airsoft XP (API : fiche publiée le 15/10/2026, dominicale du dimanche 22/11/2026 au terrain de la Rackham — La Ville-Rée, 56460 Sérent — 40 places, gratuit adhérents, 5 € non-adhérents, paiement à l'inscription) ; groupe Facebook public « Breizh SpecOps 56 » consulté connecté le même jour (88 membres, créé par Gregory Demay, zone Meucon) ; la page profil liée par la fiche d'inscription (facebook.com/profile.php?id=61590532929217) est indisponible même connecté",
+      "statutDetail": "fiche « Dominicale BSO 56 » re-constatée le 06/11/2026 dans la base Airsoft XP (republiée le jour même) : toujours non archivée pour la dominicale du dimanche 22/11/2026 au terrain de la Rackham — La Ville-Rée, 56460 Sérent — 40 places, gratuit adhérents, 5 € non-adhérents ; groupe Facebook public « Breizh SpecOps 56 » (88 membres) reste le canal d'inscriptions ; la page profil liée par la fiche d'inscription est indisponible (constaté le 03/11/2026)",
       "frequence": "n.c.",
       "prochaines": "Via le groupe Facebook (inscriptions)",
       "terrain": "Terrain de la Rackham (terrain de la Piscine) — lieu-dit La Ville-Rée, 56460 Sérent",
@@ -771,12 +776,12 @@
         {
           "date": "2026-11-08",
           "lieu": "terrain inédit (non nommé)",
-          "note": "Sortie « 8 Novembre Family », thread agenda du 02/11/2026, terrain jamais testé, non barrée « ✅ » au jour du constat (constat 04/11/2026)"
+          "note": "Sortie « 8 Novembre Family » — confirmée le 06/11/2026 par l'annonce du staff dans le salon annonces (« Le 8 : On se retrouve pour jouer à la Family ! ») ; thread du forum agenda toujours sans marque ✅ au 06/11 (25 messages, dernier le 05/11)"
         },
         {
           "date": "2026-12-12",
           "lieu": "BSC, Saffré",
-          "note": "Journée spéciale NRV & BSC barrée « ✅ » : partie caritative + collecte de jouets Restos du Cœur, 8h30-16h30 (début ~10h) ; AG de l'asso à 18h au Bar Le Pozay le soir — hors événement de jeu (constat 04/11/2026)"
+          "note": "Journée spéciale NRV & BSC barrée « ✅ » : partie caritative + collecte de jouets Restos du Cœur, 8h30-16h30 (début ~10h) ; AG de l'asso à 18h au Bar Le Pozay le soir — hors événement de jeu (constat 04/11/2026, re-confirmée par l'annonce du staff dans le salon annonces du 06/11/2026)"
         }
       ],
       "coords": null
@@ -812,7 +817,7 @@
       ],
       "type": "Asso 1901 · créée 11/10/2006 (W142002276, SIRET 847 646 429 00021)",
       "distance": "~20–25 min de Caen",
-      "statutDetail": "page HelloAsso re-vérifiée le 03/11/2026 : trois billetteries ouvertes — « Partie publique du 15 Novembre », « Partie publique du 29 Novembre » et « Partie publique du 6 Décembre » (10 € chacune, remboursement uniquement jusqu'à 72 h avant la partie) ; la billetterie de la partie publique du 01/11 n'y figure plus (partie passée) ; les trois nouvelles parties publiques sont aussi relevées par le tracker places-airsoft (maj du 03/11/2026) ; terrain CQB « The Store » (Ouézy) toujours annoncé sur la page HelloAsso",
+      "statutDetail": "re-vérifié le 06/11/2026 via le tracker places-airsoft (maj du jour 11h11) : les trois billetteries ouvertes restent listées — « Partie publique du 15 Novembre », « Partie publique du 29 Novembre » et « Partie publique du 6 Décembre » (10 € chacune, remboursement uniquement jusqu'à 72 h avant la partie) ; terrain CQB « The Store » (Ouézy) toujours annoncé sur la page HelloAsso (page directe derrière le défi anti-bot ce jour)",
       "frequence": "n.c.",
       "prochaines": "Via HelloAsso (billetteries)",
       "terrain": "CQB en bâtiment fortifié (« The Store ») · 72 places",
@@ -945,7 +950,7 @@
       ],
       "type": "Asso 1901 · créée 23/11/2015 (W612002807) · ~15 actifs",
       "distance": "~45 min–1h15 de Caen",
-      "statutDetail": "dominicale « C'est reparti ! » du 18/10/2026 à Le Breuil/Caligny (35 joueurs, 10 €) passée (Airsoft XP) ; re-vérification du 03/11/2026 dans la base Airsoft XP (API, 475 fiches) : « OP Halloween » du samedi 14/11/2026 à Flers et « Domini OP Conquête » du dimanche 29/11/2026 à Putanges-le-Lac y figurent toujours (publiées le 08/10/2026, non-archivées) — la liste publique du site ne les affiche plus (fenêtre d'affichage limitée, constat du même jour) ; page Facebook toujours derrière l'authentification ; site officiel e-monsite en ligne (consulté le 03/11/2026)",
+      "statutDetail": "re-vérifié le 06/11/2026 dans la base Airsoft XP (republiée le jour même) : « OP Halloween » du samedi 14/11/2026 à Flers et « Domini OP Conquête » du dimanche 29/11/2026 à Putanges-le-Lac toujours non archivées (publiées le 08/10/2026) ; la liste publique du site ne les affiche plus (fenêtre d'affichage limitée, constat du 03/11) ; la dominicale « C'est reparti ! » du 18/10/2026 à Le Breuil/Caligny (35 joueurs, 10 €) est passée ; page Facebook derrière l'authentification ; site officiel e-monsite en ligne",
       "frequence": "tous les 15 jours le dimanche + OP",
       "prochaines": "Via leur page Facebook",
       "terrain": "Bois aménagé (tranchées, miradors, caravane) à Caligny · sites partenaires Orne",
@@ -1036,9 +1041,9 @@
       ],
       "type": "Association",
       "distance": "~2h15 de Caen",
-      "statutDetail": "re-vérifié le 03/11/2026 : fiche SpawnForge toujours en ligne (publiée le 06/07/2026 : dominicales à 5 €, terrain La Butte aux Loups, limite stricte 2 J) ; dernier relevé de la base Airsoft XP le 03/11/2026 : la dominicale FMA du 18/10/2026 y figure comme partie passée (fiche publiée le 15/10/2026, non archivée) et aucune dominicale à venir n'y est listée ; groupe Facebook officiel « Full Métal Airsoft FMA » identifié via la fiche de printemps 2026 (privé, 98 membres, créé en 2020, localisé Vaas) et consulté connecté le 03/11/2026 : 4 publications le mois dernier ; l'ancien lien « facebook.com/groups/fullmetalairsoft » a été retiré — il pointait vers un groupe britannique homonyme (Llandybie, contenus anglais)",
+      "statutDetail": "re-vérifié le 06/11/2026 : la base Airsoft XP (republiée le jour même) liste désormais une dominicale FMA le dimanche 15/11/2026 au terrain La Butte aux Loups, Vaas (20 places, 5 €, location pack +15 € en espèces — fiche publiée le 06/11) ; la dominicale du 18/10/2026 y figure comme partie passée ; fiche SpawnForge toujours en ligne (publiée le 06/07/2026 : dominicales à 5 €, limite stricte 2 J) ; groupe Facebook officiel privé « Full Métal Airsoft FMA » (98 membres) reste le canal principal",
       "frequence": "Dominicale hebdomadaire annoncée (SpawnForge)",
-      "prochaines": "Via leur groupe Facebook",
+      "prochaines": "Via leur groupe Facebook et les fiches Airsoft XP",
       "terrain": "Forêt « La Butte aux Loups » · 2 J, freeze sous 5 m < 1 J · location 15 €",
       "cout": "5 €/dominicale (ext.) · location pack 15 €",
       "events": [
@@ -1051,6 +1056,11 @@
           "date": "2026-10-18",
           "lieu": "La Butte aux Loups, Vaas",
           "note": "Dominicale FMA (fiche Airsoft XP publiée le 15/10/2026 — partie passée, preuve d'activité)"
+        },
+        {
+          "date": "2026-11-15",
+          "lieu": "La Butte aux Loups, Vaas",
+          "note": "Dominicale FMA — 20 places, 5 €, location pack +15 €, paiement en espèces uniquement (fiche Airsoft XP publiée le 06/11/2026)"
         }
       ],
       "coords": {
@@ -1085,7 +1095,7 @@
       ],
       "type": "Société organisatrice (2 sites)",
       "distance": "~40–50 min",
-      "statutDetail": "calendrier re-vérifié le 03/11/2026 via le tracker places-airsoft (maj du jour 12h11) : parties à venir à Mercurow les 15/11 (GBBR/SPRING/AEP) et 22/11 (classique nouvelle génération), dominicale à La Tanière le 29/11, OP « Souffle du Dragon » à La Tanière le 20/03/2027 (inscriptions bientôt en ligne) ; les parties des 25/10 et 01/11 ne figurent plus au relevé du jour (fenêtre écoulée) ; dominicale du 18/10 passée ; brocante du 10/10 et session de jeu du 11/10 passées ; site officiel en ligne (consulté le 14/10/2026, coordonnées à Lainville-en-Vexin)",
+      "statutDetail": "re-vérifié le 06/11/2026 via le tracker places-airsoft (maj du jour 11h11) : parties à venir inchangées depuis le relevé du 03/11 — Mercurow (Meulan-en-Yvelines) les 15/11 (GBBR/SPRING/AEP) et 22/11 (classique nouvelle génération), dominicale à La Tanière (Lainville-en-Vexin) le 29/11, OP « Souffle du Dragon » à La Tanière le 20/03/2027 (inscriptions bientôt en ligne) ; parties des 25/10 et 01/11 sorties de la fenêtre ; site officiel en ligne (constat du 14/10)",
       "frequence": "~3–4 évts/mois",
       "terrain": "2 sites : Mercurow (vallée de la Seine) / La Tanière (forêt du Vexin)",
       "cout": "n.c.",
@@ -1200,7 +1210,7 @@
       ],
       "type": "Orga sur site privé",
       "distance": "~45–50 min",
-      "statutDetail": "OP « Airsoft Sanatorium » du 08/11/2026 (orga Alpha Unit) confirmée le 03/11/2026 par le tracker places-airsoft (maj du jour) et par la fiche publique Airsoft XP (« Airsoft Sanatorium » le dimanche 08/11 à Aincourt (95), 60 joueurs, 20 €) ; l'OP Sanatorium du 18/10/2026 est passée (elle était listée lors de la consultation du 14/10) ; annuaire SpawnForge en ligne (consulté le 14/10/2026)",
+      "statutDetail": "re-vérifié le 06/11/2026 : OP « Airsoft Sanatorium » du 08/11/2026 (orga Alpha Unit) toujours listée au tracker places-airsoft (maj du jour 11h11) et à la base Airsoft XP (fiche non archivée : 60 joueurs, 20 €, Aincourt (95)) ; l'OP Sanatorium du 18/10/2026 est passée ; annuaire SpawnForge en ligne (constat du 14/10)",
       "frequence": "~1+/mois",
       "terrain": "Sanatorium d'Aincourt — 13 ha, bâti désaffecté, très immersif",
       "cout": "n.c.",
@@ -1238,7 +1248,7 @@
       ],
       "type": "Équipe / organisateur",
       "distance": "n.c.",
-      "statutDetail": "tracker places-airsoft re-vérifié le 03/11/2026 (maj du jour 12h11) : sessions à venir les 07/11, 15/11, 21/11 et 29/11/2026 et le 05/12/2026 (libellés « m2j » les samedis et « sob » les dimanches) ; partie ouverte du 01/11 confirmée par la fiche Airsoft XP publiée le 28/10/2026 (CQB végétal Max2Joules, route de Dourdan RD116, Sainte-Mesme 78730, PAF 20 €, 40 joueurs maximum, maintien à partir de 15 inscrits) ; les sessions des 10/10, 18/10 et 24/10 sont passées",
+      "statutDetail": "re-vérifié le 06/11/2026 via le tracker places-airsoft (maj du jour 11h11) : sessions toujours listées le 07/11 et 21/11 (samedis « m2j ») et le 15/11 et 29/11 (dimanches « sob »), plus le 05/12 (samedi « m2j ») — identiques au relevé du 03/11 ; la partie ouverte du 01/11 reste attestée par la fiche Airsoft XP publiée le 28/10/2026 (CQB végétal Max2Joules, route de Dourdan RD116, Sainte-Mesme 78730, PAF 20 €, 40 joueurs max)",
       "frequence": "~2–3/mois",
       "terrain": "n.c.",
       "cout": "n.c.",
@@ -1308,7 +1318,7 @@
       ],
       "type": "Équipe / organisateur",
       "distance": "n.c.",
-      "statutDetail": "tracker places-airsoft re-vérifié le 03/11/2026 (maj du jour 12h11) : dominicales listées les 15/11, 29/11 et 13/12/2026 ; la dominicale du 01/11 ne figure plus au relevé du jour (fenêtre écoulée depuis le relevé du 23/10) ; la dominicale du 18/10 est passée ; elle figurait aussi sur Airsoft XP (« Dominicale TAT » organisée par TAT 91 à Saint-Maurice-Montcouronne (91), 10 €) lors de la consultation du 14/10",
+      "statutDetail": "re-vérifié le 06/11/2026 via le tracker places-airsoft (maj du jour 11h11) : la section TAT affiche désormais « Rien trouvé » — les dominicales relevées le 03/11 (15/11, 29/11, 13/12) n'y figurent plus (billetteries fermées, complètes ou retirées — sans confirmation) ; la dominicale du 01/11 (Saint-Maurice-Montcouronne, fiche Airsoft XP publiée le 28/10) est passée ; l'activité reste attestée fin octobre (dominicale du 18/10)",
       "frequence": "bimensuel (dimanches en alternance)",
       "terrain": "n.c.",
       "cout": "n.c.",
@@ -1320,23 +1330,23 @@
         },
         {
           "date": "2026-11-01",
-          "lieu": "n.c. (IDF)",
-          "note": "Dimanche (tracker places-airsoft maj 23/10)"
+          "lieu": "Saint-Maurice-Montcouronne (91)",
+          "note": "Dominicale TAT 91 (partie passée — fiche Airsoft XP publiée le 28/10/2026)"
         },
         {
           "date": "2026-11-15",
           "lieu": "n.c. (IDF)",
-          "note": "Dimanche (tracker places-airsoft maj 23/10)"
+          "note": "Dimanche — relevée au tracker le 03/11 ; PLUS listée au tracker du 06/11 (« Rien trouvé ») — statut à confirmer via leurs canaux"
         },
         {
           "date": "2026-11-29",
           "lieu": "n.c. (IDF)",
-          "note": "Dimanche (tracker places-airsoft maj 23/10)"
+          "note": "Dimanche — relevée au tracker le 03/11 ; PLUS listée au tracker du 06/11 (« Rien trouvé ») — statut à confirmer"
         },
         {
           "date": "2026-12-13",
           "lieu": "n.c. (IDF)",
-          "note": "Dimanche (tracker places-airsoft maj 23/10)"
+          "note": "Dimanche — relevée au tracker le 03/11 ; PLUS listée au tracker du 06/11 (« Rien trouvé ») — statut à confirmer"
         }
       ],
       "coords": null
@@ -1388,11 +1398,16 @@
       ],
       "type": "Équipe",
       "distance": "n.c.",
-      "statutDetail": "tracker places-airsoft re-vérifié le 03/11/2026 (maj du jour 12h11) : « Tankthieves - Partie d'Airsoft sur NewCastle - Partie du 15/11/2026 » listée (dimanche 15/11) ; la partie du 25/10/2026 est passée (elle était listée au relevé du 23/10)",
+      "statutDetail": "re-vérifié le 06/11/2026 : la partie « Opération : Le Dernier Rempart » du dimanche 15/11/2026 au NewCastle est listée par la base Airsoft XP (fiche publiée le 06/11 : Dynamiterie de La Genevraye, 4 rue de la Ferme, 77690 La Genevraye, GPS affiché 48°18'52.7\"N 2°46'04.8\"E, 8h30-17h, 20 € sur HelloAsso) et par le tracker places-airsoft (maj du jour 11h11)",
       "frequence": "~1/mois",
-      "terrain": "n.c.",
+      "terrain": "NewCastle — ancienne dynamiterie de La Genevraye (77) : forêt + bâtiments fortifiés",
       "cout": "n.c.",
       "events": [
+        {
+          "date": "2026-10-11",
+          "lieu": "NewCastle (La Genevraye, 77)",
+          "note": "Partie confirmée au tracker (passée — preuve d'activité)"
+        },
         {
           "date": "2026-10-25",
           "lieu": "NewCastle",
@@ -1400,11 +1415,14 @@
         },
         {
           "date": "2026-11-15",
-          "lieu": "NewCastle",
-          "note": "Dimanche (tracker places-airsoft maj du 03/11)"
+          "lieu": "NewCastle — Dynamiterie de La Genevraye (77)",
+          "note": "« Opération : Le Dernier Rempart » 8h30-17h, 20 € sur HelloAsso, inscriptions ouvertes (fiche Airsoft XP publiée le 06/11/2026 + tracker du jour)"
         }
       ],
-      "coords": null
+      "coords": {
+        "lat": 48.314639,
+        "lon": 2.768
+      }
     },
     {
       "id": "afba",
@@ -1423,7 +1441,7 @@
       ],
       "type": "Asso",
       "distance": "n.c.",
-      "statutDetail": "dominicale du 08/11/2026 listée le 03/11/2026 par le tracker places-airsoft (« AFBA - Dominicale 08 Novembre 2026 ») et par la fiche publique Airsoft XP (« Dominicale AFBA » de 9h30 à 17h, Saint-Sauveur-sur-École (77), 15 €) ; la dominicale du 18/10 est passée (elle figurait aussi sur Airsoft XP au même lieu, 15 €, lors de la consultation du 14/10)",
+      "statutDetail": "re-vérifié le 06/11/2026 via le tracker places-airsoft (maj du jour 11h11) : la dominicale du 08/11/2026 reste listée (« AFBA - Dominicale 08 Novembre 2026 ») et est confirmée par la fiche publique Airsoft XP (« Dominicale AFBA » de 9h30 à 17h, Saint-Sauveur-sur-École (77), 15 €) ; la dominicale du 18/10 au même lieu est passée",
       "frequence": "~1/mois",
       "terrain": "n.c.",
       "cout": "n.c.",
@@ -1534,7 +1552,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~30–40 min",
-      "statutDetail": "Calendrier Trigger Games (trigger-games.fr/reservations) lu le 03/11/2026 dans sa structure de données FooEvents (JSON embarqué, 132 fiches datées) : sessions « N.A » (New Agency) listées les 05/12, 12/12, 19/12 et 26/12/2026 (produits n-a-18 à n-a-21) ; aucune session N.A en novembre au calendrier du jour — les samedis N.A relevés le 14/10 n'y figurent plus ; fiche DTG New Agency (Nanterre, CQB bureaux 240 places) toujours en ligne (consultée le 14/10/2026)",
+      "statutDetail": "Calendrier Trigger Games relu le 06/11/2026 dans sa structure de données FooEvents (JSON embarqué, 131 fiches) : sessions « N.A » (New Agency) inchangées — 05/12, 12/12, 19/12 et 26/12/2026 (produits n-a-18 à n-a-21) ; aucune session N.A en novembre toujours ; fiche DTG New Agency (Nanterre, CQB bureaux 240 places) toujours en ligne (constat du 14/10/2026)",
       "frequence": "n.c.",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "New Agency - CQB (immeuble de bureaux, parking souterrain, 240 places)",
@@ -1620,7 +1638,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~30–40 min",
-      "statutDetail": "Calendrier Trigger Games lu le 03/11/2026 dans sa structure de données FooEvents (JSON embarqué, 132 fiches datées) : sessions Home les 01, 11, 14, 22, 28 et 29/11 puis 06, 13, 20 et 27/12/2026 ; « Home - SURVIVAL ZOMBIE » du 31/10/2026 passée, session du 01/11 passée ; les sessions des 08 et 15/11 relevées le 14/10 n'apparaissent plus (dates corrigées au calendrier) ; fiche DTG Home (Rueil-Malmaison) toujours en ligne (consultée le 14/10/2026)",
+      "statutDetail": "Calendrier Trigger Games relu le 06/11/2026 dans sa structure de données FooEvents (JSON embarqué, 131 fiches) : sessions Home à venir — 14, 22, 28, 29/11 puis 06, 13, 20 et 27/12/2026 ; la session du 11/11 relevée le 03/11 n'y figure plus (retirée du calendrier ou complète — statut à confirmer via le calendrier) ; « Home - SURVIVAL ZOMBIE » du 31/10 et la session du 01/11 passées ; fiche DTG Home (Rueil-Malmaison) toujours en ligne (constat du 14/10/2026)",
       "frequence": "n.c.",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "Home - Ultra CQB",
@@ -1659,47 +1677,47 @@
         {
           "date": "2026-11-11",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
+          "note": "Session relevée le 03/11 au calendrier FooEvents ; PLUS listée au calendrier le 06/11 (retirée ou complète — statut à confirmer)"
         },
         {
           "date": "2026-11-14",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
+          "note": "Session — calendrier FooEvents (produit home-35, lu le 06/11/2026)"
         },
         {
           "date": "2026-11-22",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
+          "note": "Session — calendrier FooEvents (produit home-18, lu le 06/11/2026)"
         },
         {
           "date": "2026-11-28",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
+          "note": "Session — calendrier FooEvents (produit home-36, lu le 06/11/2026)"
         },
         {
           "date": "2026-11-29",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
+          "note": "Session — calendrier FooEvents (produit home-19, lu le 06/11/2026)"
         },
         {
           "date": "2026-12-06",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
+          "note": "Session — calendrier FooEvents (produit home-20, lu le 06/11/2026)"
         },
         {
           "date": "2026-12-13",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
+          "note": "Session — calendrier FooEvents (produit home-21, lu le 06/11/2026)"
         },
         {
           "date": "2026-12-20",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
+          "note": "Session — calendrier FooEvents (produit home-22, lu le 06/11/2026)"
         },
         {
           "date": "2026-12-27",
           "lieu": "Home (Rueil-Malmaison)",
-          "note": "Session — calendrier FooEvents (lu le 03/11/2026)"
+          "note": "Session — calendrier FooEvents (produit home-23, lu le 06/11/2026)"
         }
       ],
       "coords": {
@@ -1947,7 +1965,7 @@
       ],
       "type": "Asso 1901 · créée 28/01/2013 (W271001485, SIRET 799 000 369 00014)",
       "distance": "~1h–1h15",
-      "statutDetail": "dominicale du 18/10/2026 à Gisors (30 joueurs, 10 €, constatée le 14/10 sur Airsoft XP) passée ; liste publique airsoft-xp.com consultée le 03/11/2026 : aucune fiche GIS27 à venir visible à ce jour ; site Wix re-vérifié le 03/11/2026 (contenu identique : « nous vous accueillons tous les 15 jours le dimanche sur notre terrain », route de Paris à Gisors — dernière actualité toujours la dominicale du 13/04/2025) ; fiche nocturne Gis27 sur Airsoft XP en ligne (re-vérifiée le 14/10/2026)",
+      "statutDetail": "re-vérifié le 06/11/2026 : la liste publique airsoft-xp.com ne montre aucune fiche GIS27 à venir ; la base Airsoft XP (republiée le jour même) confirme les parties passées — dominicale du 18/10/2026 (30 joueurs, 10 €, inscription via formulaire Google Forms) et « Soirée Halloween GIS27 » nocturne du 31/10 au 01/11/2026 à Gisors (30 places, PAF 10 €, ouverture du portail 19h30, fiche publiée le 15/10/2026) ; site Wix inchangé (consulté le 03/11/2026 : « tous les 15 jours le dimanche », dernière actualité la dominicale du 13/04/2025) ; fiche nocturne Gis27 sur Airsoft XP toujours en ligne",
       "frequence": "tous les 15 jours le dimanche",
       "prochaines": "Dominicales tous les 15 jours — dates via site / réseaux",
       "terrain": "Forêt avec zone CQB (mixte)",
@@ -1962,6 +1980,11 @@
           "date": "2026-10-18",
           "lieu": "Gisors (27)",
           "note": "Dominicale GIS27 — 30 joueurs, 10 € (Airsoft XP)"
+        },
+        {
+          "date": "2026-10-31",
+          "lieu": "Gisors (Rte de Paris)",
+          "note": "Nocturne Halloween du 31/10 au 01/11 — 30 places, PAF 10 €, ouverture du portail 19h30, déguisements bienvenus (fiche Airsoft XP publiée le 15/10/2026 — partie passée, preuve d'activité)"
         }
       ],
       "coords": {
