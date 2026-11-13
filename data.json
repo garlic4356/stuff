@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastVerified": "2026-11-11",
+    "lastVerified": "2026-11-13",
     "manualFields": [
       "cout"
     ]
@@ -66,7 +66,7 @@
       ],
       "type": "Asso 1901 · 05/12/2008 · ex-Foug'R'Soft (~30 actifs)",
       "distance": "~35–45 min",
-      "statutDetail": "calendrier relu le 11/11/2026 sur le forum des parties : « L'Usine de Percy, le 21 Novembre » (réservé aux membres et sur invitations) toujours listée, dernier message le 09/11/2026 (22h54) ; « PARTIE DU SAMEDI 12 DECEMBRE 2026 [COMBOURG] » toujours listée, dernier message le 09/11/2026 ; sujet « ENTRETIEN DU TERRAIN MORDELLES - 14/11/2026 » actif (entretien sans partie — non compté comme événement) ; la partie du 31/10/2026 à Combourg (marquée COMPLÈTE) a eu lieu (sujet encore actif après la date, dernier message le 01/11/2026 à 12h51) ; la partie du 10/10/2026 à Mordelles reste marquée ANNULEE ; aucun nouveau sujet de partie créé entre les relevés du 03/11 et du 11/11/2026",
+      "statutDetail": "calendrier relu le 13/11/2026 sur le forum des parties : « L'Usine de Percy, le 21 Novembre (réservé aux membres et sur invitations)-COMPLET » — sujet désormais marqué COMPLET (dernier message de Rhada le 11/11/2026 à 21h45) ; « PARTIE DU SAMEDI 12 DECEMBRE 2026 [COMBOURG] » toujours listée (dernier message de Captain Scenar le 09/11/2026 à 22h30) ; nouveau sujet « CALENDRIER DES PARTIES 2027 » publié par Uren (président) le 12/11/2026 : planning prévisionnel de 17 samedis, du 09/01/2027 (Mordelles) au 11/12/2027 (Mordelles), dates modulables selon vacances et disponibilités, USA-RUSSIE le 24/04/2027 et partie REAL CAP le 05/06/2027 ; sujet « ENTRETIEN DU TERRAIN MORDELLES - 14/11/2026 » actif (entretien sans partie — non compté comme événement) ; la partie du 31/10/2026 à Combourg (marquée COMPLÈTE) a eu lieu (sujet encore actif après la date, dernier message le 01/11/2026 à 12h51) ; la partie du 10/10/2026 à Mordelles reste marquée ANNULEE",
       "frequence": "2 samedis/mois",
       "terrain": "2 sites forêt semi-CQB + Fun Parc (membres)",
       "cout": "n.c.",
@@ -79,17 +79,22 @@
         {
           "date": "2026-10-31",
           "lieu": "Combourg",
-          "note": "Partie complète (forêt semi-CQB) — sujet du forum encore actif le 01/11/2026"
+          "note": "Partie complète (forêt semi-CQB) — sujet du forum encore actif après la date (dernier message le 01/11/2026, re-vu le 13/11/2026)"
         },
         {
           "date": "2026-11-21",
           "lieu": "L'Usine de Percy",
-          "note": "Réservé aux membres et sur invitations — toujours listé au forum (re-vérifié le 11/11/2026, dernier message par Meka le 09/11/2026 à 22h54)"
+          "note": "Réservée aux membres et sur invitations — sujet désormais marqué COMPLET au forum (titre relu le 13/11/2026, dernier message de Rhada le 11/11/2026 à 21h45)"
         },
         {
           "date": "2026-12-12",
           "lieu": "Combourg",
-          "note": "Sujet ouvert au forum — toujours listé (re-vérifié le 11/11/2026, dernier message le 09/11/2026)"
+          "note": "Sujet ouvert au forum — toujours listé (re-vérifié le 13/11/2026, dernier message de Captain Scenar le 09/11/2026 à 22h30)"
+        },
+        {
+          "date": "2027-01-09",
+          "lieu": "Mordelles",
+          "note": "Première partie du calendrier prévisionnel 2027 publié par Uren (président) au forum le 12/11/2026 : 17 samedis planifiés pour 2027 (Mordelles et Combourg en alternance), dates modulables"
         }
       ],
       "coords": {
@@ -1008,11 +1013,12 @@
         "https://assoce.fr/waldec/W721001003/72-EME-TAC--TROUPE-AIRSOFT-CERANAISE-",
         "https://www.helloasso.com/associations/72eme-tac",
         "https://www.airsoft-xp.com/parties/partie-72eme-tac",
-        "https://repertoiredesassociations.fr/france/pays-de-la-loire/sarthe/cerans-foulletourte/72-eme-tac--troupe-airsoft-ceranaise/w721001003.html"
+        "https://repertoiredesassociations.fr/france/pays-de-la-loire/sarthe/cerans-foulletourte/72-eme-tac--troupe-airsoft-ceranaise/w721001003.html",
+        "https://www.facebook.com/groups/867132416778498/events/"
       ],
       "type": "Asso 1901 · créée 03/08/2012 (W721001003, SIRET 85215809600019) · 28 actifs · affiliée FédéraGN/MDF",
       "distance": "~2h de Caen",
-      "statutDetail": "page HelloAsso re-vérifiée le 03/11/2026 : aucune billetterie en cours (message « mettre en place nos prochaines initiatives »), fiche association à jour (28 membres actifs, terrain privé de Cérans-Foulletourte, parties découvertes 5 €, cotisation 25 €, 1 dimanche + 1 samedi/mois) ; dernières preuves datées de parties : dominicale du 15/02/2026 et partie affichée le 08/03/2026 sur Airsoft XP ; un événement Facebook « Partie du dimanche 17 octobre » existe (non datable sans connexion — non retenu) ; aucune preuve de fermeture",
+      "statutDetail": "onglet « Événements » du groupe Facebook public « 72ème TAC Officiel » (1,5K membres) consulté connecté le 13/11/2026 : 3 dominicales à venir — « Partie Dimanche 29 Novembre 2026 », « Partie Dimanche 13 Décembre 2026 », « Partie Dimanche 27 Décembre 2026 » (créées par Antoine Biasucci) — et 3 dominicales passées (20/09, 04/10, 18/10/2026) dans les événements passés ; l'événement FB « Partie du dimanche 17 octobre » relevé au re-check du 03/11/2026 correspond à la partie listée du dimanche 18/10/2026 ; page HelloAsso sans billetterie en cours (re-vérifiée le 03/11/2026) ; fiche association à jour (28 membres actifs, terrain privé de Cérans-Foulletourte, parties découverte 5 €, cotisation 25 €, 1 dimanche + 1 samedi/mois) ; aucune preuve de fermeture",
       "frequence": "~1 dimanche + ~1 samedi/mois",
       "prochaines": "Via leur groupe Facebook / formulaire d'inscription",
       "terrain": "Terrain privé 7 ha : forêt + constructions bois à étages (mixte)",
@@ -1021,7 +1027,37 @@
         {
           "date": "2026-02-15",
           "lieu": "Cérans-Foulletourte",
-          "note": "Dominicale — 40 joueurs, 10 € (Airsoft XP)"
+          "note": "Dominicale — 40 joueurs, 10 € (Airsoft XP) (partie passée, preuve d'activité)"
+        },
+        {
+          "date": "2026-09-20",
+          "lieu": "Cérans-Foulletourte",
+          "note": "Dominicale (onglet Événements du groupe FB, consulté connecté le 13/11/2026 — partie passée, preuve d'activité)"
+        },
+        {
+          "date": "2026-10-04",
+          "lieu": "Cérans-Foulletourte",
+          "note": "Dominicale (onglet Événements du groupe FB, consulté connecté le 13/11/2026 — partie passée, preuve d'activité)"
+        },
+        {
+          "date": "2026-10-18",
+          "lieu": "Cérans-Foulletourte",
+          "note": "Dominicale — onglet Événements du groupe FB « Partie Dimanche 18 Octobre 2026 » (consulté connecté le 13/11/2026 — partie passée); c'est aussi l'événement « Partie du dimanche 17 octobre » relevé le 03/11 avant dater"
+        },
+        {
+          "date": "2026-11-29",
+          "lieu": "Cérans-Foulletourte",
+          "note": "Dominicale — événement FB du groupe « Partie Dimanche 29 Novembre 2026 » créé par Antoine Biasucci (onglet Événements, consulté le 13/11/2026)"
+        },
+        {
+          "date": "2026-12-13",
+          "lieu": "Cérans-Foulletourte",
+          "note": "Dominicale — événement FB du groupe « Partie Dimanche 13 Décembre 2026 » créé par Antoine Biasucci (onglet Événements, consulté le 13/11/2026)"
+        },
+        {
+          "date": "2026-12-27",
+          "lieu": "Cérans-Foulletourte",
+          "note": "Dominicale — événement FB du groupe « Partie Dimanche 27 Décembre 2026 » créé par Antoine Biasucci (onglet Événements, consulté le 13/11/2026)"
         }
       ],
       "coords": {
@@ -1328,7 +1364,7 @@
       ],
       "type": "Équipe / organisateur",
       "distance": "n.c.",
-      "statutDetail": "re-vérifié le 11/11/2026 via le tracker places-airsoft (maj du jour 11h11) : la section TAT affiche « Rien trouvé pour la TAT » (comme au 06/11) — les dominicales relevées le 03/11 (15/11, 29/11, 13/12) n'y figurent toujours plus (billetteries fermées, complètes ou retirées — sans confirmation) ; la dominicale du 01/11 (Saint-Maurice-Montcouronne, fiche Airsoft XP publiée le 28/10/2026) est passée ; l'activité reste attestée fin octobre (dominicale du 18/10)",
+      "statutDetail": "Re-vérifié le 13/11/2026 : les trois fiches Airsoft XP de la TAT 91 — dominicales du 15/11, 29/11 et 13/12/2026 à Saint-Maurice-Montcouronne (91) — sont re-publiées le 13/11/2026 et restent non archivées (base lue le 13/11) ; le tracker places-airsoft (maj du jour 11h11) affiche toujours « Rien trouvé pour la TAT » (comme aux 06/11 et 11/11 — billetteries absentes du tracker, sans conclusion possible sur le complèt) ; les dominicales du 18/10 et du 01/11 (Saint-Maurice-Montcouronne, fiche XP publiée le 28/10/2026) sont passées",
       "frequence": "bimensuel (dimanches en alternance)",
       "terrain": "n.c.",
       "cout": "n.c.",
@@ -1341,22 +1377,22 @@
         {
           "date": "2026-11-01",
           "lieu": "Saint-Maurice-Montcouronne (91)",
-          "note": "Dominicale TAT 91 (partie passée — fiche Airsoft XP publiée le 28/10/2026, non archivée au 11/11)"
+          "note": "Dominicale TAT 91 (partie passée — fiche Airsoft XP publiée le 28/10/2026, non archivée au 13/11)"
         },
         {
           "date": "2026-11-15",
-          "lieu": "n.c. (IDF)",
-          "note": "Dimanche — relevée au tracker le 03/11 ; PLUS listée aux trackers du 06/11 et du 11/11/2026 (« Rien trouvé ») — statut à confirmer via leurs canaux"
+          "lieu": "Saint-Maurice-Montcouronne (91)",
+          "note": "Dominicale TAT 91 — fiche Airsoft XP non archivée re-publiée le 13/11/2026 (base lue le 13/11) ; billetterie toujours absente du tracker du jour (« Rien trouvé pour la TAT »)"
         },
         {
           "date": "2026-11-29",
-          "lieu": "n.c. (IDF)",
-          "note": "Dimanche — relevée au tracker le 03/11 ; PLUS listée aux trackers du 06/11 et du 11/11/2026 (« Rien trouvé ») — statut à confirmer"
+          "lieu": "Saint-Maurice-Montcouronne (91)",
+          "note": "Dominicale TAT 91 — fiche Airsoft XP non archivée re-publiée le 13/11/2026 (base lue le 13/11) ; billetterie absente du tracker du jour"
         },
         {
           "date": "2026-12-13",
-          "lieu": "n.c. (IDF)",
-          "note": "Dimanche — relevée au tracker le 03/11 ; PLUS listée aux trackers du 06/11 et du 11/11/2026 (« Rien trouvé ») — statut à confirmer"
+          "lieu": "Saint-Maurice-Montcouronne (91)",
+          "note": "Dominicale TAT 91 — fiche Airsoft XP non archivée re-publiée le 13/11/2026 (base lue le 13/11) ; billetterie absente du tracker du jour"
         }
       ],
       "coords": null
@@ -1378,7 +1414,7 @@
       ],
       "type": "Équipe",
       "distance": "n.c.",
-      "statutDetail": "tracker places-airsoft re-consulté le 11/11/2026 (maj du jour) : « Rien trouvé pour Bratva » — aucune nouvelle date de partie listée ; la partie confirmée le 11/10/2026 est passée (preuve d'activité)",
+      "statutDetail": "tracker places-airsoft re-consulté le 13/11/2026 (maj du jour 11h11) : « Rien trouvé pour Bratva » — aucune nouvelle date de partie listée ; la partie confirmée du 11/10/2026 est passée (dernière preuve d'activité datée — relevés du tracker 2026)",
       "frequence": "~1/mois",
       "terrain": "n.c.",
       "cout": "n.c.",
@@ -1386,7 +1422,7 @@
         {
           "date": "2026-10-11",
           "lieu": "n.c. (IDF)",
-          "note": ""
+          "note": "Partie passée — attestée par le tracker places-airsoft lors des relevés 2026 (preuve d'activité) ; aucune nouvelle date listée au relevé du 13/11/2026"
         }
       ],
       "coords": null
@@ -1899,7 +1935,7 @@
       ],
       "type": "Terrain / organisateur",
       "distance": "~35–45 min",
-      "statutDetail": "Calendrier Trigger Games relu le 11/11/2026 dans sa structure de données FooEvents (JSON embarqué, 129 fiches) : sessions Firm à venir — nocturne « Firm - NOCTURNE » le 14/11, sessions les 15/11 et 21/11/2026 (inchangées) ; les sessions du 07/11 et 08/11 relevées le 03/11 ont disparu du calendrier après leur date (passées — sans confirmation du déroulement) ; fiche produit Firm en ligne (re-vérifiée le 14/10/2026 : place de la division Leclerc, Clamart, 60 places)",
+      "statutDetail": "Calendrier Trigger Games relu le 13/11/2026 dans sa structure de données FooEvents (JSON embarqué, 128 fiches) : sessions Firm à venir — 15/11 et 21/11/2026 ; la nocturne « Firm - NOCTURNE » du 14/11 relevée le 11/11 n'apparaît plus au calendrier du jour (retirée entre le 11/11 et le 13/11 — session complète ou retirée : à confirmer) ; les sessions du 07/11 et 08/11 relevées le 03/11 ont disparu du calendrier après leur date (passées — sans confirmation du déroulement) ; fiche produit Firm en ligne (re-vérifiée le 14/10/2026 : place de la division Leclerc, Clamart, 60 places)",
       "frequence": "~2–3 sam./mois (+ nocturnes)",
       "prochaines": "Voir calendrier / réservations sur Trigger Games",
       "terrain": "Firm - CQB (immeuble de bureaux + parking souterrain multi-niveaux)",
@@ -1933,17 +1969,17 @@
         {
           "date": "2026-11-14",
           "lieu": "Firm (Clamart)",
-          "note": "« Firm - NOCTURNE » — calendrier FooEvents (lu le 11/11/2026)"
+          "note": "Nocturne « Firm - NOCTURNE » — relevée au calendrier FooEvents le 11/11/2026 ; PLUS listée au calendrier relu le 13/11/2026 (retirée — session complète ou retirée : à confirmer)"
         },
         {
           "date": "2026-11-15",
           "lieu": "Firm (Clamart)",
-          "note": "Session — calendrier FooEvents (lu le 11/11/2026)"
+          "note": "Session — calendrier FooEvents (relu le 13/11/2026)"
         },
         {
           "date": "2026-11-21",
           "lieu": "Firm (Clamart)",
-          "note": "Session — calendrier FooEvents (lu le 11/11/2026)"
+          "note": "Session — calendrier FooEvents (relu le 13/11/2026)"
         }
       ],
       "coords": {
