@@ -1,7 +1,7 @@
 "use strict";
 
 /* --------------------------------------------------------------------------
- * Three-page frontend served by airsoft-ops (default) or any static host:
+ * Four-page frontend served by airsoft-ops (default) or any static host:
  *   /      (index.html, data-page="home")  — MAIN page: Carte → Calendrier →
  *                                            Tableaux (Leaflet loads here)
  *   /agent (agent.html, data-page="agent") — historique + activité de l'agent
@@ -12,6 +12,10 @@
  *                                            records may carry an `activity`
  *                                            array → a collapsed tool-activity
  *                                            block inside their bubble)
+ *   /a-propos (a-propos.html, data-page="a-propos") — légende + sources:
+ *                                            the shared notes/sources moved
+ *                                            out of the footers; renderSources
+ *                                            fills #sources-list HERE only
  * The old /associations page is gone: the server 301-redirects it to /.
  * Routing knobs come from web/config.js (window.AIRSOFT_SITE, loaded before
  * this script): dataUrl points at the data JSON ("/api/data" on the server,
@@ -88,8 +92,8 @@ const SCREEN_PATH = "/api/agent/browser/screen";
 const SCREEN_STREAM_PATH = SCREEN_PATH + "/stream";
 
 /* Prise en main (operator takeover): POST /api/agent/browser/input carries
- * one input to the agent's browser (kind goto|click|drag|type|key). Same
- * same-origin-only posture as the screen channels above (no CORS, no auth
+ * one input to the agent's browser (kind goto|click|drag|type|key|reload).
+ * Same same-origin-only posture as the screen channels above (no CORS, no auth
  * token client-side) and REMOTE_MODE-hidden like every UI POST. Frame clicks
  * map onto the frame's NATURAL pixel space, which the server guarantees to
  * be the page viewport 1:1 (content-area mapping). */
@@ -159,10 +163,11 @@ const NOTES_DELETE_PATH = NOTES_PATH + "/delete";
  * the static site); the server answers 409 while a run is active. */
 const BROWSER_CLEAR_PATH = "/api/agent/browser/clear";
 
-/** Current page, from the server-served <body data-page> (home|agent|chat) —
+/** Current page, from the server-served <body data-page> (home|agent|chat|a-propos) —
  *  drives the init dispatcher: home carries map + calendar + tables, agent
  *  carries history, workflow and the update trigger, chat carries the
- *  discussion with the agent. */
+ *  discussion with the agent, a-propos carries no page-specific bindings
+ *  (shared header/nav + the data-driven freshness span and sources list). */
 const PAGE = document.body.dataset.page;
 
 const state = {
@@ -950,6 +955,9 @@ function bindTableControls() {
 
 function renderSources() {
   const zone = document.getElementById("sources-list");
+  // The list lives on the a-propos page only now (the footers slimmed down):
+  // every other page returns silently — renderData() stays unconditional.
+  if (!zone) return;
   // Clear first: renderData() runs again after an agent-run refresh
   zone.innerHTML = "";
   const seen = new Set();
@@ -2001,9 +2009,9 @@ function bindScreenLightbox() {
 /* -------- Prise en main (operator takeover over the shared viewer) -------- */
 
 /** One input at a time to the agent's browser through
- *  POST /api/agent/browser/input (goto / click / drag / type / key). The
- *  viewer frame is the mapping surface: its NATURAL size is the page
- *  content area, so a displayed pixel IS a viewport CSS pixel — the server
+ *  POST /api/agent/browser/input (goto / click / drag / type / key /
+ *  reload). The viewer frame is the mapping surface: its NATURAL size is
+ *  the page content area, so a displayed pixel IS a viewport CSS pixel — the server
  *  guarantees that 1:1 (see AGENTS.md, browser screen capture). Active only
  *  same-origin (initAgentTakeover runs from initAgentScreen, which never
  *  connects on a static deploy); a run-active server refuses every input
@@ -2043,6 +2051,12 @@ function initAgentTakeover() {
   if (go) go.addEventListener("click", sendTakeoverGoto);
   const typeBtn = document.getElementById("agent-takeover-type");
   if (typeBtn) typeBtn.addEventListener("click", sendTakeoverType);
+  const refreshBtn = document.getElementById("agent-takeover-refresh");
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", () =>
+      sendTakeoverInput({ kind: "reload" }),
+    );
+  }
   document
     .querySelectorAll("#agent-screen [data-takeover-key]")
     .forEach((btn) => {
@@ -2227,6 +2241,11 @@ async function sendTakeoverInput(payload) {
       case "goto": {
         const url = data && typeof data.url === "string" ? data.url : "";
         setTakeoverStatus(url ? `Page ouverte : ${url}` : "Navigation envoyée.");
+        break;
+      }
+      case "reload": {
+        const url = data && typeof data.url === "string" ? data.url : "";
+        setTakeoverStatus(url ? `Page rechargée : ${url}` : "Rechargement envoyé.");
         break;
       }
       case "click":
@@ -4185,7 +4204,8 @@ function renderVerifiedDate() {
 }
 
 /** Renders everything that depends on the data file — shared pieces on every
- *  page (freshness span + footer sources), page sections behind the dispatcher. */
+ *  page (freshness span; the sources list only where #sources-list exists,
+ *  i.e. the a-propos page), page sections behind the dispatcher. */
 function renderData() {
   renderVerifiedDate();
   renderSources();
@@ -4249,7 +4269,8 @@ function bindTimelineFilters() {
 }
 
 /** Loads the data file again and re-renders (after an agent run, agent page
- *  only): the freshness span and the footer sources reflect the new state. */
+ *  only): the freshness span reflects the new state (the sources list live on
+ *  the a-propos page; the shared render stays harmless on the other pages). */
 async function refreshData() {
   try {
     await loadData();

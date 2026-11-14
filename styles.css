@@ -1,8 +1,9 @@
-/* styles.css — shared stylesheet for the three pages of « Terrains & équipes
- * d'airsoft » (/, /agent, /chat). Dark kaki/olive theme, no build step.
+/* styles.css — shared stylesheet for the four pages of « Terrains & équipes
+ * d'airsoft » (/, /agent, /chat, /a-propos). Dark kaki/olive theme, no build step.
  *   home         — Carte (Leaflet) + « Prochaines parties » + Tableaux
  *   agent        — historique + activité de l'agent (live)
  *   chat         — discussion avec l'agent (transcript + input area)
+ *   a-propos     — légende « n.c. » + sources (renderSources fills the list)
  * Page-specific rules are grouped under labeled section comments below; rules
  * for elements that exist on a single page are simply unused elsewhere. */
 
@@ -1337,7 +1338,9 @@ html.screen-lightbox-open { overflow: hidden; }
 .chat-stop-btn:disabled { opacity: .45; cursor: default; }
 #chat-msg { margin: .5rem 0 0; }
 
-/* ---------- Footer (shared, identical on the three pages) ---------- */
+/* ---------- Footer (shared, identical on the four pages): the slim
+   warning + a link to the /a-propos page (which carries the former
+   footer legend + sources list) ---------- */
 footer {
   margin-top: 2.5rem;
   padding: 1.5rem 1.2rem 2rem;
@@ -1347,9 +1350,6 @@ footer {
   color: var(--text-dim);
 }
 footer .footer-inner { max-width: var(--page-max); margin: 0 auto; }
-footer h2 { border: none; margin-bottom: .5rem; }
-footer ul { margin: .4rem 0 0; padding-left: 0; list-style: none; }
-footer li { margin-bottom: .3rem; word-break: break-all; }
 .warning {
   margin-top: 1rem;
   padding: .6rem .8rem;
@@ -1358,6 +1358,10 @@ footer li { margin-bottom: .3rem; word-break: break-all; }
   color: var(--text);
   font-size: .82rem;
 }
+
+/* the former footer legend/sources moved to the a-propos page — long
+   source URLs must still wrap instead of breaking the layout */
+#sources-list li { margin-bottom: .3rem; overflow-wrap: anywhere; }
 
 /* ---------- Error messages (every page) ---------- */
 .error-box {

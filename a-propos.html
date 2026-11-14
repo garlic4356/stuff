@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#14160f">
+  <title>À propos — Terrains &amp; équipes d'airsoft</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="a-propos">
+
+<header>
+  <button type="button" id="nav-toggle" class="nav-toggle" aria-controls="nav-panel"
+          aria-expanded="false" aria-label="Ouvrir la navigation">
+    <span></span><span></span><span></span>
+  </button>
+  <h1><a href="./"><span class="stencil">Airsoft&nbsp;OPS</span></a> — Terrains &amp; équipes</h1>
+  <p class="subtitle">À ~2&nbsp;h de route de Rennes ou de Caen · ~1&nbsp;h de Nanterre · <span id="verified-date">Données vérifiées le —</span>
+    <span id="agent-pill" class="agent-pill" hidden></span>
+    <a id="public-site-link" class="public-site-link" hidden
+       href="https://garlic4356.github.io/stuff/" target="_blank" rel="noopener">Site public ↗</a></p>
+</header>
+
+<!-- Off-canvas navigation (opens from the left; closed by default — pure JS
+     enhancement, the page works without it) -->
+<div id="nav-backdrop" class="nav-backdrop" aria-hidden="true"></div>
+<nav id="nav-panel" class="nav-panel" role="dialog" aria-modal="true" aria-label="Navigation">
+  <button type="button" id="nav-close" class="nav-close" aria-label="Fermer">✕</button>
+  <ul class="nav-links">
+    <li><a href="./">Accueil</a></li>
+    <li><a href="agent.html">Agent</a></li>
+    <li><a href="chat.html">Chat</a></li>
+    <li><a href="a-propos.html">À propos</a></li>
+  </ul>
+  <button type="button" id="nav-top" class="nav-top-btn">Haut de page</button>
+</nav>
+
+<main>
+  <div id="error-zone"></div>
+
+  <!-- À propos page: the legend + sources that used to live in every page's
+       footer (moved here so the copy exists once). Presentational only —
+       the list is rendered from the data file by app.js (renderSources,
+       same #sources-list id it filled in the former footers), everything
+       else is stable static text. No dynamic blocks on this page. -->
+  <section id="notes-et-sources">
+    <p>Cette page regroupe les notes communes aux pages du site et la liste des sources utilisées pour rechercher et vérifier les données de l'inventaire.</p>
+
+    <h2>Notes communes</h2>
+    <ul>
+      <li><code>n.c.</code> = non communiqué / non trouvé en ligne. Lignes « à vérifier » : présence dans les fichiers RNA / annuaires prouvée, mais aucune activité en ligne datée (le web de l'airsoft breton passe surtout par Facebook / Discord privés).</li>
+      <li>L'inventaire ne prétend pas à l'exhaustivité&nbsp;: il reflète ce qui était trouvable en ligne (sources ci-dessous).</li>
+    </ul>
+
+    <h2>Sources</h2>
+    <ul id="sources-list"></ul>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner" id="notes-sources">
+    <p class="warning">⚠️ Site de consultation&nbsp;: vérifiez auprès des organisateurs avant de vous déplacer (inscriptions, tarifs, accès, horaires).</p>
+    <p><a href="a-propos.html">Notes communes &amp; sources</a>&nbsp;: légende, avertissements et sources de recherche du site.</p>
+  </div>
+</footer>
+
+<script src="./config.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
