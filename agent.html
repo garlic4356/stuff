@@ -128,6 +128,30 @@
         <span id="schedule-msg" class="inline-msg" role="status" aria-live="polite"></span>
       </div>
     </div>
+    <!-- Vérification quotidienne de ma prochaine partie: the daily fetch
+         slot for the game tracked via GET/POST /api/nextgame (see the home
+         card). Same structural vocabulary as the maintenance editor above;
+         app.js seeds it from GET /api/nextgame (no value invented here) and
+         saves through POST /api/agent/nextgame/schedule (partial update,
+         both keys sent). Hidden by default like the other dynamic blocks;
+         app.js reveals it only for a same-origin, configured agent (the
+         POST answers 503 otherwise). The grey info line mirrors the fetch
+         bookkeeping read from /api/nextgame (next instant + last outcome). -->
+    <div id="nextgame-schedule-block" class="schedule-block" hidden>
+      <h3 class="schedule-title">Vérification quotidienne de ma prochaine partie</h3>
+      <div class="schedule-controls">
+        <label class="schedule-time-wrap" for="nextgame-schedule-time">Heure
+          <input type="time" id="nextgame-schedule-time">
+        </label>
+        <label class="schedule-disable-wrap" for="nextgame-schedule-disable">
+          <input type="checkbox" id="nextgame-schedule-disable"> Désactiver la vérification
+        </label>
+        <button type="button" id="nextgame-schedule-save" class="agent-run-btn" hidden
+                title="Enregistre l'heure de la vérification quotidienne de la partie sélectionnée">Enregistrer</button>
+        <span id="nextgame-schedule-msg" class="inline-msg" role="status" aria-live="polite"></span>
+      </div>
+      <p id="nextgame-schedule-info" class="credentials-empty" hidden></p>
+    </div>
     <!-- Connexions (agent credentials): the login/password/TOTP entries the
          agent uses to open sources requiring a connection. Hidden by default
          like the other dynamic blocks; app.js reveals it on same-origin deploys

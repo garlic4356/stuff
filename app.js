@@ -163,6 +163,23 @@ const NOTES_DELETE_PATH = NOTES_PATH + "/delete";
  * the static site); the server answers 409 while a run is active. */
 const BROWSER_CLEAR_PATH = "/api/agent/browser/clear";
 
+/* « Ma prochaine partie » (nextgame tracker, home card + agent schedule
+ * editor): ONE upcoming game the owner picked; a daily agent fetch reads
+ * its source page and records players/cancellations snapshots. GET
+ * /api/nextgame serves {selection, snapshot, snapshots[], fetch} and works
+ * regardless of the agent state; POST /api/nextgame selects a game (body
+ * {region, entryId, eventDate, sourceUrl?} — an explicit "sourceUrl": null
+ * clears the stored URL, an absent key keeps it), POST /api/nextgame/clear
+ * wipes the tracker whole (idempotent) and POST
+ * /api/agent/nextgame/schedule edits the daily fetch time (partial update
+ * {disabled?, time?}; 503 when the agent is unconfigured, never 409).
+ * Same-origin only — the fragment is merged WITHOUT the CORS layer (like
+ * the browser-screen routes) and the POSTs sit under the auth umbrella →
+ * REMOTE_MODE keeps every piece hidden. */
+const NEXTGAME_PATH = "/api/nextgame";
+const NEXTGAME_CLEAR_PATH = NEXTGAME_PATH + "/clear";
+const NEXTGAME_SCHEDULE_PATH = "/api/agent/nextgame/schedule";
+
 /** Current page, from the server-served <body data-page> (home|agent|chat|a-propos) —
  *  drives the init dispatcher: home carries map + calendar + tables, agent
  *  carries history, workflow and the update trigger, chat carries the
@@ -179,6 +196,9 @@ const state = {
   sort: { key: null, dir: 1 }, // single table → one sort state
   depFilter: "",               // table-local department filter
   search: "",                  // table-local search input
+  // « Ma prochaine partie » tracker payload (GET /api/nextgame — null until
+  // the first same-origin success; the calendar marker + card render from it)
+  nextGame: null,
 };
 
 /** Known from the latest /api/status answer: drives the history-section
@@ -228,6 +248,13 @@ function formatDate(iso, { long = true } = {}) {
     year: d.getFullYear() !== today.getFullYear() ? "numeric" : undefined,
   });
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/** Compact numeric date "dd/mm[/yyyy]" (year shown only when ≠ current year) —
+ *  the short date the « Prochaines parties » cell and its detail modal share. */
+function shortDate(iso) {
+  return iso.slice(8, 10) + "/" + iso.slice(5, 7) +
+    (iso.slice(0, 4) !== String(today.getFullYear()) ? "/" + iso.slice(0, 4) : "");
 }
 
 /** French relative labels: "aujourd'hui", "demain", "dans 4 jours", "hier", "il y a 3 jours" */
@@ -441,6 +468,9 @@ function eventCard(ev) {
   // With a zone filter active, show the distance to the nearest active anchor
   // instead of the static region tag
   const zoneTag = nearestZoneTag(ev.entry.coords);
+  // « Ma prochaine partie » marker: the card the owner picked (same-origin
+  // deploys only — the tracker GET/POST channels are not CORS-readable)
+  const picked = nextGameMatches(ev);
   const card = document.createElement("a");
   card.className = "event-card";
   card.href = `#entry-${ev.region}-${ev.entry.id}`;
@@ -449,7 +479,27 @@ function eventCard(ev) {
     <span class="ev-rel${soon ? " soon" : ""}">${escapeHtml(rel)}</span>
     <div class="ev-orga">${escapeHtml(ev.entry.nom)}</div>
     <div class="ev-lieu">${escapeHtml(ev.lieu)} · <span class="${zoneTag ? "ev-zone" : "ev-region"}">${zoneTag ? escapeHtml(zoneTag) : escapeHtml(REGION_LABELS[ev.region] || ev.region)}</span></div>
-    ${ev.note ? `<div class="ev-note">${escapeHtml(ev.note)}</div>` : ""}`;
+    ${ev.note ? `<div class="ev-note">${escapeHtml(ev.note)}</div>` : ""}
+    ${picked ? `<span class="ng-chip">Ma prochaine partie</span>` : ""}`;
+  // Pick button (upcoming cards only — the past-events list never renders
+  // through eventCard): selects the game for the daily tracker fetch. A
+  // button inside the card <a> must NOT follow the deep link: the handler
+  // stops propagation (click on the card body still scrolls to the row).
+  if (!isPast(ev.date) && !REMOTE_MODE) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "ng-pick-btn";
+    btn.textContent = picked ? "Sélectionnée" : "Je jouerai ici";
+    if (picked) btn.disabled = true;
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (picked) return; // belt: a re-render race must not re-select
+      btn.disabled = true; // one POST per card render
+      void selectNextGame(ev.region, ev.entry, ev.date, card, btn);
+    });
+    card.appendChild(btn);
+  }
   // Tables are on the same page now: reset the filters, then scroll+flash the row
   card.addEventListener("click", (e) => {
     e.preventDefault();
@@ -809,21 +859,112 @@ function filteredEntries() {
   return entries;
 }
 
+/* ---------------- Info modal (« détail » cells, home page) ---------------- */
+
+/** Generic info modal (native <dialog>): sets the title and body of
+ *  <dialog id="info-dialog"> and opens it modally (showModal → focus
+ *  containment; Escape closes natively). htmlContent is caller-provided HTML
+ *  — every data value interpolated into it must be escaped, same contract as
+ *  the table cell builders. */
+function openInfoModal(title, htmlContent) {
+  const dialog = document.getElementById("info-dialog");
+  const titleEl = dialog?.querySelector("#info-dialog-title");
+  const bodyEl = dialog?.querySelector("#info-dialog-body");
+  if (!dialog || !titleEl || !bodyEl) return;
+  titleEl.textContent = title;
+  bodyEl.innerHTML = htmlContent;
+  dialog.showModal();
+}
+
+/** One-time wiring of the info dialog (home page): the close button and the
+ *  backdrop click (a click landing on the dialog element itself — the content
+ *  covers the whole panel, so only ::backdrop clicks ever get there). */
+function bindInfoDialog() {
+  const dialog = document.getElementById("info-dialog");
+  if (!dialog) return;
+  dialog.querySelector(".info-dialog-close")?.addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+}
+
+/** « Statut — <nom> » modal: the status pill + the full statutDetail value
+ *  (raw French data value, escaped). */
+function openStatusModal(entry) {
+  openInfoModal(
+    `Statut — ${entry.nom}`,
+    `<p><span class="badge ${escapeHtml(entry.statut)}">${escapeHtml(STATUS_LABEL[entry.statut] || entry.statut)}</span></p>` +
+    `<p class="info-dialog-text">${escapeHtml(entry.statutDetail)}</p>`
+  );
+}
+
+/** « Prochaines parties — <nom> » modal: the full event list followed by the
+ *  association's free-text prochaines pointer when present. */
+function openEventsModal(entry) {
+  openInfoModal(`Prochaines parties — ${entry.nom}`, eventsDetailHtml(entry));
+}
+
+/* ------------------------- Table cell (« détail ») ------------------------- */
+
+/** Statut cell: the pill alone — the detail text moved to the info modal.
+ *  With a statutDetail the pill becomes the button that opens it (same
+ *  visuals, dotted-underline affordance); without one it stays a plain,
+ *  inert span (nothing to show). */
+function statutCellHtml(entry) {
+  const label = escapeHtml(STATUS_LABEL[entry.statut] || entry.statut);
+  if (!entry.statutDetail) {
+    return `<span class="badge ${escapeHtml(entry.statut)}">${label}</span>`;
+  }
+  return `<button type="button" class="badge status-pill-btn"` +
+    ` aria-label="Détail du statut — ${escapeHtml(entry.nom)}"` +
+    ` title="Voir le détail du statut">${label}</button>`;
+}
+
+/** « Prochaines parties » cell: short preview — date + lieu only. The relative
+ *  labels, notes and the association's prochaines text moved to the info
+ *  modal. With anything to show (events or prochaines) the whole cell is one
+ *  button opening it; a cell with literally nothing keeps the plain grey dash.
+ *  Rows are block spans (phrasing content — a <button> must not wrap a list). */
 function eventsCellHtml(entry) {
+  const events = entry.events || [];
+  if (events.length === 0 && !entry.prochaines) return `<span class="nc">—</span>`;
+  const next = nextUpcomingEvent(entry);
+  const rows = events
+    .map((ev) => {
+      const past = isPast(ev.date);
+      // Only the first non-past event (nextUpcomingEvent: days >= 0) can be "soon"
+      const soon = ev === next && daysFromToday(ev.date) <= SOON_DAYS;
+      const cls = past ? " nc" : soon ? " soon" : "";
+      return `<span class="ev-inline-row${cls}"><span class="d${soon ? " soon" : ""}">${escapeHtml(shortDate(ev.date))}</span>` +
+        (ev.lieu && !/^n\.c\./i.test(ev.lieu) ? ` ${escapeHtml(ev.lieu)}` : "") + `</span>`;
+    })
+    .join("");
+  return `<button type="button" class="ev-cell-btn"` +
+    ` aria-label="Détail des parties — ${escapeHtml(entry.nom)}"` +
+    ` title="Voir le détail des parties">` +
+    (rows ||
+      // No dated game: the prochaines text alone is the detail
+      `<span class="ev-cell-more">ⓘ détails</span>`) +
+    `</button>`;
+}
+
+/** Full event detail for the modal: every event with date, relative label
+ *  (next upcoming only), lieu and note — the per-event rendering the cell
+ *  used to carry, past/soon styling preserved — then the association's
+ *  prochaines block when present. */
+function eventsDetailHtml(entry) {
   const events = entry.events || [];
   const next = nextUpcomingEvent(entry);
   let html = "";
   if (events.length > 0) {
-    html += `<ul class="ev-inline">` + events
+    html += `<ul class="ev-detail">` + events
       .map((ev) => {
         const past = isPast(ev.date);
         // Only the first non-past event (nextUpcomingEvent: days >= 0) can be "soon"
         const soon = ev === next && daysFromToday(ev.date) <= SOON_DAYS;
         const cls = past ? ` class="nc"` : soon ? ` class="soon"` : "";
-        const dateStr = ev.date.slice(8, 10) + "/" + ev.date.slice(5, 7) +
-          (ev.date.slice(0, 4) !== String(today.getFullYear()) ? "/" + ev.date.slice(0, 4) : "");
         return `<li${cls}>` +
-          `<span class="d${soon ? " soon" : ""}">${escapeHtml(dateStr)}</span>` +
+          `<span class="d${soon ? " soon" : ""}">${escapeHtml(shortDate(ev.date))}</span>` +
           (ev === next
             ? ` — <span class="ev-rel${soon ? " soon" : ""}">${escapeHtml(relativeDate(ev.date))}</span>`
             : "") +
@@ -833,9 +974,9 @@ function eventsCellHtml(entry) {
       .join("") + `</ul>`;
   }
   if (entry.prochaines) {
-    html += `<div class="nc" style="font-size:.78rem">${escapeHtml(entry.prochaines)}</div>`;
+    html += `<p class="ev-prochaines-info"><strong>Info de l'association&nbsp;:</strong> ${escapeHtml(entry.prochaines)}</p>`;
   }
-  return html || `<span class="nc">—</span>`;
+  return html;
 }
 
 function liensCellHtml(entry) {
@@ -889,8 +1030,6 @@ function renderTable() {
     // EXTERNAL COMPAT: the timeline cards, past-games links, no-geo links and
     // handleEntryHash() deep-link to #entry-<region>-<id>
     tr.id = `entry-${region}-${entry.id}`;
-    const detail = entry.statutDetail
-      ? `<span class="status-detail">${escapeHtml(entry.statutDetail)}</span>` : "";
     // Distance annotation: with a calendar zone filter active, a geolocated row
     // also shows the computed km to the nearest active anchor (presentation
     // only — the distance DATA VALUE is untouched)
@@ -901,7 +1040,7 @@ function renderTable() {
       <td>${escapeHtml(entry.dep)}</td>
       <td>${ncSpan(entry.distance)}${zoneTag ? `<span class="ev-zone">${escapeHtml(zoneTag)}</span>` : ""}</td>
       <td>${ncSpan(entry.type)}</td>
-      <td><span class="badge ${escapeHtml(entry.statut)}">${escapeHtml(STATUS_LABEL[entry.statut] || entry.statut)}</span>${detail}</td>
+      <td>${statutCellHtml(entry)}</td>
       <td>${ncSpan(entry.frequence)}</td>
       <td>${eventsCellHtml(entry)}</td>
       <td>${terrainCellHtml(entry)}</td>
@@ -910,6 +1049,11 @@ function renderTable() {
     // Terrain → map fly-to: rows are rebuilt on every render, bind per row
     const terrainBtn = tr.querySelector(".terrain-link");
     if (terrainBtn) terrainBtn.addEventListener("click", () => highlightOnMap(entry));
+    // Statut pill / parties cell → info modal: rows are rebuilt on every render, bind per row
+    const statutBtn = tr.querySelector(".status-pill-btn");
+    if (statutBtn) statutBtn.addEventListener("click", () => openStatusModal(entry));
+    const eventsBtn = tr.querySelector(".ev-cell-btn");
+    if (eventsBtn) eventsBtn.addEventListener("click", () => openEventsModal(entry));
     tbody.appendChild(tr);
   }
   if (tbody.children.length === 0) {
@@ -2347,7 +2491,9 @@ async function loadAgentStatus() {
       renderAgentPill(null);
       updateRunButtonVisibility(lastAgentStatus);
       renderScheduleEditor(lastAgentStatus);
+      renderNextGameScheduleEditor();
       renderBrowserClearBlock(lastAgentStatus);
+      renderNextGame();
       syncHistoryVisibility();
       return null;
     }
@@ -2356,7 +2502,9 @@ async function loadAgentStatus() {
     renderAgentPill(status);
     updateRunButtonVisibility(status);
     renderScheduleEditor(status);
+    renderNextGameScheduleEditor();
     renderBrowserClearBlock(status);
+    renderNextGame();
     syncHistoryVisibility();
     return status;
   } catch {
@@ -2364,7 +2512,9 @@ async function loadAgentStatus() {
     renderAgentPill(null);
     updateRunButtonVisibility(lastAgentStatus);
     renderScheduleEditor(lastAgentStatus);
+    renderNextGameScheduleEditor();
     renderBrowserClearBlock(lastAgentStatus);
+    renderNextGame();
     syncHistoryVisibility();
     return null;
   }
@@ -2718,6 +2868,644 @@ function bindScheduleEditor() {
   if (time) time.addEventListener("input", () => showScheduleMsg(""));
   const save = document.getElementById("schedule-save");
   if (save) save.addEventListener("click", saveSchedule);
+}
+
+/* ------------------------------ « Ma prochaine partie » (nextgame tracker) ------------------------------ */
+
+/** True when the current selection tracks THIS calendar card (region +
+ *  entry + exact date — two cards of the same entry must not light up
+ *  together). REMOTE_MODE deploys never carry a cache (the endpoint is
+ *  not CORS-readable), so the marker can't show there. */
+function nextGameMatches(ev) {
+  if (REMOTE_MODE) return false;
+  const sel = state.nextGame?.selection;
+  return Boolean(sel
+    && sel.region === ev.region
+    && sel.entryId === ev.entry.id
+    && sel.eventDate === ev.date);
+}
+
+/** The entry's first http(s) lien — the tracker's seed sourceUrl (the daily
+ *  fetch opens that page; mailto/tel liens can't be fetched). Null when
+ *  the entry exposes none. */
+function firstHttpLienUrl(entry) {
+  for (const lien of entry?.liens || []) {
+    const url = lien?.url;
+    if (typeof url === "string" && /^https?:/i.test(url)) return url;
+  }
+  return null;
+}
+
+/** Client-side mirror of the backend's sourceUrl rule (`validate_source_url`
+ *  in src/agent/next_game.rs): http(s):// plus a non-empty remainder. */
+function isHttpSourceUrl(url) {
+  return /^https?:\/\/.+/i.test(String(url ?? ""));
+}
+
+/** GET /api/nextgame (same-origin, works regardless of the agent state) —
+ *  throws on any failure; the caller decides the degrade path. */
+async function fetchNextGamePayload() {
+  const res = await fetch(apiUrl(NEXTGAME_PATH), { cache: "no-cache" });
+  if (!res.ok) throw new Error(`GET ${NEXTGAME_PATH} → HTTP ${res.status}`);
+  return res.json();
+}
+
+/** Re-syncs the cache from the server (authoritative — the POST response
+ *  carries only the selection). False on failure (cache untouched). */
+async function reloadNextGame() {
+  try {
+    state.nextGame = await fetchNextGamePayload();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Optimistic post-select merge when the re-GET fails: the selection takes
+ *  the cache; a DIFFERENT game wipes the snapshot history AND lastRun
+ *  client-side the way the server wiped it (a fresh game = fresh
+ *  bookkeeping — the OLD game's lastRun must not follow, its failed-fetch/
+ *  verified lines would render against the new selection), while the
+ *  schedule half stays valid across games. */
+function mergeSelectionIntoCache(selection) {
+  if (!selection) {
+    state.nextGame = null;
+    return;
+  }
+  const prev = state.nextGame;
+  const sameGame = Boolean(prev?.selection
+    && prev.selection.region === selection.region
+    && prev.selection.entryId === selection.entryId
+    && prev.selection.eventDate === selection.eventDate);
+  if (prev && sameGame) {
+    state.nextGame = { ...prev, selection };
+  } else {
+    state.nextGame = {
+      selection,
+      snapshot: null,
+      snapshots: [],
+      fetch: prev ? { ...prev.fetch, lastRun: null } : null,
+    };
+  }
+}
+
+/** Boot-time loader — runs on the home page (the card + calendar marker)
+ *  AND the agent page (the « Vérification quotidienne » editor seeds from
+ *  the same payload). REMOTE_MODE returns; a GET failure stays silent
+ *  (the card remains hidden, the editor unseeded — no invented state). */
+async function initNextGame() {
+  if (REMOTE_MODE) return;
+  await reloadNextGame();
+  renderNextGame();
+  nextgameScheduleSeed = normalizeNextGameSchedule(state.nextGame?.fetch?.schedule);
+  renderNextGameInfo(state.nextGame);
+  renderNextGameScheduleEditor();
+}
+
+/** Inline status line of the card (source save / clear outcomes). */
+function showNextGameMsg(msg) {
+  const el = document.getElementById("ng-msg");
+  if (el) el.textContent = msg;
+}
+
+/** The « site » chip of the title row: the entry's first http(s) link —
+ *  isLinkable + scheme guard, target=_blank (the same hardening the
+ *  markdown stack applies). */
+function nextGameSiteChipHtml(entry) {
+  const url = (entry?.liens || []).find((l) => {
+    const u = l?.url;
+    return isLinkable(u) && /^https?:/i.test(u);
+  })?.url;
+  if (!url) return "";
+  return `<a class="ng-site-chip" href="${escapeHtml(url)}" target="_blank" rel="noopener">site ↗</a>`;
+}
+
+/** The nextgame card (#next-game, home page) — three render states:
+ *  1. hidden (REMOTE_MODE / no payload / no selection): the calendar's
+ *     « Je jouerai ici » buttons are the entry point;
+ *  2. slim aged-past card (the selected date went by since selection);
+ *  3. full card: title row + facts grid + players + fetch bookkeeping +
+ *     source + the retire / edit-source actions.
+ *  Everything renders from the cached GET payload + the shared data —
+ *  display only, every value escaped, n.c.-values greyed (ncSpan). */
+function renderNextGame() {
+  const section = document.getElementById("next-game");
+  if (!section) return; // home page only — idempotent no-op elsewhere
+  const ng = state.nextGame;
+  const sel = ng?.selection || null;
+  if (REMOTE_MODE || !ng || !sel) {
+    section.hidden = true;
+    section.innerHTML = "";
+    return;
+  }
+  section.hidden = false;
+
+  // Live lookup (display only): the entry wins for the mutable values; the
+  // denormalized nom/commune cover an entry missing from the cache (entries
+  // are never deleted, but the payload must survive it)
+  const entry = (state.data[sel.region] || []).find((e) => e.id === sel.entryId) || null;
+  const nom = entry?.nom || sel.nom || sel.entryId;
+  const commune = entry ? entry.commune : sel.commune;
+  const headHtml = (siteChip) => `
+    <div class="ng-head">
+      <h2>Ma prochaine partie</h2>
+      <span class="ng-nom">${escapeHtml(nom)}</span>
+      ${siteChip ? nextGameSiteChipHtml(entry) : ""}
+    </div>`;
+
+  // State 2 — the selected game aged past since selection:
+  // a slim card, no players / schedule blocks
+  if (isPast(sel.eventDate)) {
+    section.innerHTML = `
+      <div class="ng-card">
+        ${headHtml(false)}
+        <p class="ng-date">${escapeHtml(formatDate(sel.eventDate))} <span class="ng-rel">(${escapeHtml(relativeDate(sel.eventDate))})</span></p>
+        <p class="ng-passed">Cette partie est passée.</p>
+        <div class="ng-actions">
+          <button type="button" id="ng-clear-btn" class="agent-run-btn ng-danger">Retirer la sélection</button>
+          <span id="ng-msg" class="ng-msg" role="status" aria-live="polite"></span>
+        </div>
+      </div>`;
+    bindNextGameCardActions();
+    return;
+  }
+
+  // State 3 — active selection: facts grid (only rows with values)
+  const facts = [];
+  facts.push(["Date", `${escapeHtml(formatDate(sel.eventDate))} <span class="ng-rel">(${escapeHtml(relativeDate(sel.eventDate))})</span>`]);
+  if (commune) facts.push(["Commune", ncSpan(commune)]);
+  if (entry?.terrain) facts.push(["Terrain", ncSpan(entry.terrain)]);
+  if (entry?.distance) {
+    const zoneTag = nearestZoneTag(entry.coords); // same annotation as the table's Distance cells
+    facts.push(["Distance", `${ncSpan(entry.distance)}${zoneTag ? ` <span class="ev-zone">${escapeHtml(zoneTag)}</span>` : ""}`]);
+  }
+  if (entry?.cout) facts.push(["Coût", ncSpan(entry.cout)]);
+  if (entry?.frequence) facts.push(["Fréquence", ncSpan(entry.frequence)]);
+  const factsHtml = facts
+    .map(([label, value]) => `<div class="ng-label">${escapeHtml(label)}</div><div class="ng-value">${value}</div>`)
+    .join("");
+
+  // Players line: the snapshot's value, or n.c. + a status note while the
+  // first fetch hasn't landed (the agent state never blocks the card)
+  const snap = ng.snapshot || null;
+  const players = typeof snap?.players === "string" && snap.players.trim() !== "" ? snap.players : null;
+  let playersHtml;
+  if (players !== null) {
+    playersHtml = ncSpan(players);
+  } else {
+    playersHtml = `<span class="nc">n.c.</span>`;
+    let note = "";
+    if (!agentConfigured) {
+      note = "agent non configuré";
+    } else {
+      const f = ng.fetch || {};
+      if (f.nextFetchAt) note = `première vérification : ${formatTimestamp(f.nextFetchAt)}`;
+      else if (f.schedule && f.schedule.disabled !== true && typeof f.schedule.time === "string") {
+        note = `première vérification : chaque jour à ${f.schedule.time}`;
+      } else {
+        note = "première vérification en attente";
+      }
+    }
+    playersHtml += ` <span class="ng-players-note">${escapeHtml(note)}</span>`;
+  }
+
+  // Verified line: the latest snapshot's age + the previous players as a
+  // compact delta reminder (a vanished entry or a single snapshot stays clean)
+  let verifiedHtml = "";
+  const fetchedMs = snap ? timestampMs(snap.fetchedAt) : null;
+  if (snap && fetchedMs !== null) {
+    const rel = escapeHtml(relativeTimestamp(Date.now() - fetchedMs, -1));
+    const prev = Array.isArray(ng.snapshots) ? ng.snapshots[1] : null;
+    const delta = prev && typeof prev.players === "string" && prev.players.trim() !== ""
+      ? ` (avant : ${escapeHtml(prev.players)})`
+      : "";
+    verifiedHtml = `<p class="ng-verified">Vérifié ${rel}${delta}</p>`;
+  }
+
+  // Failed fetch: the last run's non-ok outcome is surfaced honestly (the
+  // bookkeeping lives in the private store — the card names it in French)
+  let failedHtml = "";
+  const lr = ng.fetch?.lastRun;
+  if (lr && typeof lr.outcome === "string" && lr.outcome !== "ok") {
+    const atMs = typeof lr.at === "string" ? timestampMs(lr.at) : null;
+    const rel = atMs !== null ? ` ${escapeHtml(relativeTimestamp(Date.now() - atMs, -1))}` : "";
+    failedHtml = `<p class="ng-warn">Dernière vérification en échec (${escapeHtml(lr.outcome)})${rel}</p>`;
+  }
+
+  // Source link (https only client-side — the backend validates the rest)
+  const sourceUrlRaw = snap?.sourceUrl || sel.sourceUrl || null;
+  const sourceHtml = sourceUrlRaw && /^https:/i.test(sourceUrlRaw)
+    ? `<p class="ng-source"><a href="${escapeHtml(sourceUrlRaw)}" target="_blank" rel="noopener">Voir la source ↗</a></p>`
+    : "";
+
+  // Next fetch line: exactly one of next-instant / disabled / unconfigured
+  let nextHtml = "";
+  if (!agentConfigured) {
+    nextHtml = `<p class="ng-next">Agent non configuré — aucune vérification automatique.</p>`;
+  } else {
+    const f = ng.fetch || {};
+    if (f.schedule && f.schedule.disabled === true) {
+      nextHtml = `<p class="ng-next">Vérification quotidienne désactivée.</p>`;
+    } else if (f.nextFetchAt) {
+      nextHtml = `<p class="ng-next">Prochaine vérification&nbsp;: ${escapeHtml(formatTimestamp(f.nextFetchAt))}</p>`;
+    } else if (f.schedule && typeof f.schedule.time === "string") {
+      nextHtml = `<p class="ng-next">Prochaine vérification&nbsp;: chaque jour à ${escapeHtml(f.schedule.time)}</p>`;
+    }
+  }
+
+  section.innerHTML = `
+    <div class="ng-card">
+      ${headHtml(true)}
+      <div class="ng-facts">${factsHtml}</div>
+      <p class="ng-players">Joueurs&nbsp;: ${playersHtml}</p>
+      ${snap && typeof snap.cancelled === "string" && snap.cancelled.trim() !== ""
+        ? `<p class="ng-cancelled">⚠️ Partie annulée — ${escapeHtml(snap.cancelled)}</p>` : ""}
+      ${snap && typeof snap.note === "string" && snap.note.trim() !== ""
+        ? `<p class="ng-note">Note&nbsp;: ${escapeHtml(snap.note)}</p>` : ""}
+      ${verifiedHtml}
+      ${failedHtml}
+      ${nextHtml}
+      ${sourceHtml}
+      <div class="ng-actions">
+        <button type="button" id="ng-clear-btn" class="agent-run-btn ng-danger">Retirer la sélection</button>
+        <button type="button" id="ng-source-toggle" class="agent-run-btn">Modifier la source</button>
+        <span id="ng-msg" class="ng-msg" role="status" aria-live="polite"></span>
+      </div>
+      <div id="ng-source-edit" class="ng-source-edit" hidden>
+        <input type="url" id="ng-source-input" placeholder="https://…" spellcheck="false"
+               autocomplete="off" aria-label="Page source de la partie (http(s))">
+        <button type="button" id="ng-source-save" class="agent-run-btn">Enregistrer</button>
+      </div>
+    </div>`;
+  bindNextGameCardActions();
+}
+
+/** One-time-per-render bindings of the card's actions. */
+function bindNextGameCardActions() {
+  const clearBtn = document.getElementById("ng-clear-btn");
+  if (clearBtn) clearBtn.addEventListener("click", clearNextGameSelection);
+  const toggleBtn = document.getElementById("ng-source-toggle");
+  if (toggleBtn) toggleBtn.addEventListener("click", toggleNextGameSourceEditor);
+  const saveBtn = document.getElementById("ng-source-save");
+  if (saveBtn) saveBtn.addEventListener("click", saveNextGameSource);
+}
+
+/** Reveals/hides the inline source editor; first reveal pre-fills the
+ *  stored URL (the selection's own value wins — snapshot refinements land
+ *  on the selection server-side). */
+function toggleNextGameSourceEditor() {
+  const zone = document.getElementById("ng-source-edit");
+  if (!zone) return;
+  const show = zone.hidden;
+  zone.hidden = !show;
+  if (show) {
+    const sel = state.nextGame?.selection || null;
+    const input = document.getElementById("ng-source-input");
+    if (input) {
+      if (!input.value) {
+        input.value = sel?.sourceUrl || state.nextGame?.snapshot?.sourceUrl || "";
+      }
+      input.focus();
+    }
+    showNextGameMsg("");
+  }
+}
+
+/** « Enregistrer » of the source editor: POST /api/nextgame with the SAME
+ *  selection keys plus sourceUrl — a filled field updates it, an EMPTY
+ *  field sends an explicit null (clears the stored URL; only an absent key
+ *  would keep it). The input is http(s)-validated client-side (mirrors the
+ *  backend rule). Errors surface on the card's inline line, 401 mirrors
+ *  saveSchedule's phrasing. */
+async function saveNextGameSource() {
+  const sel = state.nextGame?.selection;
+  const input = document.getElementById("ng-source-input");
+  const btn = document.getElementById("ng-source-save");
+  if (!sel || !input || !btn) return;
+  const raw = input.value.trim();
+  if (raw !== "" && !isHttpSourceUrl(raw)) {
+    showNextGameMsg("La source doit être une URL commençant par https:// (ou http://).");
+    return;
+  }
+  btn.disabled = true;
+  showNextGameMsg("");
+  let selection = null;
+  try {
+    const res = await fetch(apiUrl(NEXTGAME_PATH), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        region: sel.region,
+        entryId: sel.entryId,
+        eventDate: sel.eventDate,
+        sourceUrl: raw === "" ? null : raw,
+      }),
+    });
+    if (res.ok) {
+      const body = await res.json().catch(() => null);
+      selection = body?.selection || null;
+    } else if (res.status === 401) {
+      showNextGameMsg("Accès refusé — l'enregistrement exige le jeton d'authentification du serveur.");
+    } else {
+      const err = await res.json().catch(() => null);
+      showNextGameMsg(err?.error ? err.error : `Échec de l'enregistrement (code HTTP ${res.status}).`);
+    }
+  } catch {
+    showNextGameMsg("Serveur injoignable — source non enregistrée.");
+  }
+  btn.disabled = false;
+  if (selection) {
+    // The response carries the canonical selection (a same-game re-select
+    // refreshes the denormalized card and the URL — including the clear
+    // the null just sent; snapshots are untouched server-side)
+    mergeSelectionIntoCache(selection);
+    renderNextGame();
+    // The re-render collapsed the editor AND reset the input node: reopen
+    // it with the saved value so the success line shows next to it
+    const zone = document.getElementById("ng-source-edit");
+    if (zone) {
+      zone.hidden = false;
+      const input = document.getElementById("ng-source-input");
+      if (input) input.value = selection.sourceUrl || "";
+    }
+    showNextGameMsg("Source enregistrée.");
+  }
+}
+
+/** « Retirer la sélection »: confirm → POST /api/nextgame/clear (wipes the
+ *  tracker whole, idempotent) → the card hides and the calendar unmarks. */
+async function clearNextGameSelection() {
+  const sel = state.nextGame?.selection;
+  if (!sel) return;
+  if (!window.confirm("Retirer la sélection « ma prochaine partie » ? Les instantanés de vérification enregistrés seront effacés.")) return;
+  const btn = document.getElementById("ng-clear-btn");
+  if (btn) btn.disabled = true;
+  showNextGameMsg("");
+  let cleared = false;
+  try {
+    const res = await fetch(apiUrl(NEXTGAME_CLEAR_PATH), { method: "POST" });
+    cleared = res.ok;
+    if (!cleared) {
+      if (res.status === 401) {
+        showNextGameMsg("Accès refusé — le retrait exige le jeton d'authentification du serveur.");
+      } else {
+        showNextGameMsg(`Le retrait a échoué (code HTTP ${res.status}).`);
+      }
+    }
+  } catch {
+    showNextGameMsg("Serveur injoignable — sélection non retirée.");
+  }
+  if (!cleared) {
+    if (btn && btn.isConnected) btn.disabled = false;
+    return;
+  }
+  // The clear wiped the store: a re-GET re-reads the empty state, but a
+  // failure must NOT resurrect the old card — drop the cache outright
+  if (!(await reloadNextGame())) state.nextGame = null;
+  renderNextGame();
+  renderHero();
+}
+
+/** Transient French status line inside a picked calendar card (selection
+ *  errors). One message at a time; the line clears itself after 6 s (a
+ *  re-render of the card destroys it anyway). */
+let ngPickMsgTimer = null;
+function showPickMsg(cardEl, msg) {
+  if (!cardEl) return;
+  const btn = cardEl.querySelector(".ng-pick-btn");
+  let line = cardEl.querySelector(".ng-pick-msg");
+  if (!line) {
+    line = document.createElement("span");
+    line.className = "ng-pick-msg";
+    if (btn) btn.after(line);
+    else cardEl.appendChild(line);
+  }
+  line.textContent = msg;
+  clearTimeout(ngPickMsgTimer);
+  ngPickMsgTimer = setTimeout(() => { line.textContent = ""; }, 6000);
+}
+
+/** « Je jouerai ici » pick handler: POST /api/nextgame with the card's
+ *  region/entry/date; the entry's first http(s) lien ships as the seed
+ *  sourceUrl (when one exists — omitted otherwise, the absent key keeps
+ *  whatever the server stored). Selection errors surface inside the
+ *  picked card, 401 mirrors saveSchedule's phrasing; the server's French
+ *  400/404 messages (validation, past-date) flow through unchanged. */
+async function selectNextGame(region, entry, eventDate, cardEl, btn) {
+  const payload = { region, entryId: entry.id, eventDate };
+  const sourceUrl = firstHttpLienUrl(entry);
+  if (sourceUrl) payload.sourceUrl = sourceUrl;
+  let body = null;
+  let picked = false;
+  try {
+    const res = await fetch(apiUrl(NEXTGAME_PATH), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      picked = true;
+      body = await res.json().catch(() => null);
+    } else if (res.status === 401) {
+      showPickMsg(cardEl, "Accès refusé — la sélection exige le jeton d'authentification du serveur.");
+    } else if (res.status === 400 || res.status === 404) {
+      const err = await res.json().catch(() => null);
+      showPickMsg(cardEl, err?.error ? err.error : `La sélection a été refusée par le serveur (code HTTP ${res.status}).`);
+    } else {
+      showPickMsg(cardEl, `La sélection a échoué (code HTTP ${res.status}).`);
+    }
+  } catch {
+    showPickMsg(cardEl, "Serveur injoignable — sélection non enregistrée.");
+  }
+  // The card node may have been replaced meanwhile (a filter change re-renders
+  // the whole timeline): re-enable only a still-connected button
+  if (!picked && btn && btn.isConnected) btn.disabled = false;
+  if (!picked) return;
+  // Authoritative re-sync (fetch bookkeeping incl. the snapshot reset the
+  // server performed when the game changed); fall back to the POST's
+  // selection when the re-GET fails
+  if (!(await reloadNextGame()) && body?.selection) mergeSelectionIntoCache(body.selection);
+  renderHero();   // the picked card re-renders: chip + « Sélectionnée »
+  renderNextGame();
+}
+
+/* « Vérification quotidienne de ma prochaine partie » editor (agent page) —
+ * mirrors the maintenance schedule editor's structure in miniature: the
+ * daily HH:MM slot + a disable switch, seeded ONLY from GET /api/nextgame
+ * (no value invented client-side), saved through POST
+ * /api/agent/nextgame/schedule (partial update on the server, but the UI
+ * always sends both keys so the saved intent is unambiguous). Reveal rule:
+ * same-origin + configured agent (the POST answers 503 otherwise) + a
+ * well-formed seed; same-origin-only like every UI POST (REMOTE_MODE hides). */
+
+/** The last server-side nextgame schedule rendered into the editor — the
+ *  unsaved-edit baseline (see renderNextGameScheduleEditor). */
+let nextgameScheduleRendered = null;
+/** The current seed from GET /api/nextgame (normalized {disabled, time} or
+ *  null when the payload is unrenderable — the editor stays hidden). */
+let nextgameScheduleSeed = null;
+/** The last lastRun seen on a GET (kept across saves: the schedule POST
+ *  response never carries it — the info line merges over it). */
+let nextgameInfoLastRun = null;
+
+/** Normalizes the raw fetch.schedule to the editor shape {disabled, time}
+ *  — or null when the payload is not renderable: the block then stays
+ *  hidden, no schedule value is ever invented client-side. */
+function normalizeNextGameSchedule(schedule) {
+  if (!schedule || typeof schedule !== "object") return null;
+  if (typeof schedule.time !== "string" || !/^\d{2}:\d{2}$/.test(schedule.time)) return null;
+  if (typeof schedule.disabled !== "boolean") return null;
+  return { disabled: schedule.disabled, time: schedule.time };
+}
+
+/** Value equality of two normalized nextgame schedules. */
+function nextgameSameSchedule(a, b) {
+  return Boolean(a && b) && a.disabled === b.disabled && a.time === b.time;
+}
+
+/** Current editor selection as the POST payload shape: {disabled, time}. */
+function nextgameScheduleSelection() {
+  const time = document.getElementById("nextgame-schedule-time");
+  const disable = document.getElementById("nextgame-schedule-disable");
+  return {
+    disabled: Boolean(disable?.checked),
+    time: typeof time?.value === "string" ? time.value : "",
+  };
+}
+
+/** Visibility + fill — same call sites as the maintenance editor's
+ *  re-render (every /api/status refresh) plus initNextGame's seed arrival.
+ *  Unsaved-edit pin: the seed is written when the editor already matches
+ *  the last-rendered baseline or the seed itself; an identical re-render
+ *  while UNSAVED EDITS are held is skipped. */
+function renderNextGameScheduleEditor() {
+  const block = document.getElementById("nextgame-schedule-block");
+  if (!block) return;
+  if (REMOTE_MODE || !agentConfigured || !nextgameScheduleSeed) {
+    block.hidden = true;
+    return;
+  }
+  block.hidden = false;
+  const save = document.getElementById("nextgame-schedule-save");
+  if (save) save.hidden = false; // revealed with the block (ships hidden)
+  const sel = nextgameScheduleSelection();
+  const pristine = !nextgameScheduleRendered
+    || nextgameSameSchedule(sel, nextgameScheduleRendered)
+    || nextgameSameSchedule(sel, nextgameScheduleSeed);
+  if (pristine) {
+    const time = document.getElementById("nextgame-schedule-time");
+    if (time) time.value = nextgameScheduleSeed.time;
+    const disable = document.getElementById("nextgame-schedule-disable");
+    if (disable) disable.checked = nextgameScheduleSeed.disabled;
+    nextgameScheduleRendered = { disabled: nextgameScheduleSeed.disabled, time: nextgameScheduleSeed.time };
+  }
+}
+
+/** Grey info line under the editor: the fetch bookkeeping mirrored from
+ *  GET /api/nextgame — the next instant (when scheduled) or the disabled
+ *  notice, plus the last fetch outcome when one exists (ok stays honest:
+ *  « Dernière vérification : ok … »). A synthesized partial payload (the
+ *  save response) merges over the last known lastRun. */
+function renderNextGameInfo(payload) {
+  const el = document.getElementById("nextgame-schedule-info");
+  if (!el) return;
+  const f = payload?.fetch || null;
+  if (f && Object.prototype.hasOwnProperty.call(f, "lastRun")) {
+    nextgameInfoLastRun = f.lastRun || null;
+  }
+  const schedule = f?.schedule || null;
+  const parts = [];
+  if (schedule) {
+    if (schedule.disabled === true) {
+      parts.push("Vérification quotidienne désactivée.");
+    } else if (f.nextFetchAt) {
+      parts.push(`Prochaine vérification : ${formatTimestamp(f.nextFetchAt)}`);
+    } else if (typeof schedule.time === "string") {
+      parts.push(`Prochaine vérification : chaque jour à ${schedule.time}`);
+    }
+  }
+  const lastRun = f?.lastRun || nextgameInfoLastRun;
+  if (lastRun && typeof lastRun.outcome === "string") {
+    const atMs = typeof lastRun.at === "string" ? timestampMs(lastRun.at) : null;
+    const rel = atMs !== null ? ` ${relativeTimestamp(Date.now() - atMs, -1)}` : "";
+    parts.push(lastRun.outcome === "ok"
+      ? `Dernière vérification : ok${rel}`
+      : `Dernière vérification en échec (${lastRun.outcome})${rel}`);
+  }
+  if (parts.length === 0) {
+    el.hidden = true;
+    el.textContent = "";
+    return;
+  }
+  el.hidden = false;
+  el.textContent = parts.join(" · ");
+}
+
+function showNextGameScheduleMsg(msg) {
+  const el = document.getElementById("nextgame-schedule-msg");
+  if (el) el.textContent = msg;
+}
+
+/** « Enregistrer » of the nextgame editor: both keys, full-replace intent;
+ *  a well-formed HH:MM is required client-side (an unparseable time would
+ *  be a 400). Success re-renders from the response (instant nextFetchAt
+ *  refresh in the info line); errors keep the selection, 401/503 mirror
+ *  saveSchedule's phrasing. */
+async function saveNextGameSchedule() {
+  const sel = nextgameScheduleSelection();
+  if (!/^\d{2}:\d{2}$/.test(sel.time)) {
+    showNextGameScheduleMsg("Choisissez une heure de vérification.");
+    return;
+  }
+  const btn = document.getElementById("nextgame-schedule-save");
+  if (btn) btn.disabled = true;
+  showNextGameScheduleMsg("");
+  let saved = false;
+  try {
+    const res = await fetch(apiUrl(NEXTGAME_SCHEDULE_PATH), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ disabled: sel.disabled, time: sel.time }),
+    });
+    if (res.ok) {
+      saved = true;
+      showNextGameScheduleMsg("Vérification quotidienne enregistrée.");
+      const body = await res.json().catch(() => null);
+      if (body && body.schedule) {
+        nextgameScheduleSeed = normalizeNextGameSchedule(body.schedule) || nextgameScheduleSeed;
+        renderNextGameInfo({
+          fetch: { schedule: body.schedule, nextFetchAt: body.nextFetchAt ?? null, lastRun: nextgameInfoLastRun },
+        });
+      }
+    } else if (res.status === 400) {
+      showNextGameScheduleMsg("Vérification refusée par le serveur — vérifiez l'heure choisie.");
+    } else if (res.status === 401) {
+      showNextGameScheduleMsg("Accès refusé — l'enregistrement exige le jeton d'authentification du serveur.");
+    } else if (res.status === 503) {
+      showNextGameScheduleMsg("Agent indisponible pour le moment.");
+    } else {
+      showNextGameScheduleMsg(`Échec de l'enregistrement (code HTTP ${res.status}).`);
+    }
+  } catch {
+    showNextGameScheduleMsg("Serveur injoignable — vérification non enregistrée.");
+  }
+  // Every path (also after a save): releases the editor's busy pin
+  if (btn) btn.disabled = false;
+  if (saved) renderNextGameScheduleEditor(); // the baseline re-syncs (values already match)
+}
+
+/** One-time editor bindings (agent page, same-origin deploys only): any
+ *  interaction clears the inline message, the save button triggers
+ *  saveNextGameSchedule. */
+function bindNextGameScheduleEditor() {
+  const block = document.getElementById("nextgame-schedule-block");
+  if (!block) return;
+  const time = document.getElementById("nextgame-schedule-time");
+  if (time) time.addEventListener("input", () => showNextGameScheduleMsg(""));
+  const disable = document.getElementById("nextgame-schedule-disable");
+  if (disable) disable.addEventListener("change", () => showNextGameScheduleMsg(""));
+  const save = document.getElementById("nextgame-schedule-save");
+  if (save) save.addEventListener("click", saveNextGameSchedule);
 }
 
 /* ------------------------------ Connexions (agent credentials, agent page) ------------------------------ */
@@ -4217,6 +5005,9 @@ function renderData() {
     renderHero();
     renderTable();
     populateDepSelect();
+    // « Ma prochaine partie » card: re-rendered with the entry facts the
+    // data just landed (terrain, distance, coût…) — cheap and idempotent
+    renderNextGame();
     handleEntryHash();
   }
   console.info(
@@ -4303,16 +5094,18 @@ async function loadData() {
 }
 
 /** One-time setup per page (shared pieces everywhere, page pieces behind the
- *  dispatcher): map + tables + timeline filter (home), navigation + active-
- *  page highlight (all), run button + schedule editor + connexions editor +
- *  notes editor + browser reset (agent, same-origin deploys only), chat
- *  input bindings (chat). */
+ *  dispatcher): map + tables + timeline filter + info modal dialog (home),
+ *  navigation + active-page highlight (all), run button + schedule editor +
+ *  nextgame fetch schedule editor + connexions editor + notes editor +
+ *  browser reset (agent, same-origin deploys only), chat input bindings
+ *  (chat). */
 function setupStatic(page) {
   if (page === "home") {
     const mapOk = initMap();
     if (!mapOk) document.querySelector(".map-legend")?.style.setProperty("opacity", ".4");
     bindTableControls();
     bindTimelineFilters();
+    bindInfoDialog();
   }
   setupNavigation();
   setupNavActivePage();
@@ -4326,6 +5119,10 @@ function setupStatic(page) {
       // Same rule for the schedule editor (renderScheduleEditor keeps it hidden)
       const scheduleBlock = document.getElementById("schedule-block");
       if (scheduleBlock) scheduleBlock.hidden = true;
+      // Same rule for the nextgame schedule editor (renderNextGameScheduleEditor
+      // keeps it hidden on status updates too — the POST answers 503 unconfigured)
+      const nextgameBlock = document.getElementById("nextgame-schedule-block");
+      if (nextgameBlock) nextgameBlock.hidden = true;
       // Same rule for the connexions editor (initCredentials never runs)
       const credBlock = document.getElementById("credentials-block");
       if (credBlock) credBlock.hidden = true;
@@ -4340,6 +5137,7 @@ function setupStatic(page) {
       const updateBtn = document.getElementById("agent-update-btn");
       if (updateBtn) updateBtn.addEventListener("click", triggerAgentUpdate);
       bindScheduleEditor();
+      bindNextGameScheduleEditor();
       bindCredentialsEditor();
       void initCredentials(); // reveal + list load (GET-only until a save)
       bindNotesEditor();
@@ -4403,6 +5201,9 @@ function init() {
   });
   if (PAGE === "agent") loadHistory();
   if (PAGE === "chat") void initChat(); // silent-hide on remote deploys / unconfigured agent
+  // « Ma prochaine partie »: card + calendar marker (home) and the daily
+  // fetch editor seed (agent) — silent degrade on REMOTE_MODE/failure
+  if (PAGE === "home" || PAGE === "agent") void initNextGame();
 }
 
 init();

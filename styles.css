@@ -411,6 +411,12 @@ tbody tr.entry-row:hover { background: rgba(122, 139, 63, .07); }
 tr.flash td { background: rgba(163, 185, 85, .18) !important; transition: background 1.2s; }
 tbody td .nc { color: #6b6f5e; font-style: italic; }
 td.cell-nom a { font-weight: 600; }
+/* UA-font reset for the clickable statut pill: a <button> must render in the
+   site font like every other custom control (.terrain-link convention).
+   Declared BEFORE .badge on purpose — at equal specificity the later .badge
+   font-size/font-weight win, so the pill stays exactly as wide/typed as the
+   inert span pills; a reset placed after would override them. */
+.status-pill-btn { font: inherit; }
 .badge {
   display: inline-block;
   padding: .1rem .5rem;
@@ -422,16 +428,45 @@ td.cell-nom a { font-weight: 600; }
 .badge.actif { background: rgba(78, 154, 78, .18); color: #9dd29d; border: 1px solid rgba(78, 154, 78, .5); }
 .badge.a_verifier { background: rgba(210, 148, 34, .15); color: #e7c069; border: 1px solid rgba(210, 148, 34, .45); }
 .badge.ferme { background: rgba(193, 74, 58, .15); color: #e58a7c; border: 1px solid rgba(193, 74, 58, .5); }
-.status-detail { display: block; font-size: .72rem; color: var(--text-dim); margin-top: .15rem; }
-/* "Prochaines parties" (upcoming events) column: capped width, wrapping allowed.
-   The bare date stays unbreakable (nowrap) so "24/" is never cut at line end. */
-.ev-inline { margin: 0; padding: 0; list-style: none; max-width: 260px; }
-.ev-inline li { margin-bottom: .15rem; }
-.ev-inline li.nc { color: var(--text-dim); }
-.ev-inline .d { font-weight: 600; color: var(--accent-bright); white-space: nowrap; }
+/* Statut pill with a detail to show: the pill itself is the button (same
+   visuals + a dotted-underline affordance) — the text detail lives in the
+   info modal */
+.status-pill-btn {
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  transition: filter .15s;
+}
+.status-pill-btn:hover { filter: brightness(1.2); }
+.status-pill-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* "Prochaines parties" cell (unified table): short preview — date + lieu only,
+   the relative labels, notes and the association's prochaines text live in the
+   info modal. Tight cap so the cell never balloons on long lieu values; the
+   bare date stays unbreakable (nowrap) so "24/" is never cut at line end.
+   One row = block span: a <button> must only contain phrasing content (no
+   ul/li) — each rule mirrors the .ev-detail equivalents. */
+.ev-inline-row { display: block; max-width: 150px; margin-bottom: .15rem; }
+.ev-inline-row.nc { color: var(--text-dim); }
+.ev-inline-row .d { font-weight: 600; color: var(--accent-bright); white-space: nowrap; }
 /* Soon highlight (≤ SOON_DAYS window, first upcoming event): mirrors the timeline's ev-rel.soon accent */
-.ev-inline li.soon, .ev-inline li.soon .ev-rel { color: #b8d06a; }
-.ev-inline li.soon .d { color: #b8d06a; }
+.ev-inline-row.soon, .ev-inline-row.soon .d { color: #b8d06a; }
+/* "Prochaines parties" cell as one button (detail in the info modal): left
+   visually unstyled so the list looks as before — hover/focus add the hint */
+.ev-cell-btn {
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.ev-cell-btn:hover { text-decoration: underline dotted; text-underline-offset: 3px; }
+.ev-cell-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Inline hint when the cell has no dated game to preview (prochaines-only) */
+.ev-cell-btn .ev-cell-more { font-size: .78rem; font-style: italic; color: var(--text-dim); }
 .liens-list { margin: 0; padding: 0; list-style: none; }
 .liens-list li { margin-bottom: .15rem; }
 .liens-list li.nc { color: var(--text-dim); font-style: italic; }
@@ -455,6 +490,65 @@ td.cell-nom a { font-weight: 600; }
 /* Distance cell's zone tag (unified table): timeline annotation, on its own
    line under the distance value */
 .entry-row .ev-zone { display: block; margin-top: .1rem; }
+
+/* ---------- Info modal (native <dialog>, home page) ---------- */
+/* Table-cell details (« Statut », « Prochaines parties »): same card panel
+   language as the site (panel bg, border, radius, tokens). padding: 0 on the
+   dialog keeps the backdrop-click guard exact — the content covers the whole
+   panel, so only ::backdrop clicks ever land on the dialog element itself. */
+#info-dialog {
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--text);
+  max-width: min(640px, 90vw);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .55);
+  font-size: .85rem; /* table-consistent body typography */
+}
+#info-dialog::backdrop { background: rgba(10, 12, 7, .6); }
+.info-dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .8rem;
+  padding: .8rem 1.1rem .7rem;
+  border-bottom: 1px solid var(--border);
+}
+.info-dialog-head h3 { margin: 0; font-size: 1.02rem; color: var(--text); }
+.info-dialog-close {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-dim);
+  font-size: .85rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.info-dialog-close:hover { color: var(--text); border-color: var(--accent); }
+.info-dialog-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.info-dialog-body {
+  padding: .8rem 1.1rem 1rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.info-dialog-body p { margin: .35rem 0; }
+/* Multi-line data values (statutDetail) keep their line breaks */
+.info-dialog-text { white-space: pre-line; }
+/* Full event list of the modal (the cell previews dates only): same per-event
+   rules as the table cell + the relative date label and the note */
+.ev-detail { margin: 0; padding: 0; list-style: none; }
+.ev-detail li { margin-bottom: .3rem; }
+.ev-detail li.nc { color: var(--text-dim); }
+.ev-detail .d { font-weight: 600; color: var(--accent-bright); white-space: nowrap; }
+.ev-detail li.soon, .ev-detail li.soon .ev-rel { color: #b8d06a; }
+.ev-detail li.soon .d { color: #b8d06a; }
+/* The association's free-text prochaines pointer (grey block, labeled) */
+.info-dialog-body .ev-prochaines-info { margin-top: .6rem; color: var(--text-dim); }
 
 /* ---------- Agent status pill (header, every page) ---------- */
 /* Same visual family as .badge: rounded, panel background, thin border. */
@@ -681,6 +775,145 @@ td.cell-nom a { font-weight: 600; }
 }
 .schedule-disable-wrap:focus-within { outline: 1px solid var(--accent); outline-offset: 2px; }
 .schedule-controls input[type="checkbox"] { accent-color: var(--accent); margin: 0; }
+
+/* ---------- « Ma prochaine partie » (nextgame card, home page) ---------- */
+/* The tracker card sits ABOVE the map (deliberate ordering) in the same
+   panel language as the other cards; everything renders from
+   GET /api/nextgame by app.js — a static deploy keeps the section hidden. */
+#next-game { margin-top: 1.2rem; }
+.ng-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: .7rem .95rem .95rem;
+}
+.ng-head {
+  display: flex;
+  align-items: baseline;
+  gap: .4rem 1rem;
+  flex-wrap: wrap;
+}
+.ng-head h2 { margin: 0; border-bottom: none; padding-bottom: 0; flex: 0 0 auto; }
+.ng-nom { font-weight: 600; font-size: .95rem; }
+/* Small « site » link chip after the entry name (target=_blank, rel=noopener) */
+.ng-site-chip {
+  font-size: .74rem;
+  padding: .05rem .55rem;
+  border-radius: 999px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.ng-site-chip:hover { border-color: var(--accent); color: var(--accent-bright); }
+/* Label/value facts grid — only rows with values are rendered */
+.ng-facts {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, max-content) 1fr;
+  gap: .18rem 1rem;
+  margin: .3rem 0 .55rem;
+  font-size: .88rem;
+  align-items: baseline;
+}
+.ng-label {
+  color: var(--text-dim);
+  font-size: .74rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.ng-value { overflow-wrap: anywhere; }
+.ng-value .nc, .ng-players .nc { color: #6b6f5e; font-style: italic; }
+.ng-rel { color: var(--text-dim); font-size: .8rem; }
+.ng-date { margin: .1rem 0 .3rem; font-size: .92rem; font-weight: 600; }
+/* « Joueurs : » — the tracked line, value greyed by the n.c. convention */
+.ng-players { margin: .15rem 0 .5rem; font-size: .95rem; font-weight: 600; }
+.ng-players-note { font-weight: 400; font-size: .76rem; color: var(--text-dim); }
+/* Cancellation banner raised by the last fetch snapshot */
+.ng-cancelled {
+  margin: .15rem 0 .5rem;
+  padding: .4rem .7rem;
+  background: rgba(193, 74, 58, .12);
+  border: 1px solid rgba(193, 74, 58, .55);
+  border-radius: 6px;
+  color: #e58a7c;
+  font-size: .85rem;
+}
+/* Small grey context lines (snapshot note, verified age, next fetch) */
+.ng-note, .ng-verified, .ng-next, .ng-source {
+  margin: .15rem 0;
+  font-size: .78rem;
+  color: var(--text-dim);
+}
+.ng-source a { color: var(--accent-bright); }
+/* Aged-past notice + the failed-fetch warn line */
+.ng-passed { margin: .15rem 0 .3rem; font-size: .88rem; font-weight: 600; color: var(--orange); }
+.ng-warn { color: var(--orange); }
+.ng-actions {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-top: .55rem;
+}
+/* Destructive accent of « Retirer la sélection » (mirrors .wf-stop-btn) */
+.ng-danger { border-color: var(--rouge); color: #e58a7c; }
+.ng-danger:hover:not(:disabled) { border-color: #e58a7c; background: rgba(193, 74, 58, .18); color: #f0a89b; }
+.ng-msg { font-size: .78rem; color: var(--orange); }
+.ng-msg:empty { display: none; }
+/* Inline source editor: a filled field updates the URL, an empty field
+   clears it (explicit null server-side) */
+.ng-source-edit {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-top: .45rem;
+}
+.ng-source-edit input {
+  flex: 1 1 240px;
+  max-width: 30rem;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: .28rem .5rem;
+  font: inherit;
+  font-size: .8rem;
+}
+.ng-source-edit input:focus { outline: 1px solid var(--accent); }
+
+/* Calendar-card marker + pick button (« Je jouerai ici ») — rendered inside
+   the .event-card anchor; the button handler stops propagation so a click
+   never follows the card's row deep link */
+.event-card .ng-chip {
+  display: inline-block;
+  margin-top: .45rem;
+  padding: .05rem .55rem;
+  border-radius: 999px;
+  background: rgba(122, 139, 63, .18);
+  border: 1px solid var(--accent);
+  color: #b8d06a;
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+}
+.event-card .ng-pick-btn {
+  display: inline-block;
+  margin-top: .45rem;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+  padding: .2rem .7rem;
+  font: inherit;
+  font-size: .75rem;
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.event-card .ng-pick-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent-bright); }
+.event-card .ng-pick-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.event-card .ng-pick-btn:disabled { opacity: .7; cursor: default; }
+.ng-pick-msg { display: block; margin-top: .3rem; font-size: .75rem; color: var(--orange); }
 
 /* ---------- Connexions (agent credentials, agent page) ---------- */
 /* Card mirrors .schedule-block (same visual family). The list shows the stored

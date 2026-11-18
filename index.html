@@ -41,6 +41,14 @@
 <main>
   <div id="error-zone"></div>
 
+  <!-- « Ma prochaine partie » (nextgame tracker card): the ONE upcoming game
+       the owner picked for the daily agent fetch, rendered wholesale by
+       app.js (renderNextGame) from GET /api/nextgame. Sits ABOVE the map
+       (deliberate page ordering) and stays hidden when there is nothing to
+       show (static deploys, no selection, endpoint unreachable) — the
+       calendar's « Je jouerai ici » buttons are the entry point. -->
+  <section id="next-game" hidden></section>
+
   <!-- Ordered: Carte → Calendrier → Tableaux -->
   <section id="carte">
     <h2>Carte des terrains</h2>
@@ -117,6 +125,16 @@
     <p><a href="a-propos.html">Notes communes &amp; sources</a>&nbsp;: légende, avertissements et sources de recherche du site.</p>
   </div>
 </footer>
+
+<!-- Generic info modal: table-cell details (« Statut », « Prochaines parties »),
+     filled and opened by openInfoModal() — native <dialog> over app.js -->
+<dialog id="info-dialog" aria-labelledby="info-dialog-title">
+  <div class="info-dialog-head">
+    <h3 id="info-dialog-title"></h3>
+    <button type="button" class="info-dialog-close" aria-label="Fermer">✕</button>
+  </div>
+  <div class="info-dialog-body" id="info-dialog-body"></div>
+</dialog>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
