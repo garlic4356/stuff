@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastVerified": "2026-11-18",
+    "lastVerified": "2026-11-20",
     "manualFields": [
       "cout"
     ]
@@ -160,9 +160,9 @@
       ],
       "type": "Asso + team",
       "distance": "~40 min",
-      "statutDetail": "page Facebook « Panthera Forest - Association Airsoft » re-consultée connecté le 18/11/2026 (1,7K abonnés) : en tête de mur, post « Merci d'avoir participé à notre dernière dominicale de l'année ! Nous reprendrons les parties l'année prochaine ! Photos du 15/11/2026 ! » avec lien Drive — RETEX confirmant la dominicale du 15/11, qui était la dernière session de 2026 ; l'annonce avec billetterie du dominical du 15 novembre n'est plus visible ; aucun événement à venir affiché au moment du relevé ; site officiel toujours en ligne (constat du 03/11/2026 : OP mensuelles, terrain Le Bourgneuf à Meillac)",
+      "statutDetail": "dominicale du dimanche 15/11/2026 tenue au terrain (confirmée par Messenger le 14/11 à 22h20 — « oui c'est maintenu ») ; RETEX publié le 15/11 à 20h00 en tête de mur : « Merci d'avoir participé à notre dernière dominicale de l'année ! Nous reprendrons les parties l'année prochaine ! Photos du 15/11/2026 ! » (relu le 16/11) avec album Drive public « 2026/11/15 » : 48 fichiers (8 smartphone + 40 boîtier DSC JPG/NEF) — drive.google.com/drive/folders/1YFr8lRhXADZhcdPMVajkWN6fRFP7_zD- ; dernière sortie de l'année 2026, reprise annoncée pour 2027 ; page Facebook « Panthera Forest - Association Airsoft » toujours en ligne (1 700 abonnés), infos de contact affichées : 06 67 37 21 71, Messenger, site wix",
       "frequence": "~1 OP/mois (souvent vacances scol., 1–2 j)",
-      "prochaines": "Reprendront en 2027 — via Facebook / bandeau du site",
+      "prochaines": "Reprise annoncée pour 2027 (post RETEX du 15/11/2026) — dates à venir via Facebook / bandeau du site",
       "terrain": "2 forêts + zone CQB · terrain ouvert (découverte)",
       "cout": "n.c.",
       "events": [
@@ -179,7 +179,7 @@
         {
           "date": "2026-11-15",
           "lieu": "Le Bourgneuf (Meillac)",
-          "note": "Dominicale JOUÉE — RETEX « Photos du 15/11/2026 ! » + « Merci d'avoir participé à notre dernière dominicale de l'année ! Nous reprendrons les parties l'année prochaine ! » (publication en tête de mur Facebook, constatée le 18/11/2026) ; inscription obligatoire via billetterie yp.events (détails relevés le 06/11/2026)"
+          "note": "TENUE — dominicale confirmée par Messenger (« oui c'est maintenu », 14/11 22h20) puis jouée ; RETEX « Merci d'avoir participé à notre dernière dominicale de l'année ! Nous reprendrons les parties l'année prochaine ! Photos du 15/11/2026 ! » publié le 15/11 à 20h00 en tête de mur, avec album Drive public « 2026/11/15 » (48 fichiers : 8 photos smartphone 10h43–11h12 + 40 photos/bruts boîtier DSC_0003→DSC_0044) — post et Drive relus le 16/11/2026"
         }
       ],
       "coords": {
@@ -213,7 +213,7 @@
       ],
       "type": "Asso (©2016)",
       "distance": "~45–55 min",
-      "statutDetail": "site officiel toujours en ligne (HTTP 200 au re-check du 11/11/2026) ; dernier constat complet du 03/11/2026 : accueil inchangé (terrain à Guer — village de combat CQB, forêts et plaines entre Rennes et Vannes, répliques en location, aucune date de partie publique affichée) et page Inscription du site : « Pas d'événements pour le moment »",
+      "statutDetail": "site officiel toujours en ligne (HTTP 200 au re-check du 18/11/2026) ; dernier constat complet du 03/11/2026 : accueil inchangé (terrain à Guer — village de combat CQB, forêts et plaines entre Rennes et Vannes, répliques en location, aucune date de partie publique affichée) et page Inscription du site : « Pas d'événements pour le moment »",
       "frequence": "Jeu régulier adhérents + parties ouvertes",
       "prochaines": "Via inscriptions site",
       "terrain": "Village de combat CQB + forêts + plaines · répliques en location",
@@ -282,7 +282,7 @@
       ],
       "type": "Asso · bureau de 5 bénévoles · groupes GIL & GOR",
       "distance": "~1h20–1h30 (limite sud)",
-      "statutDetail": "agenda public re-vérifié le 11/11/2026 (ath-airsoft.fr/agenda) : l'agenda affiche désormais l'entretien du terrain du 14/11 (sans partie — non compté comme événement) et deux FLEX « ouvert aux débutants » les 29/11 et 05/12/2026 ; le « 100 % ATH » du 07/11 n'est plus affiché (passé) ; les dates à venir restent inchangées depuis le relevé du 03/11 ; pour les joueurs externes, l'inscription ouvre 15 jours avant chaque partie",
+      "statutDetail": "agenda public re-vérifié le 18/11/2026 (ath-airsoft.fr/agenda, rendu lu) : les seules parties à venir affichées restent les deux FLEX « ouvert aux débutants » des 29/11 et 05/12/2026 (lien d'inscription disponible 15 jours avant la partie), l'entretien du 14/11 n'y figure plus ; les dates à venir restent inchangées depuis le relevé du 03/11 ; pour les joueurs externes, l'inscription ouvre 15 jours avant chaque partie",
       "frequence": "2 événements/mois (sam./dim. alternés), 30 joueurs max",
       "terrain": "1 ha · village CQB bois · safe zone",
       "cout": "10 €/journée (ext.) · 30 €/an illimité",
@@ -305,12 +305,12 @@
         {
           "date": "2026-11-29",
           "lieu": "La Chapelle-Heulin",
-          "note": "FLEX — ouvert aux débutants (agenda re-vérifié le 11/11/2026)"
+          "note": "FLEX — ouvert aux débutants (agenda re-vérifié le 18/11/2026 : ce sont les deux seules parties affichées à venir)"
         },
         {
           "date": "2026-12-05",
           "lieu": "La Chapelle-Heulin",
-          "note": "FLEX — ouvert aux débutants (agenda re-vérifié le 11/11/2026)"
+          "note": "FLEX — ouvert aux débutants (agenda re-vérifié le 18/11/2026)"
         }
       ],
       "coords": {
@@ -936,7 +936,7 @@
       ],
       "type": "Asso 1901 · créée 26/09/2019 (W144004478, SIRET 909757288) · 10 membres · assurance FFA",
       "distance": "~1h–1h05 de Caen",
-      "statutDetail": "page Facebook « Association Tactical airsoft group 14 » consultée connecté le 11/11/2026 (35 abonnés, bureau.tag14@gmail.com, tinchebray-Bocage) : les publications les plus récentes sont des créations d'événements — « Partie d'airsoft du 21 septembre 2025 » (Tinchebray-Bocage, 1 personne inscrite, créée le 07/09/2025) et avant « partie du dimanche 15 septembre 2024 » (créée le 06/09/2024) ; aucune publication postérieure au 20/09/2025 ; page HelloAsso sans action en cours (re-vérifiée le 03/11/2026) ; annuaire FFA re-vérifié le 12/10/2026 ; aucune date de partie publique récente (recherches du 23/10 et du 03/11 sans résultat)",
+      "statutDetail": "page Facebook « Association Tactical airsoft group 14 » consultée connecté le 11/11/2026 puis re-consultée inchangée le 18/11/2026 (35 abonnés, bureau.tag14@gmail.com, tinchebray-Bocage) : les publications les plus récentes restent des créations d'événements — « Partie d'airsoft du 21 septembre 2025 » (Tinchebray-Bocage, 1 personne inscrite, créée le 07/09/2025) et avant « partie du dimanche 15 septembre 2024 » (créée le 06/09/2024) ; aucune publication postérieure au 20/09/2025 ; page HelloAsso sans action en cours (re-vérifiée le 03/11/2026) ; annuaire FFA re-vérifié le 12/10/2026 ; aucune date de partie publique récente",
       "frequence": "n.c.",
       "prochaines": "n.c.",
       "terrain": "n.c.",
@@ -1569,15 +1569,28 @@
         "https://spawnforge.fr/terrains/",
         "https://spawnforge.fr/terrains/r-soft78-guernes/",
         "https://www.helloasso.com/associations/r-soft78",
-        "https://www.facebook.com/Rsoft78/"
+        "https://www.facebook.com/Rsoft78/",
+        "https://www.helloasso.com/associations/r-soft78/evenements/partie-du-29-11-2026"
       ],
       "type": "Club / asso",
       "distance": "~40–45 min",
-      "statutDetail": "fiche terrain dédiée SpawnForge re-vérifiée le 03/11/2026 (toujours en ligne, publiée le 02/05/2026 : terrain boisé de 4 ha, parties airsoft et Nerf pour mineurs) ; page Facebook « R-soft78 » consultée connecté le 11/11/2026 (195 abonnés, description « Association d'air soft de Guernes (78) ») : la publication la plus récente du mur reste l'invitation « Abonne toi pour connaître la date de la prochaine partie », aucune date affichée ; adhésion annuelle ouverte sur HelloAsso (65 €, du 02/03/2026 au 28/02/2027, consultée le 12/10/2026)",
+      "statutDetail": "Page Facebook re-consultée connecté le 18/11/2026 : la publication la plus récente (horodatage serveur FB du 11/11/2026 17h30 UTC, soit 18h30 à Paris) partage la billetterie HelloAsso « partie-du-29-11-2026 » ; une seconde billetterie passée « partie-du-20-09-2026 » figure aussi depuis le mur (page non rendue aujourd'hui — déroulement non confirmable) ; page HelloAsso « Partie du 29/11/2026 - r-soft78 » lue le 18/11/2026 : partie à Guernes (scénarios en forêt, tirage au sort des équipes, HPA non autorisé, 18 ans minimum, pause repas non fournie) avec des tarifs de 0 à 8 €, billetterie ÉPUISÉE (SoldOut, ventes closes le 23/11/2026 à 23h59) ; fiche terrain SpawnForge toujours en ligne (publiée le 02/05/2026 : terrain boisé de 4 ha, parties airsoft et Nerf pour mineurs, re-vérifiée le 03/11/2026) ; adhésion annuelle ouverte sur HelloAsso (65 €, du 02/03/2026 au 28/02/2027, consultée le 12/10/2026)",
       "frequence": "n.c.",
-      "prochaines": "Dates des parties via page Facebook",
+      "prochaines": "Billetteries via HelloAsso (annonces sur leur page Facebook)",
       "terrain": "Terrain boisé de 4 ha (airsoft et Nerf pour mineurs — fiche SpawnForge)",
       "cout": "n.c.",
+      "events": [
+        {
+          "date": "2026-09-20",
+          "lieu": "Guernes (78)",
+          "note": "Partie annoncée avec billetterie HelloAsso « partie-du-20-09-2026 » (lien observé depuis leur mur FB le 18/11/2026) ; page billetterie non rendue (shell vide) — déroulement non confirmable"
+        },
+        {
+          "date": "2026-11-29",
+          "lieu": "Guernes (78)",
+          "note": "Partie annoncée le 11/11/2026 sur leur page Facebook (horodatage serveur FB 17h30 UTC, soit 18h30 à Paris) ; billetterie HelloAsso lue le 18/11/2026 : tarifs 0–8 €, scénarios en forêt (HPA non autorisé, 18 ans minimum, tirage au sort des équipes), billetterie ÉPUISÉE (SoldOut), ventes closes le 23/11/2026 à 23h59"
+        }
+      ],
       "coords": {
         "lat": 49.0283,
         "lon": 1.7644
@@ -1606,7 +1619,7 @@
       ],
       "type": "Terrain commercial d'airsoft",
       "distance": "~35–40 min",
-      "statutDetail": "site officiel airsoft75.com en ligne (re-vérifié le 03/11/2026 : réservations par téléphone, numéro 06 46 05 84 03 affiché sur le site, packs « journée fun » (12-70 ans), anniversaires enfants (12-15) et (16-70+), journée famille, journées sociétés et écoles, +30 hectares de zones de jeux) ; fiche SpawnForge dédiée re-vérifiée le 23/10/2026 (toujours en ligne, modifiée le 07/09/2026 : terrain de plus de 30 ha à Flins-sur-Seine, zones thématiques et village, sessions en packs tout compris avec location)",
+      "statutDetail": "site officiel airsoft75.com en ligne (HTTP 200 re-vérifié le 18/11/2026 : numéro 06 46 05 84 03 toujours affiché en en-tête « Réservation ») ; détail du re-check du 03/11/2026 : réservations par téléphone, packs « journée fun » (12-70 ans), anniversaires enfants (12-15) et (16-70+), journée famille, journées sociétés et écoles, +30 hectares de zones de jeux ; fiche SpawnForge dédiée re-vérifiée le 23/10/2026 (toujours en ligne, modifiée le 07/09/2026 : terrain de plus de 30 ha à Flins-sur-Seine, zones thématiques et village, sessions en packs tout compris avec location)",
       "frequence": "n.c.",
       "prochaines": "Sessions sur réservation via le site officiel",
       "terrain": "Plus de 30 ha outdoor, zones thématiques et village (fiche SpawnForge)",
